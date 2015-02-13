@@ -58,7 +58,7 @@ createAnnotationPackage <- function(assembly,dest=getwd(),cores.count=1L){
 	if (cores.count != 1) {
 		registerDoParallel(cores.count)
 	}
-	createPackageScaffold(dest)
+	createPackageScaffold(paste0("RnBeads.", assembly), dest = dest)
 	if (assembly == "hg38") {
 		createAnnotationPackage.hg38(dest)
 	}
