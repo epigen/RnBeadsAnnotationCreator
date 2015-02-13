@@ -17,7 +17,7 @@
 ## @param dataset.name     Name of the table to extract.
 ## @param required.columns Columns of the table to download, in the form of a \code{character} vector. If specified, the
 ##                         names of this vector are used to rename the columns of the downloaded table.
-## @param ...			   Additional arguments passed to \code{\link{listMarts}} and \code{\link{useMart}}.
+## @param ...              Additional arguments passed to \code{\link{listMarts}} and \code{\link{useMart}}.
 ## @return \code{data.frame} with the given columns, as returned by \code{\link{getBM}}.
 ## @seealso \code{\link{useMart}} and \code{\link{getBM}} from package \pkg{biomaRt}
 ##
@@ -43,6 +43,9 @@ download.ensembl.table <- function(database.name, dataset.name, required.columns
 ##
 ## Creates a genomic annotation for gene and gene promoter regions.
 ##
+## @param biomart.parameters Parameters passt to \code{\link{download.ensembl.table}} as a \code{list} containing at
+##                           least the following three items: \code{"database.name"}, \code{"dataset.name"} and
+##                           \code{"required.columns"}.
 ## @return List of two items (\code{"genes"} and \code{"promoters"}), each of them is a list of containing the following
 ##         two entries:
 ##         \describe{
@@ -55,7 +58,7 @@ download.ensembl.table <- function(database.name, dataset.name, required.columns
 ##         }
 ##
 ## @author Fabian Mueller
-rnb.update.region.annotation.genes <- function(){
+rnb.update.region.annotation.genes <- function(biomart.parameters) {
 	if (!suppressPackageStartupMessages(require(biomaRt))) {
 		logger.error("Missing required package biomaRt")
 	}
@@ -71,11 +74,6 @@ rnb.update.region.annotation.genes <- function(){
 		}
 		return(paste(unique(sort(x[!is.na(x)])), collapse = ";"))
 	}
-	biomart.parameters <- list(
-		database.name = ENSEMBL.DATABASE, dataset.name = ENSEMBL.DATASET, required.columns = ENSEMBL.GENE.ATTRS)
-	if (exists('ENSEMBL.HOST')) {
-		biomart.parameters$host <- ENSEMBL.HOST
-	}
 	ensembl.genes <- do.call(download.ensembl.table, biomart.parameters)
 	db.version <- attr(ensembl.genes, "version")
 	ensembl.genes <- ensembl.genes[with(ensembl.genes, order(chromosome, start, end)), ]
@@ -85,20 +83,20 @@ rnb.update.region.annotation.genes <- function(){
 	ensembl.genes[ensembl.genes[, "symbol"] == "", "symbol"] <- NA
 	gene.id.inds <- tapply(1:nrow(ensembl.genes), ensembl.genes[["id"]], identity)
 	chroms <- sapply(gene.id.inds, function(i) { get.single(ensembl.genes[i, "chromosome"], "chromosomes") })
-	chroms <- paste("chr", chroms, sep = "")
+	chroms <- paste0("chr", chroms)
 	starts <- sapply(gene.id.inds, function(i) { get.single(ensembl.genes[i, "start"], "start positions") })
 	ends <- sapply(gene.id.inds, function(i) { get.single(ensembl.genes[i, "end"], "end positions") })
 	strands <- sapply(gene.id.inds, function(i) { get.single(ensembl.genes[i, "strand"], "strands") })
 	strands <- rnb.fix.strand(strands)
 	symbols <- sapply(gene.id.inds, function(i) { combine.multiple(ensembl.genes[i, "symbol"]) })
 	entrezids <- sapply(gene.id.inds, function(i) { combine.multiple(ensembl.genes[i, "entrezID"]) })
-	ensembl.genes.gr <- lapply(CHROMOSOMES, function(chrom) {
+	ensembl.genes.gr <- lapply(.globals[['CHROMOSOMES']], function(chrom) {
 			cinds <- which(chroms == chrom)
 			genes <- GRanges(seqnames = chrom,
 				ranges = IRanges(start = starts[cinds], end = ends[cinds], names = names(gene.id.inds)[cinds]),
 				strand = strands[cinds], symbol = symbols[cinds], entrezID = entrezids[cinds])
-			seqlevels(genes) <- names(CHROMOSOMES)
-			seqlengths(genes) <- as.integer(seqlengths(rnb.genome.data(assembly))[CHROMOSOMES])
+			seqlevels(genes) <- names(.globals[['CHROMOSOMES']])
+			seqlengths(genes) <- as.integer(seqlengths(rnb.genome.data(assembly))[.globals[['CHROMOSOMES']]])
 			genes <- rnb.sort.regions(genes)
 			return(genes)
 		}
@@ -148,6 +146,7 @@ rnb.update.region.annotation.genes <- function(){
 ## @author Fabian Mueller
 rnb.update.region.annotation.tiling <- function(window.size=LENGTH.TILING){
 	genome.data <- rnb.genome.data(assembly)
+	CHROMOSOMES <- .globals[['CHROMOSOMES']]
 	tiling.chrom <- function(chrom) {
 		chrom.length <- seqlengths(genome.data)[chrom]
 		starts <- seq(1L, chrom.length, window.size)
@@ -221,9 +220,9 @@ rnb.update.download.cgis <- function() {
 ##
 ## @author Fabian Mueller
 rnb.update.region.annotation <- function() {
-	logger.start("Tiling Region Annotation")
-	result <- list("tiling" = rnb.update.region.annotation.tiling())
-	logger.completed()
+#	logger.start("Tiling Region Annotation")
+#	result <- list("tiling" = rnb.update.region.annotation.tiling())
+#	logger.completed()
 
 	logger.start("Gene Annotation")
 	result <- c(result, rnb.update.region.annotation.genes())

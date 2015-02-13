@@ -43,11 +43,11 @@ LENGTH.CGI.SHELF <- 2000L
 DBSNP.FTP.BASE <- "ftp://ftp.ncbi.nih.gov/snp/organisms/"
 
 ## FTP location of BED files for human in dbSNP
-DBSNP.FTP.VCF <- list(
-	"hg19" = paste0(DBSNP.FTP.BASE, "human_9606/VCF/", "00-All.vcf.gz"),
-	"mm10" = paste0(DBSNP.FTP.BASE, "mouse_10090/VCF/", "vcf_chr_", c(1:19, "X", "Y"), ".vcf.gz"),
-	"rn5" = paste0(DBSNP.FTP.BASE, "rat_10116/VCF/", "vcf_chr_", c(1:20, "X"), ".vcf.gz"))
-rm(DBSNP.FTP.BASE)
+#DBSNP.FTP.VCF <- list(
+#	"hg19" = paste0(DBSNP.FTP.BASE, "human_9606/VCF/", "00-All.vcf.gz"),
+#	"mm10" = paste0(DBSNP.FTP.BASE, "mouse_10090/VCF/", "vcf_chr_", c(1:19, "X", "Y"), ".vcf.gz"),
+#	"rn5" = paste0(DBSNP.FTP.BASE, "rat_10116/VCF/", "vcf_chr_", c(1:20, "X"), ".vcf.gz"))
+#rm(DBSNP.FTP.BASE)
 
 ########################################################################################################################
 ## Ensembl
@@ -66,8 +66,8 @@ rm(DBSNP.FTP.BASE)
 UCSC.FTP.BASE <- "ftp://hgdownload.cse.ucsc.edu/goldenPath/"
 
 ## Text file containing the CpG Island track in the UCSC Genome Browser
-UCSC.FTP.CGIS <- paste0(UCSC.FTP.BASE, assembly, "/database/cpgIslandExt.txt.gz")
+#UCSC.FTP.CGIS <- paste0(UCSC.FTP.BASE, assembly, "/database/cpgIslandExt.txt.gz")
 
 ## Text file containing the definition of chromosome bands
-UCSC.FTP.BANDS <- paste0(UCSC.FTP.BASE, assembly, "/database/cytoBand.txt.gz")
-rm(UCSC.FTP.BASE)
+#UCSC.FTP.BANDS <- paste0(UCSC.FTP.BASE, assembly, "/database/cytoBand.txt.gz")
+#rm(UCSC.FTP.BASE)

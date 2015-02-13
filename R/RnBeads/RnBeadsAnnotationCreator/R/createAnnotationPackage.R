@@ -1,17 +1,67 @@
+########################################################################################################################
+## createAnnotationPackage.R
+## created: 2014-02-13
+## creator: Fabian Mueller
+## ---------------------------------------------------------------------------------------------------------------------
+## Creation of annotation packages for RnBeads.
+########################################################################################################################
+
+## F U N C T I O N S ###################################################################################################
+
+#' update.annot
+#'
+#' Updates an annotation table.
+#'
+#' @param object.name ...
+#' @param info        Human-readable description of the annotation stored in a one-element \code{character} vector.
+#' @param unpdate.fun Function to be called for creating the annotation object.
+#' @param ...         Additional parameters to the updating function, as a \code{list} with named items.
+#' 
+#' @author Yassen Assenov
+#' @noRd
+update.annot <- function(object.name, info, update.fun, ...) {
+	location <- file.path(.globals[['DIR.PACKAGE']], 'temp')
+	fname <- file.path(location, paste0(object.name, ".RDS"))
+	if (file.exists(fname)) {
+		obj <- readRDS(fname)
+		logger.status(c("Loaded", info, "from", fname))
+	} else {
+		obj <- update.fun(...)
+		con <- gzfile(fname, "wb", compression = 9L)
+		saveRDS(obj, file = con)
+		close(con)
+		logger.status(c("Saved", info, "to", fname))
+	}
+	return(obj)
+}
+
+########################################################################################################################
+
 #' createAnnotationPackage
 #' 
-#' Given an assembly identifier, this function generates an R-package containing the
-#' RnBeads annotation for that assembly
-#' @param assembly identifier for the genome assembly
-#' @param dest destination directory where the package should be generated
+#' Generates an R package containing the RnBeads annotation for the specified genome assembly.
+#'
+#' @param assembly    Targeted genome assembly. Must be one of \code{"hg38"}, \code{"hg19"}, \code{"mm10"},
+#'                    \code{"mm9"}, \code{"rn5"}.
+#' @param dest        Destination directory where the package should be generated.
+#' @param cores.count Number of processing cores to be used in the computations.
 #' @return invisible \code{TRUE} if successful
-#' @author Yassen Assenov, Fabian Mueller
-#' @export 
-#' @examples 
+#' @author Fabian Mueller
+#' @examples
 #' createAnnotationPackage("hg38")
-createAnnotationPackage <- function(assembly,dest=getwd()){
-	if (assembly == "hg38"){
+#' @export
+createAnnotationPackage <- function(assembly,dest=getwd(),cores.count=1L){
+	assign('assembly', assembly, .global)
+	assign('DIR.PACKAGE', dest, .global)
+	logger.start('Creating Annotation Package', fname = NA)
+	logger.info(c('Assembly: ', assembly))
+	if (cores.count != 1) {
+		registerDoParallel(cores.count)
+	}
+	createPackageScaffold(dest)
+	if (assembly == "hg38") {
 		createAnnotationPackage.hg38(dest)
 	}
+	logger.completed()
 	invisible(TRUE)
 }
