@@ -10,8 +10,8 @@ Authors@R: c(
     role = c("aut", "cre")))
 Date: 2015-02-13
 Suggests:
-    RnBeads
+    biomaRt
 Depends:
-	
+	RnBeads
 License: GPL-3
 Version: 0.1
