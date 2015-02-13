@@ -219,13 +219,14 @@ rnb.update.download.cgis <- function() {
 ##         }
 ##
 ## @author Fabian Mueller
-rnb.update.region.annotation <- function() {
+rnb.update.region.annotation <- function(biomart.parameters) {
 #	logger.start("Tiling Region Annotation")
 #	result <- list("tiling" = rnb.update.region.annotation.tiling())
 #	logger.completed()
+	result <- list()
 
 	logger.start("Gene Annotation")
-	result <- c(result, rnb.update.region.annotation.genes())
+	result <- c(result, rnb.update.region.annotation.genes(biomart.parameters))
 	logger.completed()
 
 	logger.start("CpG Island Region Annotation")
