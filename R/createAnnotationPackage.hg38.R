@@ -8,7 +8,15 @@
 
 ## F U N C T I O N S ###################################################################################################
 
-rnb.globals.hg38 <- function() {
+#' createAnnotationPackage.hg38
+#' 
+#' Helper function to create annotation package for genome assembly hg38
+#' RnBeads annotation for that assembly
+#' @param dest destination directory where the package should be generated
+#' @return invisible \code{TRUE} if successful
+#' @author Fabian Mueller
+#' @noRd
+createAnnotationPackage.hg38 <- function(dest){
 
 	suppressPackageStartupMessages(library(BSgenome.Hsapiens.NCBI.GRCh38))
 
@@ -17,30 +25,21 @@ rnb.globals.hg38 <- function() {
 	names(CHROMOSOMES) <- CHROMOSOMES
 	assign('CHROMOSOMES', CHROMOSOMES, .globals)
 
-	## Ensembl table for gene definitions
-	assign('ENSEMBL.DATASET', "hsapiens_gene_ensembl", .globals)
+	## TODO: Download genes from Ensembl
+	biomart.parameters <- list(
+		database.name = "ensembl",
+		dataset.name = "hsapiens_gene_ensembl",
+		required.columns = c(
+			"id" = "ensembl_gene_id",
+			"chromosome" = "chromosome_name",
+			"start" = "start_position",
+			"end" = "end_position",
+			"strand" = "strand",
+			"symbol" = "mgi_symbol",
+			"entrezID" = "entrezgene"))
 
-	## Ensembl gene table attributes
-	ENSEMBL.GENE.ATTRS <- c(
-		"id" = "ensembl_gene_id",
-		"chromosome" = "chromosome_name",
-		"start" = "start_position",
-		"end" = "end_position",
-		"strand" = "strand",
-		"symbol" = "mgi_symbol",
-		"entrezID" = "entrezgene")
-	assign('ENSEMBL.GENE.ATTRS' ENSEMBL.GENE.ATTRS, .globals)
-}
+	logger.start("Region Annotation")
+	regions <- update.annot("regions", "region annotation", rnb.update.region.annotation, biomart.parameters)
+	logger.completed()
 
-########################################################################################################################
-
-#' createAnnotationPackage.hg38
-#' 
-#' Helper function to create annotation package for genome assembly hg38
-#' RnBeads annotation for that assembly
-#' @param dest destination directory where the package should be generated
-#' @return invisible \code{TRUE} if successful
-#' @author Yassen Assenov, Fabian Mueller
-createAnnotationPackage.hg38 <- function(dest=getwd()){
-	invisible(TRUE)
 }

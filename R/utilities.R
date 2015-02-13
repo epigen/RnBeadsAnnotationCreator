@@ -8,6 +8,7 @@
 #' @author Fabian Mueller
 #' @examples 
 #' createPackageScaffold("myPkg")
+#' @noRd
 createPackageScaffold <- function(
 		pkg.name,
 		desc=c(
@@ -30,6 +31,7 @@ createPackageScaffold <- function(
 	dir.create(file.path(pkg.base.dir,"man"))
 	dir.create(file.path(pkg.base.dir,"inst"))
 	dir.create(file.path(pkg.base.dir,"data"))
+	dir.create(file.path(pkg.base.dir,"temp"))
 	#create the DESCRIPTION file
 	desc.lines <- paste(names(desc),desc,sep=": ")
 	writeLines(desc.lines,file.path(pkg.base.dir,"DESCRIPTION"))
