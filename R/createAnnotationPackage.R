@@ -15,7 +15,7 @@
 #' @param object.name ...
 #' @param info        Human-readable description of the annotation stored in a one-element \code{character} vector.
 #' @param unpdate.fun Function to be called for creating the annotation object.
-#' @param ...         Additional parameters to the updating function, as a \code{list} with named items.
+#' @param ...         Parameters to pass to the updating function.
 #' 
 #' @author Yassen Assenov
 #' @noRd

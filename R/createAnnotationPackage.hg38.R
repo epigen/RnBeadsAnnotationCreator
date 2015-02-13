@@ -39,7 +39,8 @@ createAnnotationPackage.hg38 <- function(dest){
 			"entrezID" = "entrezgene"))
 
 	logger.start("Region Annotation")
-	regions <- update.annot("regions", "region annotation", rnb.update.region.annotation, biomart.parameters)
+	regions <- update.annot("regions", "region annotation", rnb.update.region.annotation,
+		biomart.parameters = biomart.parameters)
 	logger.completed()
 
 }
