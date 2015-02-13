@@ -1,0 +1,17 @@
+Package: RnBeadsAnnotationCreator
+Title: RnBeads annotation creation package
+Description: Package for creating RnBeads annotation packages
+Authors@R: c(
+    person("Yassen", "Assenov", email = "yassen@mpi-inf.mpg.de",
+    role = c("aut")),
+    person("Pavlo", "Lutsik", email = "p.lutsik@mx.uni-saarland.de",
+    role = c("aut")),
+    person("Fabian", "Mueller", email = "fmueller@mpi-inf.mpg.de",
+    role = c("aut", "cre")))
+Date: 2015-02-13
+Suggests:
+    RnBeads
+Depends:
+	
+License: GPL-3
+Version: 0.1
