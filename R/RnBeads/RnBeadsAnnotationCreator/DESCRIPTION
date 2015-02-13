@@ -12,6 +12,7 @@ Date: 2015-02-13
 Suggests:
     biomaRt
 Depends:
+	doParallel,
 	RnBeads
 License: GPL-3
 Version: 0.1
