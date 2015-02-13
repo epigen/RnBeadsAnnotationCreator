@@ -52,9 +52,9 @@ update.annot <- function(object.name, info, update.fun, ...) {
 #' @export
 createAnnotationPackage <- function(assembly,dest=getwd(),cores.count=1L){
 	assign('assembly', assembly, .globals)
-	assign('DIR.PACKAGE', dest, .globals)
+	assign('DIR.PACKAGE', file.path(paste0("RnBeads.", assembly), dest), .globals)
 	logger.start('Creating Annotation Package', fname = NA)
-	logger.info(c('Assembly: ', assembly))
+	logger.info(c('Assembly:', assembly))
 	if (cores.count != 1) {
 		registerDoParallel(cores.count)
 	}
