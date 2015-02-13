@@ -1,12 +1,229 @@
+########################################################################################################################
+## utilities.R
+## created: 2014-02-13
+## creator: Fabian Mueller
+## ---------------------------------------------------------------------------------------------------------------------
+## Helper functions used in constructing RnBeads annotation packages.
+########################################################################################################################
+
+## F U N C T I O N S ###################################################################################################
+
+#' assignChromosomes
+#'
+#' Assigns the supported chromosomes to the \code{CHROMOSOME} variable in the global variables environment.
+#'
+#' @param chromosomes Chromosome names to be supported. This function prepends the string \code{"chr"} to each name.
+#'
+#' @author Yassen Assenov
+#' @noRd
+assignChromosomes <- function(chromosomes) {
+	chromosomes <- paste0("chr", chromosomes)
+	names(chromosomes) <- chromosomes
+	assign('CHROMOSOMES', chromosomes, .globals)
+}
+
+########################################################################################################################
+
+#' get.genome.data
+#'
+#' Gets the specified genome.
+#'
+#' @param assembly Genome assembly of interest. Currently the only supported genomes are \code{"hg38"}, \code{"hg19"},
+#'                 \code{"mm9"}, \code{"mm10"} and \code{"rn5"}.
+#' @return Sequence data object for the specified assembly.
+#'
+#' @author Yassen Assenov
+#' @noRd
+get.genome.data <- function(assembly = .globals[["assembly"]]) {
+	if (assembly == "hg38") {
+		suppressPackageStartupMessages(require(BSgenome.Hsapiens.NCBI.GRCh38))
+		genome.data <- BSgenome.Hsapiens.NCBI.GRCh38::Hsapiens
+	} else if (assembly == "hg19") {
+		suppressPackageStartupMessages(require(BSgenome.Hsapiens.UCSC.hg19))
+		genome.data <- BSgenome.Hsapiens.UCSC.hg19::Hsapiens
+	} else if (assembly == "mm9") {
+		suppressPackageStartupMessages(require(BSgenome.Mmusculus.UCSC.mm9))
+		genome.data <- BSgenome.Mmusculus.UCSC.mm9::Mmusculus
+	} else if (assembly == "mm10") {
+		suppressPackageStartupMessages(require(BSgenome.Mmusculus.UCSC.mm10))
+		genome.data <- BSgenome.Mmusculus.UCSC.mm10::Mmusculus
+	} else if (assembly == "rn5") {
+		suppressPackageStartupMessages(require(BSgenome.Rnorvegicus.UCSC.rn5))
+		genome.data <- BSgenome.Rnorvegicus.UCSC.rn5::Rnorvegicus
+	} else {
+		stop("unsupported assembly")
+	}
+	return(genome.data)
+}
+
+########################################################################################################################
+
+#' rnb.fix.strand
+#'
+#' Converts, if necessary, the provided strand information into a factor vector with levels \code{"+"}, \code{"-"} and
+#' \code{"*"}.
+#'
+#' @param values Vector of strand information to be converted.
+#' @return The (possibly modified) strand information as a factor vector.
+#'
+#' @author Yassen Assenov
+#' @noRd
+rnb.fix.strand <- function(values) {
+	if (is.factor(values) && setequal(levels(values), c("+", "-", "*"))) {
+		values[is.na(values)] <- "*"
+	} else {
+		values <- as.character(values)
+		values[is.na(values)] <- "*"
+		i.positive <- values %in% c("+", "1", "+1", "F", "f", "TOP")
+		i.negative <- values %in% c("-", "-1", "R", "r", "BOT")
+		values[i.positive] <- "+"
+		values[i.negative] <- "-"
+		values[!(i.positive | i.negative)] <- "*"
+		values <- factor(values, levels = c("+", "-", "*"))
+	}
+	return(values)
+}
+
+########################################################################################################################
+
+#' rnb.sort.regions
+#'
+#' Sorts the given regions based on start and end position.
+#'
+#' @param x Genomic regions as an object of type \code{\link{GRanges}} or \code{\link{GRangesList}}.
+#' @return Set of the same regions as x, sorted based on start and end positions.
+#'
+#' @author Yassen Assenov
+#' @noRd
+rnb.sort.regions <- function(x) {
+	if (inherits(x, "GRanges")) {
+		return(x[order(start(x), end(x), as.integer(strand(x))), ])
+	}
+	if (inherits(x, "GRangesList")) {
+		return(endoapply(x, function(y) { y[order(start(y), end(y), as.integer(strand(y))), ] }))
+	}
+	stop("invalid value for x")
+}
+
+########################################################################################################################
+
+#' rnb.load.bed
+#'
+#' Loads a BED file into a \code{data.frame} with fixed column names. The file contents is validated for structure
+#' (at least 3 columns), as well as for integer values in columns 2 and 3.
+#'
+#' @param fname BED file to load.
+#' @return \code{data.frame} with at least 3 and at most 6 columns. The column names are: \code{"chromosome"},
+#'         \code{"start"}, \code{"end"}, \code{"id"}, \code{"score"} and \code{"strand"}. Columns after the sixth one,
+#'         if present, are dropped.
+#'
+#' @author Yassen Assenov
+#' @noRd
+rnb.load.bed <- function(fname) {
+	BED.COLUMNS <- c("chromosome", "start", "end", "id", "score", "strand")
+	tbl <- tryCatch(suppressWarnings(read.delim(fname, header = FALSE, quote = "", comment.char = "#",
+				stringsAsFactors = FALSE, na.strings = "")), error = function(e) { e })
+	if (inherits(tbl, "error")) {
+		if (grepl("cannot open", tbl, fixed = TRUE)) {
+			stop("cannot open file")
+		}
+		stop("invalid file format")
+	}
+	if (ncol(tbl) < 3) {
+		stop("invalid file format; expected at least 3 columns")
+	}
+	if (!(is.integer(tbl[[2]]) && is.integer(tbl[[3]]))) {
+		stop("invalid file format; expected start and end positions in columns 2 and 3, respectively")
+	}
+	if (length(BED.COLUMNS) < ncol(tbl)) {
+		tbl <- tbl[, 1:length(BED.COLUMNS)]
+	}
+	colnames(tbl) <- BED.COLUMNS[1:ncol(tbl)]
+	tbl[[1]] <- as.character(tbl[[1]])
+	if (4 <= ncol(tbl)) {
+		tbl[[4]] <- as.character(tbl[[4]])
+		if (anyDuplicated(tbl[[4]]) == 0) {
+			rownames(tbl) <- tbl[[4]]
+			tbl <- tbl[, -4]
+		}
+	}
+	return(tbl)
+}
+
+########################################################################################################################
+
+#' get.cpg.stats
+#'
+#' Computes CpG-related statistics for the specified regions.
+#'
+#' @param chrom.sequence Chromosome sequence, usually obtained from the assembly's genome definition. This must be an
+#'                       object of type \code{MaskedDNAString}.
+#' @param starts         \code{integer} vector of start positions for the regions of interest. 
+#' @param ends           \code{integer} vector of end positions for the regions of interest.
+#' @return Table of statistics for the regions in the form of a \code{matrix} with the following columns:
+#'         \code{"CpG"} and \code{"GC"}. The columns contain the number of CpG dinucleoties and the number of C and G
+#'         bases in each region.
+#'
+#' @author Yassen Assenov
+#' @export
+get.cpg.stats <- function(chrom.sequence, starts, ends) {
+	if (!(inherits(chrom.sequence, "MaskedDNAString") || inherits(chrom.sequence, "DNAString"))) {
+		stop("invalid value for chrom.sequence")
+	}
+	if (!(is.integer(starts) && !any(is.na(starts)))) {
+		stop("invalid value for starts")
+	}
+	if (!(is.integer(ends) && !any(is.na(ends)))) {
+		stop("invalid value for ends")
+	}
+	chrom.regions <- suppressWarnings(Views(chrom.sequence, start = starts, end = ends))
+	cbind(
+		"CpG" = dinucleotideFrequency(chrom.regions)[, "CG"],
+		"GC" = as.integer(rowSums(letterFrequency(chrom.regions, c("C", "G")))))
+}
+
+########################################################################################################################
+
+#' append.cpg.stats
+#'
+#' Appends additional metadata columns for CpG count and GC density to the specified regions.
+#'
+#' @param genome.data Genome of interest.
+#' @param regionlist  Genomic regions as a list of \code{GRanges} objects (or an obect of type \code{GRangesList}),
+#'                    containing one set of regions per chromosome.
+#' @return The modified \code{regionlist}. Two columns are appedned to the metadata of each element in this list -
+#'         \code{"CpG"} and \code{"GC"}. If the metadata already contains these columns, this function appends columns
+#'         with similar names.
+#'
+#' @author Yassen Assenov
+#' @noRd
+append.cpg.stats <- function(genome.data, regionlist) {
+	cpg.stats <- function(chrom) {
+		stats <- get.cpg.stats(genome.data[[chrom]], start(regionlist[[chrom]]), end(regionlist[[chrom]]))
+		result <- regionlist[[chrom]]
+		mcols(result) <- IRanges::cbind(mcols(result), DataFrame(stats))
+		result
+	}
+	regions.enriched <- foreach(chrom = names(regionlist), .packages = "GenomicRanges",
+		.export = c("get.cpg.stats", "genome.data", "regionlist")) %dopar% cpg.stats(chrom)
+	names(regions.enriched) <- names(regionlist)
+	return(GRangesList(regions.enriched))
+}
+
+########################################################################################################################
+
 #' createPackageScaffold
 #' 
-#' Creates a scaffold folder structure for an R-package
-#' @param pkg.name Name of the package to be created
-#' @param desc Content of the DESCRIPTION file. Should be a named character vector with the headers as names.
-#' @param dest destination directory where the package should be created
-#' @return invisible \code{TRUE} if successful
+#' Creates a scaffold folder structure for an R package.
+#'
+#' @param pkg.name Name of the package to be created.
+#' @param desc     Content of the DESCRIPTION file. This must be a named character vector with the headers as names.
+#' @param dest     Destination directory where the package should be created.
+#' @return Invisibly, \code{TRUE} if the package directory and its \code{DESCRIPTION} file were successfully created;
+#'         \code{FALSE} otherwise.
+#'
 #' @author Fabian Mueller
-#' @examples 
+#' @examples
 #' createPackageScaffold("myPkg")
 #' @noRd
 createPackageScaffold <- function(
@@ -23,16 +240,15 @@ createPackageScaffold <- function(
 		dest=getwd()){
 	pkg.base.dir <- file.path(dest,pkg.name)
 	if (file.exists(pkg.base.dir)){
-		stop("Package already exists")
+		stop("Package directory already exists")
 	}
-	#create folder structure
-	dir.create(pkg.base.dir)
-	dir.create(file.path(pkg.base.dir,"R"))
-	dir.create(file.path(pkg.base.dir,"man"))
-	dir.create(file.path(pkg.base.dir,"inst"))
-	dir.create(file.path(pkg.base.dir,"data"))
-	dir.create(file.path(pkg.base.dir,"temp"))
-	#create the DESCRIPTION file
+	## Create the folder structure
+	for (dname in c("R", "data", "inst", "man", "temp")) {
+		if (!dir.create(file.path(pkg.base.dir, dname), showWarnings = FALSE, recursive = TRUE)) {
+			return(invisible(FALSE))
+		}
+	}
+	## Create the DESCRIPTION file
 	desc.lines <- paste(names(desc),desc,sep=": ")
 	writeLines(desc.lines,file.path(pkg.base.dir,"DESCRIPTION"))
 	invisible(TRUE)

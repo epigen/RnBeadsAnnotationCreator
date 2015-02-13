@@ -7,8 +7,10 @@
 ########################################################################################################################
 
 ########################################################################################################################
-## Environment containing global variables for the targeted genome assembly
+## Global variables for the targeted genome assembly
 
+## Environment containing the global variables:
+##   assembly, DIR.PACKAGE
 .globals <- new.env()
 
 ########################################################################################################################
@@ -48,16 +50,6 @@ DBSNP.FTP.BASE <- "ftp://ftp.ncbi.nih.gov/snp/organisms/"
 #	"mm10" = paste0(DBSNP.FTP.BASE, "mouse_10090/VCF/", "vcf_chr_", c(1:19, "X", "Y"), ".vcf.gz"),
 #	"rn5" = paste0(DBSNP.FTP.BASE, "rat_10116/VCF/", "vcf_chr_", c(1:20, "X"), ".vcf.gz"))
 #rm(DBSNP.FTP.BASE)
-
-########################################################################################################################
-## Ensembl
-
-.globals[['ENSEMBL.DATABASE']] <- "ensembl"
-
-## Additional variables that could/must be defined in the assembly-specific header:
-##   ENSEMBL.HOST         # Host URL (precise version of Ensembl) to be used
-## * ENSEMBL.DATASET      # Name of the gene dataset within the "ensembl" database
-## * ENSEMBL.GENE.ATTRS   # Attributes (columns) to download from Ensembl for gene definitions
 
 ########################################################################################################################
 ## UCSC Genome Browser

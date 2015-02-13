@@ -12,10 +12,11 @@
 #'
 #' Updates an annotation table.
 #'
-#' @param object.name ...
-#' @param info        Human-readable description of the annotation stored in a one-element \code{character} vector.
+#' @param object.name Name of the annotation object to load (if it exists) or save (if it needs to be created).
+#' @param info        Human-readable description of the annotation. This must be a one-element \code{character} vector.
 #' @param unpdate.fun Function to be called for creating the annotation object.
-#' @param ...         Parameters to pass to the updating function.
+#' @param ...         Parameters passed to the updating function.
+#' @return The loaded or initialized annotation object.
 #' 
 #' @author Yassen Assenov
 #' @noRd
@@ -45,23 +46,51 @@ update.annot <- function(object.name, info, update.fun, ...) {
 #'                    \code{"mm9"}, \code{"rn5"}.
 #' @param dest        Destination directory where the package should be generated.
 #' @param cores.count Number of processing cores to be used in the computations.
-#' @return invisible \code{TRUE} if successful
 #' @author Fabian Mueller
 #' @examples
 #' createAnnotationPackage("hg38")
 #' @export
 createAnnotationPackage <- function(assembly,dest=getwd(),cores.count=1L){
-	assign('assembly', assembly, .globals)
-	assign('DIR.PACKAGE', file.path(paste0("RnBeads.", assembly), dest), .globals)
-	logger.start('Creating Annotation Package', fname = NA)
-	logger.info(c('Assembly:', assembly))
+	## Validate parameters
+	if (!(is.character(assembly) && length(assembly) == 1 && (isTRUE(assembly != "")))) {
+		stop("invalid value for assembly")
+	}
+	if (!(is.character(dest) && length(dest) == 1 && (isTRUE(dest != "")))) {
+		stop("invalid value for dest")
+	}
+	if (is.double(cores.count) && isTRUE(all(cores.count == as.integer(cores.count)))) {
+		cores.count <- as.integer(cores.count)
+	}
+	if (!(is.integer(cores.count) && length(cores.count) == 1 && (isTRUE(cores.count >= 1L)))) {
+		stop("invalid value for cores.count")
+	}
+
+	## Validate the genome assembly
+	function.name <- paste0("createAnnotationPackage.", assembly)
+	if (!exists(function.name)) {
+		stop("Unsupported assembly")
+	}
+
+	## Initialize the environment variables and the logger
+	assign("assembly", assembly, .globals)
+	dir.package <- file.path(dest, paste0("RnBeads.", assembly))
+	assign("DIR.PACKAGE", dir.package, .globals)
+	logger.start("Creating Annotation Package", fname = NA)
+	logger.info(c("Assembly:", assembly))
+	logger.info(c("Package directory:", dir.package))
+
+	## Initialize parallel processing
 	if (cores.count != 1) {
 		registerDoParallel(cores.count)
 	}
-	createPackageScaffold(paste0("RnBeads.", assembly), dest = dest)
-	if (assembly == "hg38") {
-		createAnnotationPackage.hg38(dest)
+
+	## Initialize package directory
+	if (file.exists(dir.package)) {
+		logger.info("Package directory already exists")
+	} else if (!createPackageScaffold(paste0("RnBeads.", assembly), dest = dest)) {
+		logger.error("Could not create package directory")
 	}
-	logger.completed()
-	invisible(TRUE)
+
+	## Create the annotation package
+	do.call(function.name, list(dest = dest))
 }

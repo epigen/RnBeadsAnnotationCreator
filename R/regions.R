@@ -8,20 +8,21 @@
 
 ## F U N C T I O N S ###################################################################################################
 
-## download.ensembl.table
-##
-## Downloads a table from Biomart.
-##
-## @param database.name    Name of database that contains the table. This database should be among the ones listed by
-##                         \code{\link{listMarts()}}.
-## @param dataset.name     Name of the table to extract.
-## @param required.columns Columns of the table to download, in the form of a \code{character} vector. If specified, the
-##                         names of this vector are used to rename the columns of the downloaded table.
-## @param ...              Additional arguments passed to \code{\link{listMarts}} and \code{\link{useMart}}.
-## @return \code{data.frame} with the given columns, as returned by \code{\link{getBM}}.
-## @seealso \code{\link{useMart}} and \code{\link{getBM}} from package \pkg{biomaRt}
-##
-## @author Yassen Assenov
+#' download.ensembl.table
+#'
+#' Downloads a table from Biomart.
+#'
+#' @param database.name    Name of database that contains the table. This database should be among the ones listed by
+#'                         \code{\link{listMarts()}}.
+#' @param dataset.name     Name of the table to extract.
+#' @param required.columns Columns of the table to download, in the form of a \code{character} vector. If specified, the
+#'                         names of this vector are used to rename the columns of the downloaded table.
+#' @param ...              Additional arguments passed to \code{\link{listMarts}} and \code{\link{useMart}}.
+#' @return \code{data.frame} with the given columns, as returned by \code{\link{getBM}}.
+#' @seealso \code{\link{useMart}} and \code{\link{getBM}} from package \pkg{biomaRt}
+#'
+#' @author Yassen Assenov
+#' @noRd
 download.ensembl.table <- function(database.name, dataset.name, required.columns, ...) {
 	db.version <- listMarts(...)
 	db.version <- as.character(db.version[db.version[, "biomart"] == database.name, "version"])
@@ -39,25 +40,26 @@ download.ensembl.table <- function(database.name, dataset.name, required.columns
 
 ########################################################################################################################
 
-## rnb.update.region.annotation.genes
-##
-## Creates a genomic annotation for gene and gene promoter regions.
-##
-## @param biomart.parameters Parameters passt to \code{\link{download.ensembl.table}} as a \code{list} containing at
-##                           least the following three items: \code{"database.name"}, \code{"dataset.name"} and
-##                           \code{"required.columns"}.
-## @return List of two items (\code{"genes"} and \code{"promoters"}), each of them is a list of containing the following
-##         two entries:
-##         \describe{
-##           \item{\code{"regions"}}{Object of type \code{GRangesList} containing \code{GRanges} objects for each
-##                chromosome. These ranges define region coordinates and annotation.}
-##           \item{\code{"mappings"}}{List of mappings for every element in \code{sites}. One mapping is a list of
-##                tables as objects of type \code{IRanges}, one per chromosome. Every table stores the range of indices 
-##                of \code{sites} on the respective chromosome that are contained in the corresponding region. Regions
-##                that do not contain sites are left out of the mappings.}.
-##         }
-##
-## @author Fabian Mueller
+#' rnb.update.region.annotation.genes
+#'
+#' Creates a genomic annotation for gene and gene promoter regions.
+#'
+#' @param biomart.parameters Parameters passt to \code{\link{download.ensembl.table}} as a \code{list} containing at
+#'                           least the following three items: \code{"database.name"}, \code{"dataset.name"} and
+#'                           \code{"required.columns"}.
+#' @return List of two items (\code{"genes"} and \code{"promoters"}), each of them is a list of containing the following
+#'         two entries:
+#'         \describe{
+#'           \item{\code{"regions"}}{Object of type \code{GRangesList} containing \code{GRanges} objects for each
+#'                chromosome. These ranges define region coordinates and annotation.}
+#'           \item{\code{"mappings"}}{List of mappings for every element in \code{sites}. One mapping is a list of
+#'                tables as objects of type \code{IRanges}, one per chromosome. Every table stores the range of indices 
+#'                of \code{sites} on the respective chromosome that are contained in the corresponding region. Regions
+#'                that do not contain sites are left out of the mappings.}.
+#'         }
+#'
+#' @author Fabian Mueller
+#' @noRd
 rnb.update.region.annotation.genes <- function(biomart.parameters) {
 	if (!suppressPackageStartupMessages(require(biomaRt))) {
 		logger.error("Missing required package biomaRt")
@@ -96,7 +98,7 @@ rnb.update.region.annotation.genes <- function(biomart.parameters) {
 				ranges = IRanges(start = starts[cinds], end = ends[cinds], names = names(gene.id.inds)[cinds]),
 				strand = strands[cinds], symbol = symbols[cinds], entrezID = entrezids[cinds])
 			seqlevels(genes) <- names(.globals[['CHROMOSOMES']])
-			seqlengths(genes) <- as.integer(seqlengths(rnb.genome.data(assembly))[.globals[['CHROMOSOMES']]])
+			seqlengths(genes) <- as.integer(seqlengths(get.genome.data(assembly))[.globals[['CHROMOSOMES']]])
 			genes <- rnb.sort.regions(genes)
 			return(genes)
 		}
@@ -116,7 +118,7 @@ rnb.update.region.annotation.genes <- function(biomart.parameters) {
 	)
 	logger.status("Basic promoter annotation completed")
 
-	genome.data <- rnb.genome.data(assembly)
+	genome.data <- get.genome.data(assembly)
 	ensembl.genes.gr <- append.cpg.stats(genome.data, ensembl.genes.gr)
 	attr(ensembl.genes.gr, "version") <- db.version
 	ensembl.promoters.gr <- append.cpg.stats(genome.data, ensembl.promoters.gr)
@@ -145,7 +147,7 @@ rnb.update.region.annotation.genes <- function(biomart.parameters) {
 ##
 ## @author Fabian Mueller
 rnb.update.region.annotation.tiling <- function(window.size=LENGTH.TILING){
-	genome.data <- rnb.genome.data(assembly)
+	genome.data <- get.genome.data()
 	CHROMOSOMES <- .globals[['CHROMOSOMES']]
 	tiling.chrom <- function(chrom) {
 		chrom.length <- seqlengths(genome.data)[chrom]
@@ -169,22 +171,23 @@ rnb.update.region.annotation.tiling <- function(window.size=LENGTH.TILING){
 ##
 ## Downloads a CpG island definition table from the UCSC genome browser.
 ##
-## @param assembly Genome assembly to use.
+## @param download.url URL of the CGI table to download.
 ## @return CpG islands as an object of type \code{GRangesList}. Every element in this list corresponds to a chromosome.
 ##
 ## @author Yassen Assenov
-rnb.update.download.cgis <- function() {
-	genome.data <- rnb.genome.data(assembly)
+rnb.update.download.cgis <- function(
+	download.url = paste0("ftp://hgdownload.cse.ucsc.edu/goldenPath/", .globals[['assembly']], "/database/cpgIslandExt.txt.gz")) {
+	genome.data <- get.genome.data()
 
 	## Download the corresponding track from the UCSC Genome Browser
-	cgis.file <- file.path(DIR.TEMP, "cgis.txt.gz")
+	cgis.file <- file.path(.globals[["DIR.PACKAGE"]], "temp", "cgis.txt.gz")
 	if (file.exists(cgis.file)) {
 		logger.info(c("File", cgis.file, "found; skipping download"))
 	} else {
-		if (download.file(UCSC.FTP.CGIS, cgis.file, quiet = TRUE, mode = "wb") != 0) {
-			logger.error(c("Could not download", UCSC.FTP.CGIS))
+		if (download.file(download.url, cgis.file, quiet = TRUE, mode = "wb") != 0) {
+			logger.error(c("Could not download", download.url))
 		}
-		logger.status(c("Downloaded CpG island track from", UCSC.FTP.CGIS))
+		logger.status(c("Downloaded CpG island track from", download.url))
 	}
 
 	## Post-process the table
@@ -193,9 +196,9 @@ rnb.update.download.cgis <- function() {
 	cgis.table[, 2] <- cgis.table[, 2] + 1L # adjust start locations to 1-based
 
 	## Convert the table to GRangesList
-	cgis.gr <- data.frame2GRanges(cgis.table, NULL, 1, 2, 3, NULL, assembly)
+	cgis.gr <- data.frame2GRanges(cgis.table, NULL, 1, 2, 3, NULL, .globals[['assembly']])
 	cgis.gr <- GenomicRanges::split(cgis.gr,seqnames(cgis.gr))
-	seqlengths(cgis.gr) <- as.integer(seqlengths(genome.data)[rnb.get.chromosomes(assembly)])
+	seqlengths(cgis.gr) <- as.integer(seqlengths(genome.data)[.globals[['CHROMOSOMES']]])
 	cgis.gr <- append.cpg.stats(genome.data, rnb.sort.regions(cgis.gr))
 	return(cgis.gr)
 }
@@ -220,10 +223,9 @@ rnb.update.download.cgis <- function() {
 ##
 ## @author Fabian Mueller
 rnb.update.region.annotation <- function(biomart.parameters) {
-#	logger.start("Tiling Region Annotation")
-#	result <- list("tiling" = rnb.update.region.annotation.tiling())
-#	logger.completed()
-	result <- list()
+	logger.start("Tiling Region Annotation")
+	result <- list("tiling" = rnb.update.region.annotation.tiling())
+	logger.completed()
 
 	logger.start("Gene Annotation")
 	result <- c(result, rnb.update.region.annotation.genes(biomart.parameters))
