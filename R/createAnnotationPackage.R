@@ -51,8 +51,8 @@ update.annot <- function(object.name, info, update.fun, ...) {
 #' createAnnotationPackage("hg38")
 #' @export
 createAnnotationPackage <- function(assembly,dest=getwd(),cores.count=1L){
-	assign('assembly', assembly, .global)
-	assign('DIR.PACKAGE', dest, .global)
+	assign('assembly', assembly, .globals)
+	assign('DIR.PACKAGE', dest, .globals)
 	logger.start('Creating Annotation Package', fname = NA)
 	logger.info(c('Assembly: ', assembly))
 	if (cores.count != 1) {
