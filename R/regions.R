@@ -98,7 +98,7 @@ rnb.update.region.annotation.genes <- function(biomart.parameters) {
 				ranges = IRanges(start = starts[cinds], end = ends[cinds], names = names(gene.id.inds)[cinds]),
 				strand = strands[cinds], symbol = symbols[cinds], entrezID = entrezids[cinds])
 			seqlevels(genes) <- names(.globals[['CHROMOSOMES']])
-			seqlengths(genes) <- as.integer(seqlengths(get.genome.data(assembly))[.globals[['CHROMOSOMES']]])
+			seqlengths(genes) <- as.integer(seqlengths(get.genome.data())[.globals[['CHROMOSOMES']]])
 			genes <- rnb.sort.regions(genes)
 			return(genes)
 		}
@@ -118,7 +118,7 @@ rnb.update.region.annotation.genes <- function(biomart.parameters) {
 	)
 	logger.status("Basic promoter annotation completed")
 
-	genome.data <- get.genome.data(assembly)
+	genome.data <- get.genome.data()
 	ensembl.genes.gr <- append.cpg.stats(genome.data, ensembl.genes.gr)
 	attr(ensembl.genes.gr, "version") <- db.version
 	ensembl.promoters.gr <- append.cpg.stats(genome.data, ensembl.promoters.gr)
