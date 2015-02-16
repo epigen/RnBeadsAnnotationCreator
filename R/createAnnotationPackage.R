@@ -95,7 +95,7 @@ createAnnotationPackage <- function(assembly,dest=getwd(),cores.count=1L){
 	## Create the annotation package
 	logger.start("Creating Annotation Package", fname = file.path(dir.package, "temp", "annotation.log"))
 	logger.info(c("Assembly:", assembly))
-	logger.info(c("Package directory ", dir.package.state, ":", dir.package))
+	logger.info(c("Package directory", dir.package.state, ":", dir.package))
 	rm(dir.package, dir.package.state)
 	do.call(function.name, list(dest = dest))
 }
