@@ -75,9 +75,6 @@ createAnnotationPackage <- function(assembly,dest=getwd(),cores.count=1L){
 	assign("assembly", assembly, .globals)
 	dir.package <- file.path(dest, paste0("RnBeads.", assembly))
 	assign("DIR.PACKAGE", dir.package, .globals)
-	logger.start("Creating Annotation Package", fname = NA)
-	logger.info(c("Assembly:", assembly))
-	logger.info(c("Package directory:", dir.package))
 
 	## Initialize parallel processing
 	if (cores.count != 1) {
@@ -86,11 +83,19 @@ createAnnotationPackage <- function(assembly,dest=getwd(),cores.count=1L){
 
 	## Initialize package directory
 	if (file.exists(dir.package)) {
-		logger.info("Package directory already exists")
-	} else if (!createPackageScaffold(paste0("RnBeads.", assembly), dest = dest)) {
-		logger.error("Could not create package directory")
+		dir.package.state <- "(existing)"
+	} else {
+		if (!createPackageScaffold(paste0("RnBeads.", assembly), dest = dest)) {
+			rm(list = c("assembly", "DIR.PACKAGE"), pos = .globals)
+			stop("Could not create package directory")
+		}
+		dir.package.state <- "(created)"
 	}
 
 	## Create the annotation package
+	logger.start("Creating Annotation Package", fname = NA)
+	logger.info(c("Assembly:", assembly))
+	logger.info(c("Package directory ", dir.package.state, ":", dir.package))
+	rm(dir.package, dir.package.state)
 	do.call(function.name, list(dest = dest))
 }
