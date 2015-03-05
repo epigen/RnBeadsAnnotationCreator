@@ -105,40 +105,33 @@ rnb.update.site.annotation.with.probes <- function(sites, query.probes = "probes
 ##
 ## @author Fabian Mueller
 rnb.update.site.annotation.with.cgistatus <- function(sites, cpgislands) {
-	sites.new <- sites
 	chromosomes <- names(cpgislands)
 
 	enrich.f <- function(ss, cgis) {
-		cgi.relation <- rep.int("Open Sea", length(ss))
+		cgi.relations <- c("Open Sea", "Shelf", "Shore", "Island")
+		cgi.relation <- factor(rep.int(cgi.relations[1], length(ss)), levels = cgi.relations)
 		if (length(cgis) != 0) {
-			shores <- c(flank(cgis,LENGTH.CGI.SHORE-1L,start=TRUE),flank(cgis,LENGTH.CGI.SHORE-1L,start=FALSE))
-			shelves <- c(flank(shores,LENGTH.CGI.SHELF-1L,start=TRUE),flank(shores,LENGTH.CGI.SHELF-1L,start=FALSE))
-			#in the following order is essential
-			is.shelf <- ss %in% shelves
-			cgi.relation[is.shelf] <- "Shelf"
-			is.shore <- ss %in% shores
-			cgi.relation[is.shore] <- "Shore"
-			is.cgi <- ss %in% cgis
-			cgi.relation[is.cgi] <- "Island"
+			shifts <- c(LENGTH.CGI.SHELF + LENGTH.CGI.SHORE, LENGTH.CGI.SHORE, 0L)
+			names(shifts) <- cgi.relations[-1]
+			x <- start(ss)
+			for (j in names(shifts)) {
+				subject <- GRanges(seqnames(cgis), IRanges(start(cgis) - shifts[j], end(cgis) - shifts[j]))
+				cgi.relation[overlapsAny(ss, subject, ignore.strand = TRUE)] <- j
+			}
 		}
-		elementMetadata(ss)[, "CGI Relation"] <-
-			factor(cgi.relation, levels = c("Open Sea", "Shelf", "Shore", "Island"))
+		elementMetadata(ss)[, "CGI Relation"] <- cgi.relation
 		ss
 	}
 
+	sites.new <- list()
 	for (i in names(sites)) {
 		if (!setequal(chromosomes, names(sites[[i]]))) {
 			stop("Incompatible sites and CGI ranges")
 		}
-		grl <- foreach(ss = as.list(sites[[i]][chromosomes]), cgis = as.list(cpgislands)) %dopar% enrich.f(ss, cgis)
+		grl <- foreach(ss = as.list(sites[[i]][chromosomes]), cgis = as.list(cpgislands),
+				.export = c("LENGTH.CGI.SHELF", "LENGTH.CGI.SHORE")) %dopar% enrich.f(ss, cgis)
 		names(grl) <- chromosomes
-		## Fix issue with column being renamed to CGI.Relation
-		grl <- unlist(GRangesList(grl))
-		i.cgirelation <- which(colnames(mcols(grl)) == "CGI.Relation")
-		if (length(i.cgirelation) != 0) {
-			colnames(mcols(grl))[i.cgirelation] <- "CGI Relation"
-		}
-		sites.new[[i]] <- GenomicRanges::split(grl, seqnames(grl))
+		sites.new[[i]] <- GRangesList(grl)
 	}
 	
 	return(sites.new)

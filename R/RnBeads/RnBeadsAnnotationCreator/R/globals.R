@@ -44,12 +44,11 @@ LENGTH.CGI.SHELF <- 2000L
 ## Base FTP location of dbSNP
 DBSNP.FTP.BASE <- "ftp://ftp.ncbi.nih.gov/snp/organisms/"
 
-## FTP location of BED files for human in dbSNP
-#DBSNP.FTP.VCF <- list(
-#	"hg19" = paste0(DBSNP.FTP.BASE, "human_9606/VCF/", "00-All.vcf.gz"),
-#	"mm10" = paste0(DBSNP.FTP.BASE, "mouse_10090/VCF/", "vcf_chr_", c(1:19, "X", "Y"), ".vcf.gz"),
-#	"rn5" = paste0(DBSNP.FTP.BASE, "rat_10116/VCF/", "vcf_chr_", c(1:20, "X"), ".vcf.gz"))
-#rm(DBSNP.FTP.BASE)
+REFERENCE2ASSEMBLY <- c(
+	"GRCh38" = "hg38",
+	"GRCh37.p10" = "hg19",
+	"GCF_000001635.21" = "mm10", # Genome Reference Consortium Mouse Build 38 patch release 1 (GRCm38.p1) 
+	"GCF_000001895.4" = "rn5")
 
 ########################################################################################################################
 ## UCSC Genome Browser
