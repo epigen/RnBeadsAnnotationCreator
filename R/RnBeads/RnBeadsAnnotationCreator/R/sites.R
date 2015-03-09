@@ -22,6 +22,7 @@ rnb.update.sites <- function(cpgislands = NULL) {
 	CHROMOSOMES <- .globals[["CHROMOSOMES"]]
 	chromNames.gd <- match.chrom.names(CHROMOSOMES,seqnames(genome.data))
 	chrom.lengths <- seqlengths(genome.data)[chromNames.gd[CHROMOSOMES]]
+	names(chrom.lengths) <- CHROMOSOMES
 	sites <- list()
 	pp.dnas <- DNAStringSet(NUCLEOTIDE.PATTERNS)
 	for (i in names(NUCLEOTIDE.PATTERNS)){
