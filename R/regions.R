@@ -199,7 +199,9 @@ rnb.update.download.cgis <- function(
 	cgis.table[, 2] <- cgis.table[, 2] + 1L # adjust start locations to 1-based
 
 	## Convert the table to GRangesList
-	cgis.gr <- data.frame2GRanges(cgis.table, NULL, 1, 2, 3, NULL, .globals[['assembly']])
+	cgis.gr <- data.frame2GRanges(cgis.table, NULL, 1, 2, 3, NULL, assembly=NULL)
+	cgis.gr <- cgis.gr[seqnames(cgis.gr) %in% .globals[['CHROMOSOMES']]]
+	seqlevels(cgis.gr) <- .globals[['CHROMOSOMES']]
 	cgis.gr <- GenomicRanges::split(cgis.gr,seqnames(cgis.gr))
 	chromNames.gd <- match.chrom.names(.globals[['CHROMOSOMES']],seqnames(genome.data))
 	seqlengths(cgis.gr) <- as.integer(seqlengths(genome.data)[chromNames.gd[.globals[['CHROMOSOMES']]]])
