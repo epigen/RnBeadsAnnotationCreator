@@ -147,7 +147,7 @@ rnb.update.region.annotation.genes <- function(biomart.parameters) {
 ##
 ## @author Fabian Mueller
 rnb.update.region.annotation.tiling <- function(window.size=LENGTH.TILING){
-	genome.data <- get.genome.data()
+	genome.data <- get.genome.data(.globals[['assembly']])
 	CHROMOSOMES <- .globals[['CHROMOSOMES']]
 	tiling.chrom <- function(chrom) {
 		chromNames.gd <- match.chrom.names(CHROMOSOMES,seqnames(genome.data))
