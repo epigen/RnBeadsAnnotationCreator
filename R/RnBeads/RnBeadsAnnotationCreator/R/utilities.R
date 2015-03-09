@@ -199,7 +199,8 @@ get.cpg.stats <- function(chrom.sequence, starts, ends) {
 #' @noRd
 append.cpg.stats <- function(genome.data, regionlist) {
 	cpg.stats <- function(chrom) {
-		stats <- get.cpg.stats(genome.data[[chrom]], start(regionlist[[chrom]]), end(regionlist[[chrom]]))
+		chromName.gd <- match.chrom.names(chrom,seqnames(genome.data))
+		stats <- get.cpg.stats(genome.data[[chromName.gd]], start(regionlist[[chrom]]), end(regionlist[[chrom]]))
 		result <- regionlist[[chrom]]
 		mcols(result) <- IRanges::cbind(mcols(result), DataFrame(stats))
 		result
