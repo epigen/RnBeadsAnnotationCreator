@@ -20,7 +20,8 @@
 rnb.update.sites <- function(cpgislands = NULL) {
 	genome.data <- get.genome.data()
 	CHROMOSOMES <- .globals[["CHROMOSOMES"]]
-	chrom.lengths <- seqlengths(genome.data)[CHROMOSOMES]
+	chromNames.gd <- match.chrom.names(CHROMOSOMES,seqnames(genome.data))
+	chrom.lengths <- seqlengths(genome.data)[chromNames.gd[CHROMOSOMES]]
 	sites <- list()
 	pp.dnas <- DNAStringSet(NUCLEOTIDE.PATTERNS)
 	for (i in names(NUCLEOTIDE.PATTERNS)){
@@ -28,11 +29,11 @@ rnb.update.sites <- function(cpgislands = NULL) {
 		pp.m <- reverseComplement(pp.p)
 		curSites <- lapply(CHROMOSOMES, function(chrom) {
 			matches.st <- lapply(list(pp.p, pp.m), function(x) {
-					ranges(matchPattern(x, genome.data[[chrom]]))
+					ranges(matchPattern(x, genome.data[[chromNames.gd[chrom]]]))
 			})
 			cp.starts <- start(matches.st[[1]]) - LENGTH.NEIGHBORHOOD %/% 2L + 1L
 			cp.ends <- cp.starts + LENGTH.NEIGHBORHOOD - 1L
-			cpg.stats <- suppressWarnings(get.cpg.stats(genome.data[[chrom]], cp.starts, cp.ends))
+			cpg.stats <- suppressWarnings(get.cpg.stats(genome.data[[chromNames.gd[chrom]]], cp.starts, cp.ends))
 			matches.gr <- mapply(GRanges, seqnames = list(chrom), ranges = matches.st, strand = list("+", "-"),
 				"CpG" = list(cpg.stats[, "CpG"]), "GC" = list(cpg.stats[, "GC"]))
 			matches.gr <- rnb.sort.regions(do.call(c, matches.gr))
