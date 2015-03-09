@@ -209,6 +209,26 @@ append.cpg.stats <- function(genome.data, regionlist) {
 	names(regions.enriched) <- names(regionlist)
 	return(GRangesList(regions.enriched))
 }
+########################################################################################################################
+
+#' match.chrom.names
+#'
+#' invariant chromosome name matching. I.e. find the occurrences of the names in the first
+#' vector in the second vector, neglecting the "chr" prefix
+#'
+#' @param q chromosome name query
+#' @param q chromosome name reference
+#' @return the names from r corresponding to the entries in q
+#'
+#' @author Fabian Mueller
+#' @noRd
+match.chrom.names <- function(q, r) {
+	rr <- gsub("^chr","",r)
+	qq <- gsub("^chr","",q)
+	res <- r[match(qq,rr)]
+	names(res) <- q
+	return(res)
+}
 
 ########################################################################################################################
 
@@ -253,3 +273,5 @@ createPackageScaffold <- function(
 	writeLines(desc.lines,file.path(pkg.base.dir,"DESCRIPTION"))
 	invisible(TRUE)
 }
+
+

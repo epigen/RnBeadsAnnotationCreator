@@ -150,11 +150,14 @@ rnb.update.region.annotation.tiling <- function(window.size=LENGTH.TILING){
 	genome.data <- get.genome.data()
 	CHROMOSOMES <- .globals[['CHROMOSOMES']]
 	tiling.chrom <- function(chrom) {
-		chrom.length <- seqlengths(genome.data)[chrom]
+		chromNames.gd <- match.chrom.names(CHROMOSOMES,seqnames(genome.data))
+		chrom.length <- seqlengths(genome.data)[chromNames.gd[chrom]]
+		seq.lengths <- seqlengths(genome.data)[chromNames.gd[CHROMOSOMES]]
+		names(seq.lengths) <- CHROMOSOMES
 		starts <- seq(1L, chrom.length, window.size)
 		ends <- pmin(starts + window.size - 1L, chrom.length)
 		GRanges(seqnames = chrom, ranges = IRanges(starts, ends),
-			seqlengths = seqlengths(genome.data)[CHROMOSOMES])
+			seqlengths = seq.lengths)
 	}
 	tiling.gr <- foreach(chrom = CHROMOSOMES, .packages = "GenomicRanges", .export = "CHROMOSOMES") %dopar%
 		tiling.chrom(chrom)
