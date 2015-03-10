@@ -272,6 +272,12 @@ createPackageScaffold <- function(
 	## Create the DESCRIPTION file
 	desc.lines <- paste(names(desc),desc,sep=": ")
 	writeLines(desc.lines,file.path(pkg.base.dir,"DESCRIPTION"))
+	## Create Rd file
+	assembly <- .globals[["assembly"]]
+	fname <- system.file("extdata/templateRd.txt", package = "RnBeadsAnnotationCreator")
+	txt <- gsub("%s", assembly, scan(fname, "", sep = "\n", na.strings = character(), quiet = TRUE), fixed = TRUE)
+	fname <- paste0(pkg.base.dir, "/man/", assembly, ".Rd")
+	cat(txt, file = fname, sep = "\n")
 	invisible(TRUE)
 }
 
