@@ -202,7 +202,7 @@ rnb.update.dbsnp <- function(ftp.files) {
 		}
 		fnames <- rnb.update.download.dbsnp(ftp.files, base.dir)
 		logger.start(paste0("Loading Downloaded File", ifelse(length(fnames) != 1, "s", "")))
-		snps <- lapply(fnames, rnb.update.load.vcf, assembly = assembly)
+		snps <- lapply(fnames, rnb.update.load.vcf)
 		logger.completed()
 
 		db.version <- sapply(snps, attr, "version")
