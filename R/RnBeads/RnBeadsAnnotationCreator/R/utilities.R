@@ -283,6 +283,29 @@ createPackageScaffold <- function(
 
 ########################################################################################################################
 
+#' rnb.add.descriptions
+#'
+#' Adds an attribute \code{"description"} to each of the given annotation, if applicable.
+#'
+#' @param anns List of site or region annotation objects (instances of \code{GRangesList}).
+#' @return The updated \code{list} of annotations with added or replaced attribute named \code{"description"}.
+#'
+#' @author Yassen Assenov
+#' @noRd
+rnb.add.descriptions <- function(anns) {
+	for (aname in intersect(names(anns), names(ANNOT.DESCRIPTIONS))) {
+		txt <- ANNOT.DESCRIPTIONS[aname]
+		txt.version <- attr(anns[[aname]], "version")
+		if (isTRUE(txt.version != "")) {
+			txt <- paste0(txt, ", version ", txt.version)
+		}
+		attr(anns[[aname]], "description") <- txt
+	}
+	anns
+}
+
+########################################################################################################################
+
 #' rnb.create.mappings
 #' 
 #' Creates mappings from every possible region annotation to every possible site annotation.

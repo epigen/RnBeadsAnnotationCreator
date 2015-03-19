@@ -12,11 +12,10 @@
 #' 
 #' Helper function to create annotation package for genome assembly hg38
 #' RnBeads annotation for that assembly
-#' @param dest destination directory where the package should be generated
 #' @return invisible \code{TRUE} if successful
 #' @author Fabian Mueller
 #' @noRd
-createAnnotationPackage.hg38 <- function(dest){
+createAnnotationPackage.hg38 <- function(){
 
 	suppressPackageStartupMessages(library(BSgenome.Hsapiens.NCBI.GRCh38))
 
