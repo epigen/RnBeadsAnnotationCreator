@@ -240,5 +240,6 @@ rnb.update.region.annotation <- function(biomart.parameters) {
 	logger.start("CpG Island Region Annotation")
 	result[["cpgislands"]] <- rnb.update.download.cgis()
 	logger.completed()
-	return(result)
+
+	return(rnb.add.descriptions(result))
 }

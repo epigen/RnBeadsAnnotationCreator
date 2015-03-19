@@ -51,7 +51,10 @@ rnb.update.sites <- function(cpgislands = NULL) {
 		sites <- rnb.update.site.annotation.with.cgistatus(sites, cpgislands)
 		logger.status("Enriched sites with CpG island information")
 	}
-	return(sites)
+
+	## TODO: Update sites with SNP information if present
+
+	return(rnb.add.descriptions(sites))
 }
 
 ########################################################################################################################
