@@ -281,4 +281,25 @@ createPackageScaffold <- function(
 	invisible(TRUE)
 }
 
+########################################################################################################################
 
+#' rnb.create.mappings
+#' 
+#' Creates mappings from every possible region annotation to every possible site annotation.
+#'
+#' @param regions \code{list} of region annotations; every annotation should be a \code{GRangesList} object storing one
+#'                \code{GRanges} instance per chromosome.
+#' @param sites   \code{list} of site annotations; every annotation should be a \code{GRangesList} object storing one
+#'                \code{GRanges} instance per chromosome.
+#' @return The initialized mapping structure.
+#'
+#' @author Yassen Assenov
+#' @noRd
+rnb.create.mappings <- function(regions, sites) {
+	mappings <- foreach(re = regions) %:% foreach(si = sites) %dopar% RnBeads:::rnb.regions2sites(re, si)
+	names(mappings) <- names(regions)
+	for (rname in names(mappings)) {
+		names(mappings[[rname]]) <- names(sites)
+	}
+	mappings
+}

@@ -38,6 +38,15 @@ LENGTH.CGI.SHORE <- 2000L
 ## Maximum distance, in base pairs, from a CpG island shore that defines a CGI shelf
 LENGTH.CGI.SHELF <- 2000L
 
+## Annotation descriptions; included as attributes to the annotation structures
+ANNOT.DESCRIPTIONS <- c(
+	"CpG" = "CpG dinucleotides",
+	"probes450" = "HumanMethylation450 BeadChip probes",
+	"tiling" = paste("Genome tiling regions of length", LENGTH.TILING),
+	"genes" = "Ensembl genes",
+	"promoters" = "Promoter regions of Ensembl genes",
+	"cpgislands" = "CpG island track of the UCSC Genome browser")
+
 ########################################################################################################################
 ## dbSNP
 
@@ -46,10 +55,13 @@ DBSNP.FTP.BASE <- "ftp://ftp.ncbi.nih.gov/snp/organisms/"
 
 REFERENCE2ASSEMBLY <- c(
 	"GRCh38" = "hg38",
-	"GRCh37.p10" = "hg19",
+	"GRCh37.p13" = "hg19",
 	"GCF_000001635.21" = "mm10", # Genome Reference Consortium Mouse Build 38 patch release 1 (GRCm38.p1) 
 	"GCF_000001895.4" = "rn5")
 
+## Maximum value for a major allele frequency to consider
+MAJOR.ALLELE.FREQUENCY <- 0.95
+	
 ########################################################################################################################
 ## UCSC Genome Browser
 
