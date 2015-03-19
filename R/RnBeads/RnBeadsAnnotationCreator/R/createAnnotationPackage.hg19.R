@@ -47,9 +47,39 @@ createAnnotationPackage.hg19 <- function(dest) {
 		biomart.parameters = biomart.parameters)
 	logger.completed()
 
+	## Define genomic sites
 	logger.start("Genomic Sites")
 	sites <- update.annot("sites", "CpG annotation", rnb.update.sites, cpgislands = regions[["cpgislands"]])
 	logger.completed()
 
+	## Create all possible mappings from regions to sites
+	logger.start("Mappings")
+	mappings <- update.annot("mappings", "mappings", rnb.create.mappings, regions = regions, sites = sites)
+	logger.completed()
+
+	genome.annotations <- function(genome.name, sites, regions) {
+		ids <- c(names(sites), names(regions))
+		meta.data <- matrix(toupper(genome.name), nrow = length(ids), ncol = 4,
+			dimnames = list(ids, c("File", "Genome", "Type", "Version")))
+		get.version <- function(x) {
+			result <- attr(x, "version")
+			ifelse(is.null(result), "", paste(result, collapse = " "))
+		}
+		meta.data[, 1] <- paste(genome.name, ids, "bed", sep = ".")
+		meta.data[, 3] <- ANNOT.DESCRIPTIONS[ids]
+		for (a.name in names(sites)) {
+			fname <- file.path("data", meta.data[a.name, 1])
+			rnb.annotation2bed(sites[[a.name]], fname)
+			meta.data[a.name, 4] <- get.version(sites[[a.name]])
+			logger.status(c("Saved annotation for", a.name))
+		}
+		for (a.name in names(regions)) {
+			fname <- file.path("data", meta.data[a.name, 1])
+			rnb.annotation2bed(regions[[a.name]], fname)
+			meta.data[a.name, 4] <- get.version(regions[[a.name]])
+			logger.status(c("Saved annotation for", a.name))
+		}
+		return(meta.data)
+	}
 	
 }
