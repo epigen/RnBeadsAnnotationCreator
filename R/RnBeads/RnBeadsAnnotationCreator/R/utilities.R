@@ -177,9 +177,13 @@ get.cpg.stats <- function(chrom.sequence, starts, ends) {
 		stop("invalid value for ends")
 	}
 	chrom.regions <- suppressWarnings(Views(chrom.sequence, start = starts, end = ends))
+	cg.freqs <- letterFrequency(chrom.regions, c("C", "G"))
 	cbind(
 		"CpG" = dinucleotideFrequency(chrom.regions)[, "CG"],
-		"GC" = as.integer(rowSums(letterFrequency(chrom.regions, c("C", "G")))))
+		"GC" = as.integer(rowSums(cg.freqs)),
+		"C" = as.integer(cg.freqs[,"C"]),
+		"G" = as.integer(cg.freqs[,"G"])
+	)
 }
 
 ########################################################################################################################
