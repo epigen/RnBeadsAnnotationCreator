@@ -18,6 +18,7 @@
 createAnnotationPackage.hg19 <- function() {
 
 	suppressPackageStartupMessages(library(BSgenome.Hsapiens.UCSC.hg19))
+	suppressPackageStartupMessages(library(FDb.InfiniumMethylation.hg19))
 
 	## Supported chromosomes
 	assignChromosomes(c(1:22, "X", "Y"))
@@ -45,13 +46,19 @@ createAnnotationPackage.hg19 <- function() {
 	logger.start("Region Annotation")
 	regions <- update.annot("regions", "region annotation", rnb.update.region.annotation,
 		biomart.parameters = biomart.parameters)
+	cgis <- regions[["cpgislands"]]
 	logger.completed()
 
 	## Define genomic sites
 	logger.start("Genomic Sites")
-	cgis <- regions[["cpgislands"]]
 	sites <- update.annot("sites", "CpG annotation", rnb.update.sites, cpgislands = cgis, snps = snps)
 	rm(cgis)
+	logger.completed()
+
+	## Define probe annotations
+	logger.start("Infinium 27k")
+	probes27 <- update.annot("probes27", "Infinium 27K annotation", rnb.update.probe27k.annotation, cpgislands = cgis,
+		snps = snps)
 	logger.completed()
 
 	## Create all possible mappings from regions to sites
@@ -59,6 +66,6 @@ createAnnotationPackage.hg19 <- function() {
 	mappings <- update.annot("mappings", "mappings", rnb.create.mappings, regions = regions, sites = sites)
 	logger.completed()
 
-	
-
+	## Export the annotation tables
+	rnb.export.annotations.to.data.files(sites, regions, mappings)
 }

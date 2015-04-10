@@ -241,5 +241,6 @@ rnb.update.region.annotation <- function(biomart.parameters) {
 	result[["cpgislands"]] <- rnb.update.download.cgis()
 	logger.completed()
 
+	attr(result, "builtin") <- sapply(result, function(x) { TRUE })
 	return(rnb.add.descriptions(result))
 }

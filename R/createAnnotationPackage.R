@@ -38,6 +38,37 @@ update.annot <- function(object.name, info, update.fun, ...) {
 
 ########################################################################################################################
 
+#' rnb.get.package.data.file
+#'
+#' Gets the full name of a data file (dedicated to a specific site or region annotation) in the currently processed
+#' annotation package.
+#'
+#' @param annotation.name Name of the major annotation table.
+#' @return Full path to the \code{.RData} file that stores or should store the specified annotation table.
+#'
+#' @author Yassen Assenov
+#' @noRd
+rnb.get.package.data.file <- function(annotation.name) {
+	fname <- paste0(.globals[["assembly"]], ".", annotation.name, ".RData")
+	file.path(.globals[["DIR.PACKAGE"]], "data", fname)
+}
+
+########################################################################################################################
+
+rnb.export.annotations.to.data.files <- function(sites.full, regions, mappings) {
+	for (sname in names(sites.full)) {
+		sites <- list("sites" = sites.full[[sname]], "mappings" = lapply(mappings, "[[", sname))
+		if (sname == "probes450") { sites[["controls450"]] <- controls450 }
+		else if (sname == "probes27") { sites[["controls27"]] <- controls27 }
+		save(sites, file = rnb.get.package.data.file(sname), compression_level = 9L)
+		logger.status(c("Saved", sname, "annotation table and mappings to the package data"))
+	}
+	save(regions, file = rnb.get.package.data.file("regions"), compression_level = 9L)
+	logger.status("Saved region annotation table to the package data")
+}
+
+########################################################################################################################
+
 #' createAnnotationPackage
 #' 
 #' Generates an R package containing the RnBeads annotation for the specified genome assembly.
@@ -81,7 +112,7 @@ createAnnotationPackage <- function(assembly,dest=getwd(),cores.count=1L){
 		registerDoParallel(cores.count)
 	}
 
-	## Initialize package directory
+	## Initialize package directories
 	if (file.exists(dir.package)) {
 		dir.package.state <- "(existing)"
 	} else {
@@ -98,4 +129,11 @@ createAnnotationPackage <- function(assembly,dest=getwd(),cores.count=1L){
 	logger.info(c("Package directory", dir.package.state, ":", dir.package))
 	rm(dir.package, dir.package.state)
 	do.call(function.name, list())
+
+	## Clean the temporary directory
+	if (unlink(file.path(.globals[["DIR.PACKAGE"]], "temp"), recursive = TRUE) != 0L) {
+		logger.status("Cleaned package temporary directory")
+	} else {
+		logger.error("Could not clean package temporary directory")
+	}
 }
