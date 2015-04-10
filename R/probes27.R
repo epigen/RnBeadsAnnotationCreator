@@ -15,13 +15,15 @@
 #' @param cpgislands Region annotation of the CpG islands. If this is specified, the sites annotation is enriched with
 #'                   a column named \code{"CGI Relation"}.
 #' @param snps       SNP records as a \code{list} of \code{data.frame}s, one per chromosome.
+#' @param ftp.table  ...
+#' @param table.columns ...
 #' @return \code{GRangesList} instance containing probe annotations, one \code{GRanges} per chromosome.
 #' @author Yassen Assenov
 #' @noRd
-rnb.update.probe27k.annotation <- function(cpgislands = NULL, snps = NULL) {
+rnb.update.probe27k.annotation <- function(cpgislands = NULL, snps = NULL, ftp.table, table.columns) {
 
 	## Download probe definition table from GEO
-	probes27.geo <- rnb.load.probe.annotation.geo(base.dir, "27K")
+	probes27.geo <- rnb.load.probe.annotation.geo("HumanMethylation27k")
 	geo <- probes27.geo$probes
 
 	## Validate the columns in the downloaded table
@@ -79,7 +81,10 @@ rnb.update.probe27k.annotation <- function(cpgislands = NULL, snps = NULL) {
 
 	## Add annotation for CpG density, GC content, sequence mismatches and SNPs
 	probe.infos <- rnb.update.probe.annotation.cpg.context(probe.infos)
-	probe.infos <- rnb.update.probe.annotation.msnps(probe.infos, snps)
+	if (!is.null(.globals[['snps']])) {
+		probe.infos <- rnb.update.probe.annotation.msnps(probe.infos, .globals[['snps']])
+		logger.status("Updated probe annotation with SNP information")
+	}
 
 	## Convert to GRangesList
 	starts <- probe.infos[, "Location"]

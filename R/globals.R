@@ -9,8 +9,8 @@
 ########################################################################################################################
 ## Global variables for the targeted genome assembly
 
-## Environment containing the global variables:
-##   assembly, DIR.PACKAGE
+## Environment used to store the global variables:
+##   assembly, DIR.PACKAGE, CHROMOSOMES, snps, regions, sites, mappings
 .globals <- new.env()
 
 ########################################################################################################################
@@ -74,3 +74,31 @@ UCSC.FTP.BASE <- "ftp://hgdownload.cse.ucsc.edu/goldenPath/"
 ## Text file containing the definition of chromosome bands
 #UCSC.FTP.BANDS <- paste0(UCSC.FTP.BASE, assembly, "/database/cytoBand.txt.gz")
 #rm(UCSC.FTP.BASE)
+
+########################################################################################################################
+## Gene Expression Omnibus
+
+## Base FPT directory of GEO's records dedicated to HumanMethylation27K and HumanMethylation450K
+GEO.FTP.BASE <- "ftp://ftp.ncbi.nlm.nih.gov/pub/geo/DATA/supplementary/platforms/"
+
+########################################################################################################################
+## Infinium 27k and 450k
+
+## Column names (assigned by this script) of the table on control probes downloaded from GEO
+GEO.CONTROL.PROBE.TABLE.COLUMNS <- c("ID", "Target", "Color", "Description", "AVG")
+
+## Control probe colors associated with the evaluation of the Red channel
+CONTROL.COLORS.GREEN <- c("Black", "Blue", "Cyan", "Green", "Lime", "LimeGreen", "SkyBlue")
+
+## Control probe colors associated with the evaluation of the Red channel
+CONTROL.COLORS.RED <- c("Gold", "Orange", "Purple", "Red", "Tomato", "Yellow")
+
+########################################################################################################################
+
+## Location of the control probe annotation table compiled by Pavlo Lutsik
+COMPILED.TABLE.FILE <- "tables/control.meta.data.csv"
+
+## Column names in the CSV file compiled by Pavlo Lutsik
+COMPILED.TABLE.COLUMNS <- c("Address", "Purpose", "Description", "Evaluate.Green", "Evaluate.Red", "Expected.Intensity",
+	"Control.Type", "TargetID", "Index")
+

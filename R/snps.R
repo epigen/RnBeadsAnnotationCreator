@@ -291,6 +291,6 @@ rnb.update.dbsnp <- function(ftp.files) {
 	attr(snps, "version") <- db.version
 	logger.status("Constructed tables of polymorphism types")
 
-	return(snps)
+	assign('snps', snps, .globals)
+	return(invisible(snps))
 }
-

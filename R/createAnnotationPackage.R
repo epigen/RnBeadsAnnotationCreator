@@ -55,14 +55,16 @@ rnb.get.package.data.file <- function(annotation.name) {
 
 ########################################################################################################################
 
-rnb.export.annotations.to.data.files <- function(sites.full, regions, mappings) {
+rnb.export.annotations.to.data.files <- function() {
+	sites.full <- .globals[['sites']]
 	for (sname in names(sites.full)) {
-		sites <- list("sites" = sites.full[[sname]], "mappings" = lapply(mappings, "[[", sname))
-		if (sname == "probes450") { sites[["controls450"]] <- controls450 }
-		else if (sname == "probes27") { sites[["controls27"]] <- controls27 }
+		sites <- list("sites" = sites.full[[sname]], "mappings" = lapply(.globals[['mappings']], "[[", sname))
+		if (sname == "probes450") { sites[["controls450"]] <- .globals[['controls450']] }
+		else if (sname == "probes27") { sites[["controls27"]] <- .globals[['controls27']] }
 		save(sites, file = rnb.get.package.data.file(sname), compression_level = 9L)
 		logger.status(c("Saved", sname, "annotation table and mappings to the package data"))
 	}
+	regions <- .globals[['regions']]
 	save(regions, file = rnb.get.package.data.file("regions"), compression_level = 9L)
 	logger.status("Saved region annotation table to the package data")
 }

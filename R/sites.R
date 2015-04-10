@@ -18,7 +18,7 @@
 ## @return List of \code{GRangesList} objects. Every item is dedicated to a motif (e.g. CpGs), and groups \code{GRanges}
 ##         instances, one per chromosome.
 ## @author Fabian Mueller
-rnb.update.sites <- function(cpgislands = NULL, snps = NULL) {
+rnb.update.sites <- function(cpgislands = .globals[['regions']][['cpgislands']], snps = .globals[['snps']]) {
 	genome.data <- get.genome.data()
 	CHROMOSOMES <- .globals[["CHROMOSOMES"]]
 	chromNames.gd <- match.chrom.names(CHROMOSOMES,seqnames(genome.data))
@@ -59,7 +59,9 @@ rnb.update.sites <- function(cpgislands = NULL, snps = NULL) {
 		sites <- rnb.update.site.annotation.with.snps(sites, snps)
 	}
 
-	return(rnb.add.descriptions(sites))
+	sites <- rnb.add.descriptions(sites)
+	assign('sites', sites, .globals)
+	return(invisible(sites))
 }
 
 ########################################################################################################################
