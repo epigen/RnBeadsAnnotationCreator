@@ -49,7 +49,9 @@ createAnnotationPackage.hg19 <- function() {
 
 	## Define genomic sites
 	logger.start("Genomic Sites")
-	sites <- update.annot("sites", "CpG annotation", rnb.update.sites, cpgislands = regions[["cpgislands"]])
+	cgis <- regions[["cpgislands"]]
+	sites <- update.annot("sites", "CpG annotation", rnb.update.sites, cpgislands = cgis, snps = snps)
+	rm(cgis)
 	logger.completed()
 
 	## Create all possible mappings from regions to sites
