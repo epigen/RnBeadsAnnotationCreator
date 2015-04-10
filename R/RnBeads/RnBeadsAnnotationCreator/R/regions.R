@@ -211,23 +211,16 @@ rnb.update.download.cgis <- function(
 
 ########################################################################################################################
 
-## rnb.update.region.annotation
-##
-## Initializes all region annotations for the given assembly.
-##
-## @param assembly Genome assembly to use.
-## @return List of genome region definitions. Every element in the list is dedicated to one region type and is a
-##         \code{list} with the following two elements:
-##         \itemize{
-##           \item{\code{"regions"}}{Region definition as a \code{GRangesList} object; one \code{GRanges} per
-##                chromosome.}
-##           \item{\code{"mappings"}}{List of mappings for every element in \code{sites}. One mapping is a list of
-##                tables as objects of type \code{IRanges}, one per chromosome. Every table stores the range of indices 
-##                of \code{sites} on the respective chromosome that are contained in the corresponding region. Regions
-##                that do not contain sites are left out of the mappings.}.
-##         }
-##
-## @author Fabian Mueller
+#' rnb.update.region.annotation
+#'
+#' Initializes all region annotations for the given assembly.
+#'
+#' @param assembly Genome assembly to use.
+#' @return List of genome region definitions. Every element in the list is dedicated to one region type and is an
+#'         instance of \code{GRangesList}.
+#'
+#' @author Fabian Mueller
+#' @noRd
 rnb.update.region.annotation <- function(biomart.parameters) {
 	logger.start("Tiling Region Annotation")
 	result <- list("tiling" = rnb.update.region.annotation.tiling())
@@ -242,5 +235,7 @@ rnb.update.region.annotation <- function(biomart.parameters) {
 	logger.completed()
 
 	attr(result, "builtin") <- sapply(result, function(x) { TRUE })
-	return(rnb.add.descriptions(result))
+	result <- rnb.add.descriptions(result)
+	assign('regions', result, .globals)
+	return(invisible(result))
 }

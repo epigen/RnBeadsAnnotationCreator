@@ -6,7 +6,41 @@
 ## Common functions for creating and updating Infinium probe annotation tables.
 ########################################################################################################################
 
+rnb.load.probe.annotation.geo <- function(ftp.table, table.columns, platform = "HumanMethylation27k") {
 
+	## Download probe definition table from GEO
+	destfile <- file.path(.globals[['DATA.PACKAGE']], paste0(platform, ".csv.gz"))
+	if (file.exists(destfile)) {
+		logger.status(c("File", destfile, "already downloaded"))
+	} else {
+		if (download.file(ftp.table, destfile, quiet = TRUE, mode = "wb") != 0) {
+			logger.error(c("Could not download", ftp.table))
+		}
+		logger.status(c("Downloaded", ftp.table))
+	}
+	txt <- scan(destfile, what = character(), sep = "\n", quiet = TRUE)
+	assay.start <- grep("^\\[Assay\\]", txt)
+	assay.start <- ifelse(length(assay.start) != 0, assay.start[1], 0L)
+	controls.start <- grep("^\\[Controls\\]", txt)
+	if (!(length(controls.start) == 1 && controls.start > assay.start + 1)) {
+		logger.error("Missing or invalid [Controls] section")
+	}
+	# it is faster to re-read the file than to call read.csv from textConnection(txt)
+	probe.infos <- read.csv(destfile, skip = assay.start, nrows = controls.start - assay.start - 2, check.names = FALSE)
+	control.probe.infos <- read.csv(destfile, header = FALSE, skip = controls.start, check.names = FALSE)
+	logger.status("Loaded the probe definition tables")
+
+	## Validate probe.infos columns
+	N <- length(table.columns)
+	if (!identical(colnames(probe.infos)[1:N], names(table.columns))) {
+		logger.error("Unexpected columns in the probe definition table")
+	}
+
+	probe.infos <- probe.infos[, sapply(probe.infos, function(x) { !all(is.na(x)) })]
+	colnames(probe.infos) <- table.columns[colnames(probe.infos)]
+	control.probe.infos <- control.probe.infos[, sapply(control.probe.infos, function(x) { !all(is.na(x)) })]
+	return(list(probes = probe.infos, controls = control.probe.infos))
+}
 
 ########################################################################################################################
 

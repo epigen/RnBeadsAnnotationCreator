@@ -328,15 +328,16 @@ rnb.add.descriptions <- function(anns) {
 #'                \code{GRanges} instance per chromosome.
 #' @param sites   \code{list} of site annotations; every annotation should be a \code{GRangesList} object storing one
 #'                \code{GRanges} instance per chromosome.
-#' @return The initialized mapping structure.
+#' @return The initialized mapping structure, invisibly.
 #'
 #' @author Yassen Assenov
 #' @noRd
-rnb.create.mappings <- function(regions, sites) {
+rnb.create.mappings <- function(regions = .globals[['regions']], sites = .globals[['sites']]) {
 	mappings <- foreach(re = regions) %:% foreach(si = sites) %dopar% RnBeads:::rnb.regions2sites(re, si)
 	names(mappings) <- names(regions)
 	for (rname in names(mappings)) {
 		names(mappings[[rname]]) <- names(sites)
 	}
-	mappings
+	assign('mappings', mappings, .globals)
+	return(invisible(mappings))
 }
