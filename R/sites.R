@@ -14,10 +14,11 @@
 ##
 ## @param cpgislands Region annotation of the CpG islands. If this is specified, the sites annotation is enriched with
 ##                   a column named \code{"CGI Relation"}.
+## @param snps       SNP records as a \code{list} of \code{data.frame}s, one per chromosome.
 ## @return List of \code{GRangesList} objects. Every item is dedicated to a motif (e.g. CpGs), and groups \code{GRanges}
 ##         instances, one per chromosome.
 ## @author Fabian Mueller
-rnb.update.sites <- function(cpgislands = NULL) {
+rnb.update.sites <- function(cpgislands = NULL, snps = NULL) {
 	genome.data <- get.genome.data()
 	CHROMOSOMES <- .globals[["CHROMOSOMES"]]
 	chromNames.gd <- match.chrom.names(CHROMOSOMES,seqnames(genome.data))
@@ -47,12 +48,16 @@ rnb.update.sites <- function(cpgislands = NULL) {
 		logger.status(c("Created site annotation for", i))
 	}
 
+	## Update sites with CGI annotation if present
 	if (!is.null(cpgislands)) {
 		sites <- rnb.update.site.annotation.with.cgistatus(sites, cpgislands)
 		logger.status("Enriched sites with CpG island information")
 	}
 
-	## TODO: Update sites with SNP information if present
+	## Update sites with SNP information if present
+	if (!is.null(snps)) {
+		sites <- rnb.update.site.annotation.with.snps(sites, snps)
+	}
 
 	return(rnb.add.descriptions(sites))
 }
@@ -141,3 +146,46 @@ rnb.update.site.annotation.with.cgistatus <- function(sites, cpgislands) {
 	
 	return(sites.new)
 }
+
+########################################################################################################################
+
+#' rnb.update.site.annotation.with.snps
+#'
+#' Enriches the annotation of genomic sites by adding a column showing if they overlap with records from dbSNP.
+#'
+#' @param sites List of \code{GRangesList} objects, one per site type or probe annotation.
+#' @param snps  SNP records as a \code{list} of \code{data.frame}s, one per chromosome.
+#' @return The modified \code{sites}.
+#'
+#' @details This function adds or replaces the annotation column \code{"SNP"} to every site annotation. For every CpG
+#'          dinucleotide or probe, the SNP value is a \code{character} string containing a comma-separated lits of
+#'          identifiers of dbSNP records (row names of the respective \code{data.frame} in \code{snps}) that overlap
+#'          with the CpG.
+#'
+#' @author Yassen Assenov
+#' @noRd
+rnb.update.site.annotation.with.snps <- function(sites, snps) {
+	chromosomes <- names(snps)
+
+	for (i in names(sites)) {
+		sites[[i]] <- endoapply(sites[[i]], function(x) { mcols(x)[, "SNP"] <- as.character(NA); x })
+		logger.status(c("Added column SNP to the annotation of sites", i))
+		for (chrom in names(sites[[i]])) {
+			cpg.coords <- start(sites[[i]][[chrom]])
+			if (chrom %in% chromosomes) {
+				cpg.coords <- cpg.coords[seq(1L, length(cpg.coords), by = 2L)]
+				dfr <- unique(snps[[1]][, 1:2])
+
+				hits <- findOverlaps(IRanges(cpg.coords, cpg.coords + 1L), IRanges(dfr[, 1], dfr[, 2]))
+				lbls <- tapply(subjectHits(hits), queryHits(hits),
+					function(j) { paste(rownames(dfr)[j], collapse = ",") })
+				j <- rep(as.integer(names(lbls)), each = 2L) * 2L - c(1L, 0L)
+				mcols(sites[[i]][[chrom]])[j, "SNP"] <- rep(unname(lbls), each = 2L)
+				rm(dfr, hits, lbls, j)
+			}
+		}
+		logger.status(c("Overlapped sites", i, "with SNPs"))
+		rm(chrom, cpg.coords)
+	}
+	return(sites)
+} 
