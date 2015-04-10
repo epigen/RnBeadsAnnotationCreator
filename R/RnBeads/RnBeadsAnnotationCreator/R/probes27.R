@@ -1,0 +1,132 @@
+########################################################################################################################
+## probes27.R
+## created: 2015-04-10
+## creator: Yassen Assenov
+## ---------------------------------------------------------------------------------------------------------------------
+## Initializes the Infinium HumanMethylation27K probe definition tables by loading them from various sources.
+########################################################################################################################
+
+## F U N C T I O N S ###################################################################################################
+
+#' rnb.update.probe27k.annotation
+#'
+#' Creates probe annotation tables for Infinium 27K. STILL IN TESTING STAGE.
+#'
+#' @param cpgislands Region annotation of the CpG islands. If this is specified, the sites annotation is enriched with
+#'                   a column named \code{"CGI Relation"}.
+#' @param snps       SNP records as a \code{list} of \code{data.frame}s, one per chromosome.
+#' @return \code{GRangesList} instance containing probe annotations, one \code{GRanges} per chromosome.
+#' @author Yassen Assenov
+#' @noRd
+rnb.update.probe27k.annotation <- function(cpgislands = NULL, snps = NULL) {
+
+	## Download probe definition table from GEO
+	probes27.geo <- rnb.load.probe.annotation.geo(base.dir, "27K")
+	geo <- probes27.geo$probes
+
+	## Validate the columns in the downloaded table
+	if (anyDuplicated(geo[, "ID"]) != 0) {
+		logger.error("Duplicated values for IllmnID")
+	}
+	rownames(geo) <- as.character(geo[, "ID"])
+	geo[["Strand"]] <- rnb.fix.strand(geo[["Strand"]])
+	geo[["IlmnStrand"]] <- rnb.fix.strand(geo[["IlmnStrand"]])
+	if (!is.integer(geo[["AddressA ID"]])) {
+		logger.error("Invalid values in column AddressA ID")
+	}
+	if (!is.integer(geo[["AddressB ID"]])) {
+		logger.error("Invalid values in column AddressB ID")
+	}
+	geo[, "AlleleA Probe Sequence"] <- as.character(geo[["AlleleA Probe Sequence"]])
+	geo[, "AlleleB Probe Sequence"] <- as.character(geo[["AlleleB Probe Sequence"]])
+	if (!identical(levels(geo[["Color"]]), c("Grn", "Red"))) {
+		logger.error("Invalid values in column Color")
+	}
+	levels(geo[["Color"]]) <- c("green", "red")
+
+	## Obtain probe definition table from FDb.InfiniumMethylation.hg19
+	probes27.bioc <- rnb.update.probe.annotation.methylumi("HumanMethylation27k")
+	methylumi <- probes27.bioc$probes # this table contains also 14 SNP probes
+	methylumi <- methylumi[!is.na(methylumi[, "Chromosome"]), ]
+	logger.status("Extracted probe definition table from FDb.InfiniumMethylation.hg19")
+
+	probes.notmapped <- setdiff(rownames(geo), rownames(methylumi))
+	if (length(probes.notmapped) != 0) {
+		probes.notmapped <- paste(probes.notmapped, collapse = ", ")
+		logger.warning(c("The following probes were not mapped to HG19:", probes.notmapped))
+	}
+	rm(probes.notmapped)
+
+	## Construct data.frame combining the information from both sources
+	probe.infos <- data.frame(
+		"ID" = methylumi[, "ID"],
+		"Chromosome" = methylumi[, "Chromosome"],
+		"Location" = methylumi[, "Location"],
+		"Strand" = geo[rownames(methylumi), "Strand"],
+		"Design" = factor("I", levels = c("I", "II")),
+		"IlmnStrand" = geo[rownames(methylumi), "IlmnStrand"],
+		"AlleleA Probe Sequence" = geo[rownames(methylumi), "AlleleA Probe Sequence"],
+		"AlleleB Probe Sequence" = geo[rownames(methylumi), "AlleleB Probe Sequence"],
+		"Color" = geo[rownames(methylumi), "Color"],
+		check.names = FALSE, stringsAsFactors = FALSE)
+	rownames(probe.infos) <- probe.infos[, "ID"]
+	probe.infos[is.na(probe.infos[["Strand"]]), "Strand"] <- "*"
+	probe.infos[is.na(probe.infos[["IlmnStrand"]]), "IlmnStrand"] <- "*"
+	logger.status("Combined both probe annotation tables")
+
+	## Sort based on chromosome and position
+	probe.infos <- probe.infos[with(probe.infos, order(Chromosome, Location)), ]
+
+	## Add annotation for CpG density, GC content, sequence mismatches and SNPs
+	probe.infos <- rnb.update.probe.annotation.cpg.context(probe.infos)
+	probe.infos <- rnb.update.probe.annotation.msnps(probe.infos, snps)
+
+	## Convert to GRangesList
+	starts <- probe.infos[, "Location"]
+	starts[is.na(starts)] <- 0L
+	probes.gr <- GRanges(seqnames = probe.infos[, "Chromosome"],
+		ranges = IRanges(start = starts, end = starts + 1L, names = probe.infos[, "ID"]),
+		strand = probe.infos[, "Strand"],
+		"Color" = probe.infos[, "Color"], "Context" = probe.infos[, "Context"],
+		"Mismatches A" = probe.infos[, "Mismatches A"], "Mismatches B" = probe.infos[, "Mismatches B"],
+#		"CGI Relation" = probe.infos[, "CGI Relation"],
+		"CpG" = probe.infos[, "CpG"], "GC" = probe.infos[, "GC"],
+		"SNPs 3" = probe.infos[, "SNPs 3"], "SNPs 5" = probe.infos[, "SNPs 5"],
+		"SNPs Full" = probe.infos[, "SNPs Full"], check.names = FALSE,
+		seqinfo = seqinfo(Hsapiens)[levels(probe.infos[, "Chromosome"])])
+	probes.gr <- rnb.sort.regions(probes.gr)
+	probes.gr <- GenomicRanges::split(probes.gr, seqnames(probes.gr))[levels(probe.infos[, "Chromosome"])]
+
+	## Validate and combine control probe annotations
+	logger.start("Control Probes")
+	geo <- probes27.geo$controls
+	methylumi <- probes27.bioc$controls
+	if (ncol(geo) != 4) {
+		logger.error("Unexpected structure of control probes from GEO")
+	}
+	if (ncol(methylumi) != 4) {
+		logger.error("Unexpected structure of control probes from Bioconductor")
+	}
+	colnames(geo) <- colnames(methylumi)
+	geo$Type <- as.character(geo$Type)
+	geo$Color_Channel <- as.character(geo$Color_Channel)
+	if (anyDuplicated(geo$Address) != 0) {
+		logger.error("Duplicated probe addresses in control probes from GEO")
+	}
+	if (anyDuplicated(methylumi$Address) != 0) {
+		logger.error("Duplicated probe addresses in control probes from GEO")
+	}
+	geo <- geo[order(geo$Address), ]
+	methylumi <- methylumi[order(methylumi$Address), ]
+	if (!identical(geo$Address, methylumi$Address)) {
+		logger.error("Incosistent probe addresses between GEO and Bioconductor")
+	}
+	if (identical(toupper(geo$Type), methylumi$Type) && identical(geo$Color_Channel, methylumi$Color_Channel)) {
+		logger.info("GEO and Bioconductor agree on control probe annotation")
+	} else {
+		logger.warning("GEO and Bioconductor do NOT agree on control probe annotation; GEO will be taken")
+	}
+	logger.completed()
+
+	return(list(probes = probes.gr, controls = geo))
+}

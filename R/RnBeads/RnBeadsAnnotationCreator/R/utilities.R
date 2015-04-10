@@ -273,15 +273,25 @@ createPackageScaffold <- function(
 			return(invisible(FALSE))
 		}
 	}
-	## Create the DESCRIPTION file
+	## Create DESCRIPTION file
 	desc.lines <- paste(names(desc),desc,sep=": ")
 	writeLines(desc.lines,file.path(pkg.base.dir,"DESCRIPTION"))
-	## Create Rd file
+	## Create documentation (Rd) file
 	assembly <- .globals[["assembly"]]
 	fname <- system.file("extdata/templateRd.txt", package = "RnBeadsAnnotationCreator")
 	txt <- gsub("%s", assembly, scan(fname, "", sep = "\n", na.strings = character(), quiet = TRUE), fixed = TRUE)
 	fname <- paste0(pkg.base.dir, "/man/", assembly, ".Rd")
 	cat(txt, file = fname, sep = "\n")
+	## Create NEWS file
+	fname <- system.file(paste0("extdata/NEWS.", assembly), package = "RnBeadsAnnotationCreator")
+	if (file.exists(fname)) {
+		txt <- scan(fname, "", sep = "\n", na.strings = character(), quiet = TRUE)
+	} else {
+		txt <- paste0("RnBeads.", assembly, " ", desc["Version"])
+		txt <- c(txt, paste(rep("=", nchar(txt)), collapse = ""))
+		txt <- c(txt, "",  paste0("* Initial release of RnBeads.", assembly, "."))
+	}
+	cat(txt, file = paste0(pkg.base.dir, "/inst/NEWS"), sep = "\n")
 	invisible(TRUE)
 }
 
@@ -298,7 +308,7 @@ createPackageScaffold <- function(
 #' @noRd
 rnb.add.descriptions <- function(anns) {
 	for (aname in intersect(names(anns), names(ANNOT.DESCRIPTIONS))) {
-		txt <- ANNOT.DESCRIPTIONS[aname]
+		txt <- unname(ANNOT.DESCRIPTIONS[aname])
 		txt.version <- attr(anns[[aname]], "version")
 		if (isTRUE(txt.version != "")) {
 			txt <- paste0(txt, ", version ", txt.version)
