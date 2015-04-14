@@ -10,13 +10,13 @@
 
 #' rnb.update.probe27k.annotation
 #'
-#' Creates probe annotation tables for Infinium 27K.
+#' Creates probe annotation tables for Infinium 27k.
 #'
 #' @param ftp.table     FTP link to the probe annotation table in GEO.
 #' @param table.columns Expected columns in the probe annotation table, given as a named \code{character} vector.
 #' @return \code{list} of two items:
 #'         \describe{
-#'           \item{\code{"probes"}}{\code{GRangesList} instance containing probe annotations, one \code{GRanges} per
+#'           \item{\code{"probes"}}{\code{GRangesList} instance containing probe annotation, one \code{GRanges} per
 #'                chromosome.}
 #'           \item{\code{"controls"}}{\code{data.frame} with control probe annotation.}
 #'         }

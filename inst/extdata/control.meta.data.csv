@@ -1,0 +1,851 @@
+Address,Purpose,Description,Evaluate.Green,Evaluate.Red,Expected.Intensity,Control.Type,TargetID,Index
+27630314,Staining,DNP (High),-,+,High,Sample-Independent,STAINING,1
+43603326,Staining,DNP (Bkg),-,+,Background,Sample-Independent,STAINING,2
+21630339,Staining,DNP (20k),-,+,High,Sample-Independent,STAINING,3
+41666334,Staining,Biotin (High),+,-,High,Sample-Independent,STAINING,4
+34648333,Staining,Biotin (Bkg),+,-,Background,Sample-Independent,STAINING,5
+24669308,Staining,Biotin (5k),+,-,Background,Sample-Independent,STAINING,6
+28684356,Hybridization,Hyb (High),+,-,High,Sample-Independent,HYBRIDIZATION,1
+26772442,Hybridization,Hyb (Medium),+,-,Medium,Sample-Independent,HYBRIDIZATION,2
+21771417,Hybridization,Hyb (Low),+,-,Low,Sample-Independent,HYBRIDIZATION,3
+13643320,Target removal,Target Removal 1,+,-,Background,Sample-Independent,TARGET REMOVAL,1
+42790394,Target removal,Target Removal 2,+,-,Background,Sample-Independent,TARGET REMOVAL,2
+63642461,Extension,Extension (A),-,+,High,Sample-Independent,EXTENSION,1
+47640365,Extension,Extension (T),-,+,High,Sample-Independent,EXTENSION,2
+74666473,Extension,Extension (C),+,-,High,Sample-Independent,EXTENSION,3
+31698466,Extension,Extension (G),+,-,High,Sample-Independent,EXTENSION,4
+22711390,Bisulfite conversion I,BS Conversion I C1,+,-,High,Sample-Dependent,BISULFITE CONVERSION I,1
+46651360,Bisulfite conversion I,BS Conversion I U1,+,-,Background,Sample-Dependent,BISULFITE CONVERSION I,2
+22795447,Bisulfite conversion I,BS Conversion I C2,+,-,High,Sample-Dependent,BISULFITE CONVERSION I,3
+24637490,Bisulfite conversion I,BS Conversion I U2,+,-,Background,Sample-Dependent,BISULFITE CONVERSION I,4
+56682500,Bisulfite conversion I,BS Conversion I C3,+,-,High,Sample-Dependent,BISULFITE CONVERSION I,5
+33665449,Bisulfite conversion I,BS Conversion I U3,+,-,Background,Sample-Dependent,BISULFITE CONVERSION I,6
+54705438,Bisulfite conversion I,BS Conversion I C4,-,+,High,Sample-Dependent,BISULFITE CONVERSION I,7
+57693375,Bisulfite conversion I,BS Conversion I U4,-,+,Background,Sample-Dependent,BISULFITE CONVERSION I,8
+49720470,Bisulfite conversion I,BS Conversion I C5,-,+,High,Sample-Dependent,BISULFITE CONVERSION I,9
+15700381,Bisulfite conversion I,BS Conversion I U5,-,+,Background,Sample-Dependent,BISULFITE CONVERSION I,10
+26725400,Bisulfite conversion I,BS Conversion I C6,-,+,High,Sample-Dependent,BISULFITE CONVERSION I,11
+33635504,Bisulfite conversion I,BS Conversion I U6,-,+,Background,Sample-Dependent,BISULFITE CONVERSION I,12
+43720395,Bisulfite conversion II,BS Conversion II-1,-,+,High,Sample-Dependent,BISULFITE CONVERSION II,1
+70664314,Bisulfite conversion II,BS Conversion II-2,-,+,High,Sample-Dependent,BISULFITE CONVERSION II,2
+71718498,Bisulfite conversion II,BS Conversion II-3,-,+,High,Sample-Dependent,BISULFITE CONVERSION II,3
+30724412,Bisulfite conversion II,BS Conversion II-4,-,+,High,Sample-Dependent,BISULFITE CONVERSION II,4
+67672371,Specificity I,GT Mismatch 1 (MM),+,-,Background,Sample-Dependent,SPECIFICITY I,1
+23777311,Specificity I,GT Mismatch 1 (PM),+,-,High,Sample-Dependent,SPECIFICITY I,2
+30684480,Specificity I,GT Mismatch 2 (MM),+,-,Background,Sample-Dependent,SPECIFICITY I,3
+51804467,Specificity I,GT Mismatch 2 (PM),+,-,High,Sample-Dependent,SPECIFICITY I,4
+58661465,Specificity I,GT Mismatch 3 (MM),+,-,Background,Sample-Dependent,SPECIFICITY I,5
+10673427,Specificity I,GT Mismatch 3 (PM),+,-,High,Sample-Dependent,SPECIFICITY I,6
+51745378,Specificity I,GT Mismatch 4 (MM),-,+,Background,Sample-Dependent,SPECIFICITY I,7
+46779338,Specificity I,GT Mismatch 4 (PM),-,+,High,Sample-Dependent,SPECIFICITY I,8
+65797428,Specificity I,GT Mismatch 5 (MM),-,+,Background,Sample-Dependent,SPECIFICITY I,9
+59783305,Specificity I,GT Mismatch 5 (PM),-,+,High,Sample-Dependent,SPECIFICITY I,10
+12808347,Specificity I,GT Mismatch 6 (MM),-,+,Background,Sample-Dependent,SPECIFICITY I,11
+53740460,Specificity I,GT Mismatch 6 (PM),-,+,High,Sample-Dependent,SPECIFICITY I,12
+29662396,Specificity II,Specificity 1,-,+,High,Sample-Dependent,SPECIFICITY II,1
+17661470,Specificity II,Specificity 2,-,+,High,Sample-Dependent,SPECIFICITY II,2
+34730329,Specificity II,Specificity 3,-,+,High,Sample-Dependent,SPECIFICITY II,3
+24701411,Non-Polymorphic,NP (A),-,+,High,Sample-Dependent,NON-POLYMORPHIC,1
+18773482,Non-Polymorphic,NP (T),-,+,High,Sample-Dependent,NON-POLYMORPHIC,2
+23663352,Non-Polymorphic,NP (C),+,-,High,Sample-Dependent,NON-POLYMORPHIC,3
+70645401,Non-Polymorphic,NP (G),+,-,High,Sample-Dependent,NON-POLYMORPHIC,4
+13792480,Negative,Negative 1,+,+,Background,Sample-Dependent,NEGATIVE,1
+69649505,Negative,Negative 2,+,+,Background,Sample-Dependent,NEGATIVE,2
+34772371,Negative,Negative 3,+,+,Background,Sample-Dependent,NEGATIVE,3
+28715352,Negative,Negative 4,+,+,Background,Sample-Dependent,NEGATIVE,4
+74737439,Negative,Negative 5,+,+,Background,Sample-Dependent,NEGATIVE,5
+33730459,Negative,Negative 6,+,+,Background,Sample-Dependent,NEGATIVE,6
+54647418,Negative,Negative 7,+,+,Background,Sample-Dependent,NEGATIVE,7
+71684459,Negative,Negative 8,+,+,Background,Sample-Dependent,NEGATIVE,8
+40758350,Negative,Negative 9,+,+,Background,Sample-Dependent,NEGATIVE,9
+35678453,Negative,Negative 10,+,+,Background,Sample-Dependent,NEGATIVE,10
+33794466,Negative,Negative 11,+,+,Background,Sample-Dependent,NEGATIVE,11
+64607409,Negative,Negative 12,+,+,Background,Sample-Dependent,NEGATIVE,12
+37639436,Negative,Negative 13,+,+,Background,Sample-Dependent,NEGATIVE,13
+44804473,Negative,Negative 14,+,+,Background,Sample-Dependent,NEGATIVE,14
+45735479,Negative,Negative 15,+,+,Background,Sample-Dependent,NEGATIVE,15
+74688409,Negative,Negative 16,+,+,Background,Sample-Dependent,NEGATIVE,16
+37748499,Negative,Negative 17,+,+,Background,Sample-Dependent,NEGATIVE,17
+15760434,Negative,Negative 18,+,+,Background,Sample-Dependent,NEGATIVE,18
+39647340,Negative,Negative 19,+,+,Background,Sample-Dependent,NEGATIVE,19
+46770480,Negative,Negative 20,+,+,Background,Sample-Dependent,NEGATIVE,20
+73794328,Negative,Negative 21,+,+,Background,Sample-Dependent,NEGATIVE,21
+13762418,Negative,Negative 22,+,+,Background,Sample-Dependent,NEGATIVE,22
+57645303,Negative,Negative 23,+,+,Background,Sample-Dependent,NEGATIVE,23
+44767440,Negative,Negative 24,+,+,Background,Sample-Dependent,NEGATIVE,24
+74602472,Negative,Negative 25,+,+,Background,Sample-Dependent,NEGATIVE,25
+51736450,Negative,Negative 26,+,+,Background,Sample-Dependent,NEGATIVE,26
+61694431,Negative,Negative 27,+,+,Background,Sample-Dependent,NEGATIVE,27
+22623305,Negative,Negative 28,+,+,Background,Sample-Dependent,NEGATIVE,28
+34681355,Negative,Negative 29,+,+,Background,Sample-Dependent,NEGATIVE,29
+38610459,Negative,Negative 30,+,+,Background,Sample-Dependent,NEGATIVE,30
+71637302,Negative,Negative 31,+,+,Background,Sample-Dependent,NEGATIVE,31
+11634395,Negative,Negative 32,+,+,Background,Sample-Dependent,NEGATIVE,32
+52673469,Negative,Negative 33,+,+,Background,Sample-Dependent,NEGATIVE,33
+24725313,Negative,Negative 34,+,+,Background,Sample-Dependent,NEGATIVE,34
+62687391,Negative,Negative 35,+,+,Background,Sample-Dependent,NEGATIVE,35
+59623346,Negative,Negative 36,+,+,Background,Sample-Dependent,NEGATIVE,36
+36628412,Negative,Negative 37,+,+,Background,Sample-Dependent,NEGATIVE,37
+72706346,Negative,Negative 38,+,+,Background,Sample-Dependent,NEGATIVE,38
+52773311,Negative,Negative 39,+,+,Background,Sample-Dependent,NEGATIVE,39
+34658309,Negative,Negative 40,+,+,Background,Sample-Dependent,NEGATIVE,40
+36675490,Negative,Negative 41,+,+,Background,Sample-Dependent,NEGATIVE,41
+27699343,Negative,Negative 42,+,+,Background,Sample-Dependent,NEGATIVE,42
+61729339,Negative,Negative 43,+,+,Background,Sample-Dependent,NEGATIVE,43
+71624317,Negative,Negative 44,+,+,Background,Sample-Dependent,NEGATIVE,44
+15797359,Negative,Negative 45,+,+,Background,Sample-Dependent,NEGATIVE,45
+17697426,Negative,Negative 46,+,+,Background,Sample-Dependent,NEGATIVE,46
+53747447,Negative,Negative 47,+,+,Background,Sample-Dependent,NEGATIVE,47
+41671439,Negative,Negative 48,+,+,Background,Sample-Dependent,NEGATIVE,48
+36647382,Negative,Negative 49,+,+,Background,Sample-Dependent,NEGATIVE,49
+19667322,Negative,Negative 50,+,+,Background,Sample-Dependent,NEGATIVE,50
+73646500,Negative,Negative 51,+,+,Background,Sample-Dependent,NEGATIVE,51
+48796393,Negative,Negative 52,+,+,Background,Sample-Dependent,NEGATIVE,52
+14693463,Negative,Negative 53,+,+,Background,Sample-Dependent,NEGATIVE,53
+41618467,Negative,Negative 54,+,+,Background,Sample-Dependent,NEGATIVE,54
+19735359,Negative,Negative 55,+,+,Background,Sample-Dependent,NEGATIVE,55
+64613447,Negative,Negative 56,+,+,Background,Sample-Dependent,NEGATIVE,56
+44698389,Negative,Negative 57,+,+,Background,Sample-Dependent,NEGATIVE,57
+17728375,Negative,Negative 58,+,+,Background,Sample-Dependent,NEGATIVE,58
+74726377,Negative,Negative 59,+,+,Background,Sample-Dependent,NEGATIVE,59
+38694476,Negative,Negative 60,+,+,Background,Sample-Dependent,NEGATIVE,60
+18717404,Negative,Negative 61,+,+,Background,Sample-Dependent,NEGATIVE,61
+13695465,Negative,Negative 62,+,+,Background,Sample-Dependent,NEGATIVE,62
+13730428,Negative,Negative 63,+,+,Background,Sample-Dependent,NEGATIVE,63
+42731444,Negative,Negative 64,+,+,Background,Sample-Dependent,NEGATIVE,64
+59616409,Negative,Negative 65,+,+,Background,Sample-Dependent,NEGATIVE,65
+22706307,Negative,Negative 66,+,+,Background,Sample-Dependent,NEGATIVE,66
+31766306,Negative,Negative 67,+,+,Background,Sample-Dependent,NEGATIVE,67
+39609442,Negative,Negative 68,+,+,Background,Sample-Dependent,NEGATIVE,68
+33790484,Negative,Negative 69,+,+,Background,Sample-Dependent,NEGATIVE,69
+10806301,Negative,Negative 70,+,+,Background,Sample-Dependent,NEGATIVE,70
+49756350,Negative,Negative 71,+,+,Background,Sample-Dependent,NEGATIVE,71
+29745446,Negative,Negative 72,+,+,Background,Sample-Dependent,NEGATIVE,72
+68774378,Negative,Negative 73,+,+,Background,Sample-Dependent,NEGATIVE,73
+19746379,Negative,Negative 74,+,+,Background,Sample-Dependent,NEGATIVE,74
+58698497,Negative,Negative 75,+,+,Background,Sample-Dependent,NEGATIVE,75
+39733339,Negative,Negative 76,+,+,Background,Sample-Dependent,NEGATIVE,76
+27722502,Negative,Negative 77,+,+,Background,Sample-Dependent,NEGATIVE,77
+57718401,Negative,Negative 78,+,+,Background,Sample-Dependent,NEGATIVE,78
+42751432,Negative,Negative 79,+,+,Background,Sample-Dependent,NEGATIVE,79
+63616307,Negative,Negative 80,+,+,Background,Sample-Dependent,NEGATIVE,80
+58607432,Negative,Negative 81,+,+,Background,Sample-Dependent,NEGATIVE,81
+30633490,Negative,Negative 82,+,+,Background,Sample-Dependent,NEGATIVE,82
+66765375,Negative,Negative 83,+,+,Background,Sample-Dependent,NEGATIVE,83
+44809397,Negative,Negative 84,+,+,Background,Sample-Dependent,NEGATIVE,84
+30748463,Negative,Negative 85,+,+,Background,Sample-Dependent,NEGATIVE,85
+67709387,Negative,Negative 86,+,+,Background,Sample-Dependent,NEGATIVE,86
+21703446,Negative,Negative 87,+,+,Background,Sample-Dependent,NEGATIVE,87
+63793358,Negative,Negative 88,+,+,Background,Sample-Dependent,NEGATIVE,88
+40671337,Negative,Negative 89,+,+,Background,Sample-Dependent,NEGATIVE,89
+49628475,Negative,Negative 90,+,+,Background,Sample-Dependent,NEGATIVE,90
+64702437,Negative,Negative 91,+,+,Background,Sample-Dependent,NEGATIVE,91
+59809450,Negative,Negative 92,+,+,Background,Sample-Dependent,NEGATIVE,92
+42651436,Negative,Negative 93,+,+,Background,Sample-Dependent,NEGATIVE,93
+15612396,Negative,Negative 94,+,+,Background,Sample-Dependent,NEGATIVE,94
+72751495,Negative,Negative 95,+,+,Background,Sample-Dependent,NEGATIVE,95
+46652385,Negative,Negative 96,+,+,Background,Sample-Dependent,NEGATIVE,96
+47749327,Negative,Negative 97,+,+,Background,Sample-Dependent,NEGATIVE,97
+65692343,Negative,Negative 98,+,+,Background,Sample-Dependent,NEGATIVE,98
+18690397,Negative,Negative 99,+,+,Background,Sample-Dependent,NEGATIVE,99
+48671446,Negative,Negative 100,+,+,Background,Sample-Dependent,NEGATIVE,100
+23719447,Negative,Negative 101,+,+,Background,Sample-Dependent,NEGATIVE,101
+63718317,Negative,Negative 102,+,+,Background,Sample-Dependent,NEGATIVE,102
+48614418,Negative,Negative 103,+,+,Background,Sample-Dependent,NEGATIVE,103
+53732484,Negative,Negative 104,+,+,Background,Sample-Dependent,NEGATIVE,104
+51654304,Negative,Negative 105,+,+,Background,Sample-Dependent,NEGATIVE,105
+67796487,Negative,Negative 106,+,+,Background,Sample-Dependent,NEGATIVE,106
+14667385,Negative,Negative 107,+,+,Background,Sample-Dependent,NEGATIVE,107
+66777429,Negative,Negative 108,+,+,Background,Sample-Dependent,NEGATIVE,108
+17763347,Negative,Negative 109,+,+,Background,Sample-Dependent,NEGATIVE,109
+37773393,Negative,Negative 110,+,+,Background,Sample-Dependent,NEGATIVE,110
+56669346,Negative,Negative 111,+,+,Background,Sample-Dependent,NEGATIVE,111
+22667496,Negative,Negative 112,+,+,Background,Sample-Dependent,NEGATIVE,112
+56717403,Negative,Negative 113,+,+,Background,Sample-Dependent,NEGATIVE,113
+51649417,Negative,Negative 114,+,+,Background,Sample-Dependent,NEGATIVE,114
+27808455,Negative,Negative 115,+,+,Background,Sample-Dependent,NEGATIVE,115
+51807349,Negative,Negative 116,+,+,Background,Sample-Dependent,NEGATIVE,116
+48623411,Negative,Negative 117,+,+,Background,Sample-Dependent,NEGATIVE,117
+20768333,Negative,Negative 118,+,+,Background,Sample-Dependent,NEGATIVE,118
+32769401,Negative,Negative 119,+,+,Background,Sample-Dependent,NEGATIVE,119
+39605397,Negative,Negative 120,+,+,Background,Sample-Dependent,NEGATIVE,120
+38646418,Negative,Negative 121,+,+,Background,Sample-Dependent,NEGATIVE,121
+44684348,Negative,Negative 122,+,+,Background,Sample-Dependent,NEGATIVE,122
+18731300,Negative,Negative 123,+,+,Background,Sample-Dependent,NEGATIVE,123
+41746382,Negative,Negative 124,+,+,Background,Sample-Dependent,NEGATIVE,124
+62715445,Negative,Negative 125,+,+,Background,Sample-Dependent,NEGATIVE,125
+59733458,Negative,Negative 126,+,+,Background,Sample-Dependent,NEGATIVE,126
+46804470,Negative,Negative 127,+,+,Background,Sample-Dependent,NEGATIVE,127
+33719470,Negative,Negative 128,+,+,Background,Sample-Dependent,NEGATIVE,128
+57741357,Negative,Negative 129,+,+,Background,Sample-Dependent,NEGATIVE,129
+51630461,Negative,Negative 130,+,+,Background,Sample-Dependent,NEGATIVE,130
+50698313,Negative,Negative 131,+,+,Background,Sample-Dependent,NEGATIVE,131
+40757376,Negative,Negative 132,+,+,Background,Sample-Dependent,NEGATIVE,132
+48691496,Negative,Negative 133,+,+,Background,Sample-Dependent,NEGATIVE,133
+48631323,Negative,Negative 134,+,+,Background,Sample-Dependent,NEGATIVE,134
+58743479,Negative,Negative 135,+,+,Background,Sample-Dependent,NEGATIVE,135
+63602509,Negative,Negative 136,+,+,Background,Sample-Dependent,NEGATIVE,136
+15675471,Negative,Negative 137,+,+,Background,Sample-Dependent,NEGATIVE,137
+35733328,Negative,Negative 138,+,+,Background,Sample-Dependent,NEGATIVE,138
+28616440,Negative,Negative 139,+,+,Background,Sample-Dependent,NEGATIVE,139
+32782393,Negative,Negative 140,+,+,Background,Sample-Dependent,NEGATIVE,140
+16669449,Negative,Negative 141,+,+,Background,Sample-Dependent,NEGATIVE,141
+48790370,Negative,Negative 142,+,+,Background,Sample-Dependent,NEGATIVE,142
+71702433,Negative,Negative 143,+,+,Background,Sample-Dependent,NEGATIVE,143
+13614338,Negative,Negative 144,+,+,Background,Sample-Dependent,NEGATIVE,144
+66624407,Negative,Negative 145,+,+,Background,Sample-Dependent,NEGATIVE,145
+44624509,Negative,Negative 146,+,+,Background,Sample-Dependent,NEGATIVE,146
+40783477,Negative,Negative 147,+,+,Background,Sample-Dependent,NEGATIVE,147
+57671333,Negative,Negative 148,+,+,Background,Sample-Dependent,NEGATIVE,148
+55788503,Negative,Negative 149,+,+,Background,Sample-Dependent,NEGATIVE,149
+10766300,Negative,Negative 150,+,+,Background,Sample-Dependent,NEGATIVE,150
+21787367,Negative,Negative 151,+,+,Background,Sample-Dependent,NEGATIVE,151
+17606370,Negative,Negative 152,+,+,Background,Sample-Dependent,NEGATIVE,152
+22789350,Negative,Negative 153,+,+,Background,Sample-Dependent,NEGATIVE,153
+55687425,Negative,Negative 154,+,+,Background,Sample-Dependent,NEGATIVE,154
+26701424,Negative,Negative 155,+,+,Background,Sample-Dependent,NEGATIVE,155
+57727413,Negative,Negative 156,+,+,Background,Sample-Dependent,NEGATIVE,156
+39657358,Negative,Negative 157,+,+,Background,Sample-Dependent,NEGATIVE,157
+32708507,Negative,Negative 158,+,+,Background,Sample-Dependent,NEGATIVE,158
+21634460,Negative,Negative 159,+,+,Background,Sample-Dependent,NEGATIVE,159
+17719340,Negative,Negative 160,+,+,Background,Sample-Dependent,NEGATIVE,160
+38749314,Negative,Negative 161,+,+,Background,Sample-Dependent,NEGATIVE,161
+27642486,Negative,Negative 162,+,+,Background,Sample-Dependent,NEGATIVE,162
+58709354,Negative,Negative 163,+,+,Background,Sample-Dependent,NEGATIVE,163
+70803473,Negative,Negative 164,+,+,Background,Sample-Dependent,NEGATIVE,164
+30809470,Negative,Negative 165,+,+,Background,Sample-Dependent,NEGATIVE,165
+66647505,Negative,Negative 166,+,+,Background,Sample-Dependent,NEGATIVE,166
+66738419,Negative,Negative 167,+,+,Background,Sample-Dependent,NEGATIVE,167
+37635404,Negative,Negative 168,+,+,Background,Sample-Dependent,NEGATIVE,168
+42690458,Negative,Negative 169,+,+,Background,Sample-Dependent,NEGATIVE,169
+20791303,Negative,Negative 170,+,+,Background,Sample-Dependent,NEGATIVE,170
+56616504,Negative,Negative 171,+,+,Background,Sample-Dependent,NEGATIVE,171
+15773503,Negative,Negative 172,+,+,Background,Sample-Dependent,NEGATIVE,172
+35645419,Negative,Negative 173,+,+,Background,Sample-Dependent,NEGATIVE,173
+13788497,Negative,Negative 174,+,+,Background,Sample-Dependent,NEGATIVE,174
+36739329,Negative,Negative 175,+,+,Background,Sample-Dependent,NEGATIVE,175
+47806304,Negative,Negative 176,+,+,Background,Sample-Dependent,NEGATIVE,176
+19716351,Negative,Negative 177,+,+,Background,Sample-Dependent,NEGATIVE,177
+36723508,Negative,Negative 178,+,+,Background,Sample-Dependent,NEGATIVE,178
+14636449,Negative,Negative 179,+,+,Background,Sample-Dependent,NEGATIVE,179
+18610491,Negative,Negative 180,+,+,Background,Sample-Dependent,NEGATIVE,180
+65642346,Negative,Negative 181,+,+,Background,Sample-Dependent,NEGATIVE,181
+21780347,Negative,Negative 182,+,+,Background,Sample-Dependent,NEGATIVE,182
+38786493,Negative,Negative 183,+,+,Background,Sample-Dependent,NEGATIVE,183
+52770489,Negative,Negative 184,+,+,Background,Sample-Dependent,NEGATIVE,184
+63722503,Negative,Negative 185,+,+,Background,Sample-Dependent,NEGATIVE,185
+23716350,Negative,Negative 186,+,+,Background,Sample-Dependent,NEGATIVE,186
+34730322,Negative,Negative 187,+,+,Background,Sample-Dependent,NEGATIVE,187
+59678332,Negative,Negative 188,+,+,Background,Sample-Dependent,NEGATIVE,188
+17711307,Negative,Negative 189,+,+,Background,Sample-Dependent,NEGATIVE,189
+58610399,Negative,Negative 190,+,+,Background,Sample-Dependent,NEGATIVE,190
+27797433,Negative,Negative 191,+,+,Background,Sample-Dependent,NEGATIVE,191
+56765474,Negative,Negative 192,+,+,Background,Sample-Dependent,NEGATIVE,192
+33631454,Negative,Negative 193,+,+,Background,Sample-Dependent,NEGATIVE,193
+53798451,Negative,Negative 194,+,+,Background,Sample-Dependent,NEGATIVE,194
+55696369,Negative,Negative 195,+,+,Background,Sample-Dependent,NEGATIVE,195
+37714454,Negative,Negative 196,+,+,Background,Sample-Dependent,NEGATIVE,196
+40718477,Negative,Negative 197,+,+,Background,Sample-Dependent,NEGATIVE,197
+70800305,Negative,Negative 198,+,+,Background,Sample-Dependent,NEGATIVE,198
+59795323,Negative,Negative 199,+,+,Background,Sample-Dependent,NEGATIVE,199
+16634315,Negative,Negative 200,+,+,Background,Sample-Dependent,NEGATIVE,200
+63701462,Negative,Negative 201,+,+,Background,Sample-Dependent,NEGATIVE,201
+46770381,Negative,Negative 202,+,+,Background,Sample-Dependent,NEGATIVE,202
+43648347,Negative,Negative 203,+,+,Background,Sample-Dependent,NEGATIVE,203
+27694462,Negative,Negative 204,+,+,Background,Sample-Dependent,NEGATIVE,204
+64677468,Negative,Negative 205,+,+,Background,Sample-Dependent,NEGATIVE,205
+71722434,Negative,Negative 206,+,+,Background,Sample-Dependent,NEGATIVE,206
+22609385,Negative,Negative 207,+,+,Background,Sample-Dependent,NEGATIVE,207
+21778313,Negative,Negative 208,+,+,Background,Sample-Dependent,NEGATIVE,208
+23740406,Negative,Negative 209,+,+,Background,Sample-Dependent,NEGATIVE,209
+54660350,Negative,Negative 210,+,+,Background,Sample-Dependent,NEGATIVE,210
+54604316,Negative,Negative 211,+,+,Background,Sample-Dependent,NEGATIVE,211
+54602452,Negative,Negative 212,+,+,Background,Sample-Dependent,NEGATIVE,212
+47638351,Negative,Negative 213,+,+,Background,Sample-Dependent,NEGATIVE,213
+39627308,Negative,Negative 214,+,+,Background,Sample-Dependent,NEGATIVE,214
+25616364,Negative,Negative 215,+,+,Background,Sample-Dependent,NEGATIVE,215
+48803364,Negative,Negative 216,+,+,Background,Sample-Dependent,NEGATIVE,216
+51609389,Negative,Negative 217,+,+,Background,Sample-Dependent,NEGATIVE,217
+16619433,Negative,Negative 218,+,+,Background,Sample-Dependent,NEGATIVE,218
+64670483,Negative,Negative 219,+,+,Background,Sample-Dependent,NEGATIVE,219
+43623510,Negative,Negative 220,+,+,Background,Sample-Dependent,NEGATIVE,220
+19655377,Negative,Negative 221,+,+,Background,Sample-Dependent,NEGATIVE,221
+54610311,Negative,Negative 222,+,+,Background,Sample-Dependent,NEGATIVE,222
+14694306,Negative,Negative 223,+,+,Background,Sample-Dependent,NEGATIVE,223
+26768510,Negative,Negative 224,+,+,Background,Sample-Dependent,NEGATIVE,224
+11799488,Negative,Negative 225,+,+,Background,Sample-Dependent,NEGATIVE,225
+63609386,Negative,Negative 226,+,+,Background,Sample-Dependent,NEGATIVE,226
+22636496,Negative,Negative 227,+,+,Background,Sample-Dependent,NEGATIVE,227
+19642457,Negative,Negative 228,+,+,Background,Sample-Dependent,NEGATIVE,228
+15736392,Negative,Negative 229,+,+,Background,Sample-Dependent,NEGATIVE,229
+72703449,Negative,Negative 230,+,+,Background,Sample-Dependent,NEGATIVE,230
+59645487,Negative,Negative 231,+,+,Background,Sample-Dependent,NEGATIVE,231
+18727400,Negative,Negative 232,+,+,Background,Sample-Dependent,NEGATIVE,232
+57676381,Negative,Negative 233,+,+,Background,Sample-Dependent,NEGATIVE,233
+21619366,Negative,Negative 234,+,+,Background,Sample-Dependent,NEGATIVE,234
+40772413,Negative,Negative 235,+,+,Background,Sample-Dependent,NEGATIVE,235
+33729325,Negative,Negative 236,+,+,Background,Sample-Dependent,NEGATIVE,236
+32761481,Negative,Negative 237,+,+,Background,Sample-Dependent,NEGATIVE,237
+67687427,Negative,Negative 238,+,+,Background,Sample-Dependent,NEGATIVE,238
+22683471,Negative,Negative 239,+,+,Background,Sample-Dependent,NEGATIVE,239
+63742465,Negative,Negative 240,+,+,Background,Sample-Dependent,NEGATIVE,240
+30767497,Negative,Negative 241,+,+,Background,Sample-Dependent,NEGATIVE,241
+74748483,Negative,Negative 242,+,+,Background,Sample-Dependent,NEGATIVE,242
+65692342,Negative,Negative 243,+,+,Background,Sample-Dependent,NEGATIVE,243
+55716389,Negative,Negative 244,+,+,Background,Sample-Dependent,NEGATIVE,244
+73681335,Negative,Negative 245,+,+,Background,Sample-Dependent,NEGATIVE,245
+21698344,Negative,Negative 246,+,+,Background,Sample-Dependent,NEGATIVE,246
+42777359,Negative,Negative 247,+,+,Background,Sample-Dependent,NEGATIVE,247
+55659383,Negative,Negative 248,+,+,Background,Sample-Dependent,NEGATIVE,248
+62711365,Negative,Negative 249,+,+,Background,Sample-Dependent,NEGATIVE,249
+28650324,Negative,Negative 250,+,+,Background,Sample-Dependent,NEGATIVE,250
+59785457,Negative,Negative 251,+,+,Background,Sample-Dependent,NEGATIVE,251
+20650506,Negative,Negative 252,+,+,Background,Sample-Dependent,NEGATIVE,252
+19687436,Negative,Negative 253,+,+,Background,Sample-Dependent,NEGATIVE,253
+43704397,Negative,Negative 254,+,+,Background,Sample-Dependent,NEGATIVE,254
+54655320,Negative,Negative 255,+,+,Background,Sample-Dependent,NEGATIVE,255
+13642439,Negative,Negative 256,+,+,Background,Sample-Dependent,NEGATIVE,256
+13610413,Negative,Negative 257,+,+,Background,Sample-Dependent,NEGATIVE,257
+70616500,Negative,Negative 258,+,+,Background,Sample-Dependent,NEGATIVE,258
+48759321,Negative,Negative 259,+,+,Background,Sample-Dependent,NEGATIVE,259
+20774308,Negative,Negative 260,+,+,Background,Sample-Dependent,NEGATIVE,260
+45735494,Negative,Negative 261,+,+,Background,Sample-Dependent,NEGATIVE,261
+22624440,Negative,Negative 262,+,+,Background,Sample-Dependent,NEGATIVE,262
+48681497,Negative,Negative 263,+,+,Background,Sample-Dependent,NEGATIVE,263
+56705442,Negative,Negative 264,+,+,Background,Sample-Dependent,NEGATIVE,264
+10627500,Negative,Negative 265,+,+,Background,Sample-Dependent,NEGATIVE,265
+28799402,Negative,Negative 266,+,+,Background,Sample-Dependent,NEGATIVE,266
+19656361,Negative,Negative 267,+,+,Background,Sample-Dependent,NEGATIVE,267
+64727389,Negative,Negative 268,+,+,Background,Sample-Dependent,NEGATIVE,268
+46784419,Negative,Negative 269,+,+,Background,Sample-Dependent,NEGATIVE,269
+58649309,Negative,Negative 270,+,+,Background,Sample-Dependent,NEGATIVE,270
+14677363,Negative,Negative 271,+,+,Background,Sample-Dependent,NEGATIVE,271
+24741416,Negative,Negative 272,+,+,Background,Sample-Dependent,NEGATIVE,272
+40674383,Negative,Negative 273,+,+,Background,Sample-Dependent,NEGATIVE,273
+63641352,Negative,Negative 274,+,+,Background,Sample-Dependent,NEGATIVE,274
+29746457,Negative,Negative 275,+,+,Background,Sample-Dependent,NEGATIVE,275
+47774480,Negative,Negative 276,+,+,Background,Sample-Dependent,NEGATIVE,276
+34624334,Negative,Negative 277,+,+,Background,Sample-Dependent,NEGATIVE,277
+46809455,Negative,Negative 278,+,+,Background,Sample-Dependent,NEGATIVE,278
+57716426,Negative,Negative 279,+,+,Background,Sample-Dependent,NEGATIVE,279
+61794438,Negative,Negative 280,+,+,Background,Sample-Dependent,NEGATIVE,280
+21682456,Negative,Negative 281,+,+,Background,Sample-Dependent,NEGATIVE,281
+50682301,Negative,Negative 282,+,+,Background,Sample-Dependent,NEGATIVE,282
+54684414,Negative,Negative 283,+,+,Background,Sample-Dependent,NEGATIVE,283
+20661475,Negative,Negative 284,+,+,Background,Sample-Dependent,NEGATIVE,284
+41802497,Negative,Negative 285,+,+,Background,Sample-Dependent,NEGATIVE,285
+28631434,Negative,Negative 286,+,+,Background,Sample-Dependent,NEGATIVE,286
+23698469,Negative,Negative 287,+,+,Background,Sample-Dependent,NEGATIVE,287
+68654502,Negative,Negative 288,+,+,Background,Sample-Dependent,NEGATIVE,288
+47785348,Negative,Negative 289,+,+,Background,Sample-Dependent,NEGATIVE,289
+55763349,Negative,Negative 290,+,+,Background,Sample-Dependent,NEGATIVE,290
+57708423,Negative,Negative 291,+,+,Background,Sample-Dependent,NEGATIVE,291
+58728453,Negative,Negative 292,+,+,Background,Sample-Dependent,NEGATIVE,292
+64729320,Negative,Negative 293,+,+,Background,Sample-Dependent,NEGATIVE,293
+12741433,Negative,Negative 294,+,+,Background,Sample-Dependent,NEGATIVE,294
+12789492,Negative,Negative 295,+,+,Background,Sample-Dependent,NEGATIVE,295
+66808385,Negative,Negative 296,+,+,Background,Sample-Dependent,NEGATIVE,296
+69728489,Negative,Negative 297,+,+,Background,Sample-Dependent,NEGATIVE,297
+12635324,Negative,Negative 298,+,+,Background,Sample-Dependent,NEGATIVE,298
+23681509,Negative,Negative 299,+,+,Background,Sample-Dependent,NEGATIVE,299
+54620498,Negative,Negative 300,+,+,Background,Sample-Dependent,NEGATIVE,300
+63782372,Negative,Negative 301,+,+,Background,Sample-Dependent,NEGATIVE,301
+49690488,Negative,Negative 302,+,+,Background,Sample-Dependent,NEGATIVE,302
+66645413,Negative,Negative 303,+,+,Background,Sample-Dependent,NEGATIVE,303
+42797349,Negative,Negative 304,+,+,Background,Sample-Dependent,NEGATIVE,304
+70648471,Negative,Negative 305,+,+,Background,Sample-Dependent,NEGATIVE,305
+72768454,Negative,Negative 306,+,+,Background,Sample-Dependent,NEGATIVE,306
+45648397,Negative,Negative 307,+,+,Background,Sample-Dependent,NEGATIVE,307
+38707323,Negative,Negative 308,+,+,Background,Sample-Dependent,NEGATIVE,308
+52685510,Negative,Negative 309,+,+,Background,Sample-Dependent,NEGATIVE,309
+46647425,Negative,Negative 310,+,+,Background,Sample-Dependent,NEGATIVE,310
+39736424,Negative,Negative 311,+,+,Background,Sample-Dependent,NEGATIVE,311
+37706335,Negative,Negative 312,+,+,Background,Sample-Dependent,NEGATIVE,312
+44795438,Negative,Negative 313,+,+,Background,Sample-Dependent,NEGATIVE,313
+55644371,Negative,Negative 314,+,+,Background,Sample-Dependent,NEGATIVE,314
+40619329,Negative,Negative 315,+,+,Background,Sample-Dependent,NEGATIVE,315
+37601420,Negative,Negative 316,+,+,Background,Sample-Dependent,NEGATIVE,316
+32711344,Negative,Negative 317,+,+,Background,Sample-Dependent,NEGATIVE,317
+10732387,Negative,Negative 318,+,+,Background,Sample-Dependent,NEGATIVE,318
+65679420,Negative,Negative 319,+,+,Background,Sample-Dependent,NEGATIVE,319
+74684431,Negative,Negative 320,+,+,Background,Sample-Dependent,NEGATIVE,320
+71602471,Negative,Negative 321,+,+,Background,Sample-Dependent,NEGATIVE,321
+17780492,Negative,Negative 322,+,+,Background,Sample-Dependent,NEGATIVE,322
+42792342,Negative,Negative 323,+,+,Background,Sample-Dependent,NEGATIVE,323
+19666445,Negative,Negative 324,+,+,Background,Sample-Dependent,NEGATIVE,324
+36759384,Negative,Negative 325,+,+,Background,Sample-Dependent,NEGATIVE,325
+15781320,Negative,Negative 326,+,+,Background,Sample-Dependent,NEGATIVE,326
+69775303,Negative,Negative 327,+,+,Background,Sample-Dependent,NEGATIVE,327
+22626413,Negative,Negative 328,+,+,Background,Sample-Dependent,NEGATIVE,328
+63798462,Negative,Negative 329,+,+,Background,Sample-Dependent,NEGATIVE,329
+18684312,Negative,Negative 330,+,+,Background,Sample-Dependent,NEGATIVE,330
+46657422,Negative,Negative 331,+,+,Background,Sample-Dependent,NEGATIVE,331
+21704406,Negative,Negative 332,+,+,Background,Sample-Dependent,NEGATIVE,332
+19769414,Negative,Negative 333,+,+,Background,Sample-Dependent,NEGATIVE,333
+36658331,Negative,Negative 334,+,+,Background,Sample-Dependent,NEGATIVE,334
+31665352,Negative,Negative 335,+,+,Background,Sample-Dependent,NEGATIVE,335
+68775364,Negative,Negative 336,+,+,Background,Sample-Dependent,NEGATIVE,336
+11781405,Negative,Negative 337,+,+,Background,Sample-Dependent,NEGATIVE,337
+37727355,Negative,Negative 338,+,+,Background,Sample-Dependent,NEGATIVE,338
+23624465,Negative,Negative 339,+,+,Background,Sample-Dependent,NEGATIVE,339
+28620342,Negative,Negative 340,+,+,Background,Sample-Dependent,NEGATIVE,340
+28731304,Negative,Negative 341,+,+,Background,Sample-Dependent,NEGATIVE,341
+71685343,Negative,Negative 342,+,+,Background,Sample-Dependent,NEGATIVE,342
+13639467,Negative,Negative 343,+,+,Background,Sample-Dependent,NEGATIVE,343
+34661497,Negative,Negative 344,+,+,Background,Sample-Dependent,NEGATIVE,344
+55699322,Negative,Negative 345,+,+,Background,Sample-Dependent,NEGATIVE,345
+70720399,Negative,Negative 346,+,+,Background,Sample-Dependent,NEGATIVE,346
+44702369,Negative,Negative 347,+,+,Background,Sample-Dependent,NEGATIVE,347
+24729405,Negative,Negative 348,+,+,Background,Sample-Dependent,NEGATIVE,348
+71743454,Negative,Negative 349,+,+,Background,Sample-Dependent,NEGATIVE,349
+59700309,Negative,Negative 350,+,+,Background,Sample-Dependent,NEGATIVE,350
+34602505,Negative,Negative 351,+,+,Background,Sample-Dependent,NEGATIVE,351
+30754380,Negative,Negative 352,+,+,Background,Sample-Dependent,NEGATIVE,352
+41689490,Negative,Negative 353,+,+,Background,Sample-Dependent,NEGATIVE,353
+53743425,Negative,Negative 354,+,+,Background,Sample-Dependent,NEGATIVE,354
+11773410,Negative,Negative 355,+,+,Background,Sample-Dependent,NEGATIVE,355
+28800399,Negative,Negative 356,+,+,Background,Sample-Dependent,NEGATIVE,356
+11807451,Negative,Negative 357,+,+,Background,Sample-Dependent,NEGATIVE,357
+69786328,Negative,Negative 358,+,+,Background,Sample-Dependent,NEGATIVE,358
+54697374,Negative,Negative 359,+,+,Background,Sample-Dependent,NEGATIVE,359
+44715410,Negative,Negative 360,+,+,Background,Sample-Dependent,NEGATIVE,360
+46765460,Negative,Negative 361,+,+,Background,Sample-Dependent,NEGATIVE,361
+72759412,Negative,Negative 362,+,+,Background,Sample-Dependent,NEGATIVE,362
+37716390,Negative,Negative 363,+,+,Background,Sample-Dependent,NEGATIVE,363
+36688342,Negative,Negative 364,+,+,Background,Sample-Dependent,NEGATIVE,364
+44623355,Negative,Negative 365,+,+,Background,Sample-Dependent,NEGATIVE,365
+29726340,Negative,Negative 366,+,+,Background,Sample-Dependent,NEGATIVE,366
+25742329,Negative,Negative 367,+,+,Background,Sample-Dependent,NEGATIVE,367
+33714465,Negative,Negative 368,+,+,Background,Sample-Dependent,NEGATIVE,368
+17739383,Negative,Negative 369,+,+,Background,Sample-Dependent,NEGATIVE,369
+57649451,Negative,Negative 370,+,+,Background,Sample-Dependent,NEGATIVE,370
+51764357,Negative,Negative 371,+,+,Background,Sample-Dependent,NEGATIVE,371
+69781500,Negative,Negative 372,+,+,Background,Sample-Dependent,NEGATIVE,372
+64711325,Negative,Negative 373,+,+,Background,Sample-Dependent,NEGATIVE,373
+53687365,Negative,Negative 374,+,+,Background,Sample-Dependent,NEGATIVE,374
+29655354,Negative,Negative 375,+,+,Background,Sample-Dependent,NEGATIVE,375
+34646469,Negative,Negative 376,+,+,Background,Sample-Dependent,NEGATIVE,376
+71705328,Negative,Negative 377,+,+,Background,Sample-Dependent,NEGATIVE,377
+43700387,Negative,Negative 378,+,+,Background,Sample-Dependent,NEGATIVE,378
+23713493,Negative,Negative 379,+,+,Background,Sample-Dependent,NEGATIVE,379
+26668378,Negative,Negative 380,+,+,Background,Sample-Dependent,NEGATIVE,380
+33621423,Negative,Negative 381,+,+,Background,Sample-Dependent,NEGATIVE,381
+37767334,Negative,Negative 382,+,+,Background,Sample-Dependent,NEGATIVE,382
+37654486,Negative,Negative 383,+,+,Background,Sample-Dependent,NEGATIVE,383
+64694405,Negative,Negative 384,+,+,Background,Sample-Dependent,NEGATIVE,384
+31709433,Negative,Negative 385,+,+,Background,Sample-Dependent,NEGATIVE,385
+16717301,Negative,Negative 386,+,+,Background,Sample-Dependent,NEGATIVE,386
+45678305,Negative,Negative 387,+,+,Background,Sample-Dependent,NEGATIVE,387
+56810364,Negative,Negative 388,+,+,Background,Sample-Dependent,NEGATIVE,388
+33631362,Negative,Negative 389,+,+,Background,Sample-Dependent,NEGATIVE,389
+54726487,Negative,Negative 390,+,+,Background,Sample-Dependent,NEGATIVE,390
+13728505,Negative,Negative 391,+,+,Background,Sample-Dependent,NEGATIVE,391
+36781404,Negative,Negative 392,+,+,Background,Sample-Dependent,NEGATIVE,392
+42770436,Negative,Negative 393,+,+,Background,Sample-Dependent,NEGATIVE,393
+68758332,Negative,Negative 394,+,+,Background,Sample-Dependent,NEGATIVE,394
+53677329,Negative,Negative 395,+,+,Background,Sample-Dependent,NEGATIVE,395
+40629493,Negative,Negative 396,+,+,Background,Sample-Dependent,NEGATIVE,396
+54623464,Negative,Negative 397,+,+,Background,Sample-Dependent,NEGATIVE,397
+32733455,Negative,Negative 398,+,+,Background,Sample-Dependent,NEGATIVE,398
+40765481,Negative,Negative 399,+,+,Background,Sample-Dependent,NEGATIVE,399
+67759403,Negative,Negative 400,+,+,Background,Sample-Dependent,NEGATIVE,400
+42634319,Negative,Negative 401,+,+,Background,Sample-Dependent,NEGATIVE,401
+74787491,Negative,Negative 402,+,+,Background,Sample-Dependent,NEGATIVE,402
+73726427,Negative,Negative 403,+,+,Background,Sample-Dependent,NEGATIVE,403
+26678432,Negative,Negative 404,+,+,Background,Sample-Dependent,NEGATIVE,404
+39628336,Negative,Negative 405,+,+,Background,Sample-Dependent,NEGATIVE,405
+27748358,Negative,Negative 406,+,+,Background,Sample-Dependent,NEGATIVE,406
+49792491,Negative,Negative 407,+,+,Background,Sample-Dependent,NEGATIVE,407
+24685437,Negative,Negative 408,+,+,Background,Sample-Dependent,NEGATIVE,408
+22694431,Negative,Negative 409,+,+,Background,Sample-Dependent,NEGATIVE,409
+28717328,Negative,Negative 410,+,+,Background,Sample-Dependent,NEGATIVE,410
+39799352,Negative,Negative 411,+,+,Background,Sample-Dependent,NEGATIVE,411
+39617465,Negative,Negative 412,+,+,Background,Sample-Dependent,NEGATIVE,412
+34739488,Negative,Negative 413,+,+,Background,Sample-Dependent,NEGATIVE,413
+70623422,Negative,Negative 414,+,+,Background,Sample-Dependent,NEGATIVE,414
+41655506,Negative,Negative 415,+,+,Background,Sample-Dependent,NEGATIVE,415
+29790482,Negative,Negative 416,+,+,Background,Sample-Dependent,NEGATIVE,416
+33717438,Negative,Negative 417,+,+,Background,Sample-Dependent,NEGATIVE,417
+43667476,Negative,Negative 418,+,+,Background,Sample-Dependent,NEGATIVE,418
+58795402,Negative,Negative 419,+,+,Background,Sample-Dependent,NEGATIVE,419
+62691388,Negative,Negative 420,+,+,Background,Sample-Dependent,NEGATIVE,420
+18608337,Negative,Negative 421,+,+,Background,Sample-Dependent,NEGATIVE,421
+24750500,Negative,Negative 422,+,+,Background,Sample-Dependent,NEGATIVE,422
+19659360,Negative,Negative 423,+,+,Background,Sample-Dependent,NEGATIVE,423
+38712342,Negative,Negative 424,+,+,Background,Sample-Dependent,NEGATIVE,424
+16764335,Negative,Negative 425,+,+,Background,Sample-Dependent,NEGATIVE,425
+55765450,Negative,Negative 426,+,+,Background,Sample-Dependent,NEGATIVE,426
+18763320,Negative,Negative 427,+,+,Background,Sample-Dependent,NEGATIVE,427
+65645458,Negative,Negative 428,+,+,Background,Sample-Dependent,NEGATIVE,428
+63642430,Negative,Negative 429,+,+,Background,Sample-Dependent,NEGATIVE,429
+38762391,Negative,Negative 430,+,+,Background,Sample-Dependent,NEGATIVE,430
+60779460,Negative,Negative 431,+,+,Background,Sample-Dependent,NEGATIVE,431
+23760472,Negative,Negative 432,+,+,Background,Sample-Dependent,NEGATIVE,432
+47739456,Negative,Negative 433,+,+,Background,Sample-Dependent,NEGATIVE,433
+60603394,Negative,Negative 434,+,+,Background,Sample-Dependent,NEGATIVE,434
+48728325,Negative,Negative 435,+,+,Background,Sample-Dependent,NEGATIVE,435
+59664305,Negative,Negative 436,+,+,Background,Sample-Dependent,NEGATIVE,436
+69706451,Negative,Negative 437,+,+,Background,Sample-Dependent,NEGATIVE,437
+71663505,Negative,Negative 438,+,+,Background,Sample-Dependent,NEGATIVE,438
+71628482,Negative,Negative 439,+,+,Background,Sample-Dependent,NEGATIVE,439
+49600340,Negative,Negative 440,+,+,Background,Sample-Dependent,NEGATIVE,440
+65789315,Negative,Negative 441,+,+,Background,Sample-Dependent,NEGATIVE,441
+16662505,Negative,Negative 442,+,+,Background,Sample-Dependent,NEGATIVE,442
+16650480,Negative,Negative 443,+,+,Background,Sample-Dependent,NEGATIVE,443
+22674508,Negative,Negative 444,+,+,Background,Sample-Dependent,NEGATIVE,444
+60708460,Negative,Negative 445,+,+,Background,Sample-Dependent,NEGATIVE,445
+36642338,Negative,Negative 446,+,+,Background,Sample-Dependent,NEGATIVE,446
+18663425,Negative,Negative 447,+,+,Background,Sample-Dependent,NEGATIVE,447
+72602362,Negative,Negative 448,+,+,Background,Sample-Dependent,NEGATIVE,448
+40807480,Negative,Negative 449,+,+,Background,Sample-Dependent,NEGATIVE,449
+44746458,Negative,Negative 450,+,+,Background,Sample-Dependent,NEGATIVE,450
+49669412,Negative,Negative 451,+,+,Background,Sample-Dependent,NEGATIVE,451
+70683410,Negative,Negative 452,+,+,Background,Sample-Dependent,NEGATIVE,452
+42762374,Negative,Negative 453,+,+,Background,Sample-Dependent,NEGATIVE,453
+35719437,Negative,Negative 454,+,+,Background,Sample-Dependent,NEGATIVE,454
+39656464,Negative,Negative 455,+,+,Background,Sample-Dependent,NEGATIVE,455
+56698475,Negative,Negative 456,+,+,Background,Sample-Dependent,NEGATIVE,456
+60644415,Negative,Negative 457,+,+,Background,Sample-Dependent,NEGATIVE,457
+13650327,Negative,Negative 458,+,+,Background,Sample-Dependent,NEGATIVE,458
+30675376,Negative,Negative 459,+,+,Background,Sample-Dependent,NEGATIVE,459
+71734366,Negative,Negative 460,+,+,Background,Sample-Dependent,NEGATIVE,460
+22688305,Negative,Negative 461,+,+,Background,Sample-Dependent,NEGATIVE,461
+21705378,Negative,Negative 462,+,+,Background,Sample-Dependent,NEGATIVE,462
+65676384,Negative,Negative 463,+,+,Background,Sample-Dependent,NEGATIVE,463
+48639474,Negative,Negative 464,+,+,Background,Sample-Dependent,NEGATIVE,464
+29617416,Negative,Negative 465,+,+,Background,Sample-Dependent,NEGATIVE,465
+47764352,Negative,Negative 466,+,+,Background,Sample-Dependent,NEGATIVE,466
+50792435,Negative,Negative 467,+,+,Background,Sample-Dependent,NEGATIVE,467
+39742442,Negative,Negative 468,+,+,Background,Sample-Dependent,NEGATIVE,468
+24684310,Negative,Negative 469,+,+,Background,Sample-Dependent,NEGATIVE,469
+70610367,Negative,Negative 470,+,+,Background,Sample-Dependent,NEGATIVE,470
+57726345,Negative,Negative 471,+,+,Background,Sample-Dependent,NEGATIVE,471
+10721502,Negative,Negative 472,+,+,Background,Sample-Dependent,NEGATIVE,472
+52742375,Negative,Negative 473,+,+,Background,Sample-Dependent,NEGATIVE,473
+60726465,Negative,Negative 474,+,+,Background,Sample-Dependent,NEGATIVE,474
+27668419,Negative,Negative 475,+,+,Background,Sample-Dependent,NEGATIVE,475
+73697323,Negative,Negative 476,+,+,Background,Sample-Dependent,NEGATIVE,476
+15719334,Negative,Negative 477,+,+,Background,Sample-Dependent,NEGATIVE,477
+21643393,Negative,Negative 478,+,+,Background,Sample-Dependent,NEGATIVE,478
+37720318,Negative,Negative 479,+,+,Background,Sample-Dependent,NEGATIVE,479
+69752425,Negative,Negative 480,+,+,Background,Sample-Dependent,NEGATIVE,480
+48693431,Negative,Negative 481,+,+,Background,Sample-Dependent,NEGATIVE,481
+64601411,Negative,Negative 482,+,+,Background,Sample-Dependent,NEGATIVE,482
+24705436,Negative,Negative 483,+,+,Background,Sample-Dependent,NEGATIVE,483
+15740334,Negative,Negative 484,+,+,Background,Sample-Dependent,NEGATIVE,484
+24728321,Negative,Negative 485,+,+,Background,Sample-Dependent,NEGATIVE,485
+49680446,Negative,Negative 486,+,+,Background,Sample-Dependent,NEGATIVE,486
+27691388,Negative,Negative 487,+,+,Background,Sample-Dependent,NEGATIVE,487
+29657357,Negative,Negative 488,+,+,Background,Sample-Dependent,NEGATIVE,488
+19612454,Negative,Negative 489,+,+,Background,Sample-Dependent,NEGATIVE,489
+41705442,Negative,Negative 490,+,+,Background,Sample-Dependent,NEGATIVE,490
+31645490,Negative,Negative 491,+,+,Background,Sample-Dependent,NEGATIVE,491
+55673311,Negative,Negative 492,+,+,Background,Sample-Dependent,NEGATIVE,492
+31635492,Negative,Negative 493,+,+,Background,Sample-Dependent,NEGATIVE,493
+64683305,Negative,Negative 494,+,+,Background,Sample-Dependent,NEGATIVE,494
+11748306,Negative,Negative 495,+,+,Background,Sample-Dependent,NEGATIVE,495
+48730356,Negative,Negative 496,+,+,Background,Sample-Dependent,NEGATIVE,496
+11694363,Negative,Negative 497,+,+,Background,Sample-Dependent,NEGATIVE,497
+54665394,Negative,Negative 498,+,+,Background,Sample-Dependent,NEGATIVE,498
+28772416,Negative,Negative 499,+,+,Background,Sample-Dependent,NEGATIVE,499
+40747444,Negative,Negative 500,+,+,Background,Sample-Dependent,NEGATIVE,500
+50809407,Negative,Negative 501,+,+,Background,Sample-Dependent,NEGATIVE,501
+39679476,Negative,Negative 502,+,+,Background,Sample-Dependent,NEGATIVE,502
+74738436,Negative,Negative 503,+,+,Background,Sample-Dependent,NEGATIVE,503
+23734321,Negative,Negative 504,+,+,Background,Sample-Dependent,NEGATIVE,504
+15783320,Negative,Negative 505,+,+,Background,Sample-Dependent,NEGATIVE,505
+66703354,Negative,Negative 506,+,+,Background,Sample-Dependent,NEGATIVE,506
+56793432,Negative,Negative 507,+,+,Background,Sample-Dependent,NEGATIVE,507
+24744393,Negative,Negative 508,+,+,Background,Sample-Dependent,NEGATIVE,508
+14762352,Negative,Negative 509,+,+,Background,Sample-Dependent,NEGATIVE,509
+15794469,Negative,Negative 510,+,+,Background,Sample-Dependent,NEGATIVE,510
+35761501,Negative,Negative 511,+,+,Background,Sample-Dependent,NEGATIVE,511
+52677505,Negative,Negative 512,+,+,Background,Sample-Dependent,NEGATIVE,512
+73601495,Negative,Negative 513,+,+,Background,Sample-Dependent,NEGATIVE,513
+67640436,Negative,Negative 514,+,+,Background,Sample-Dependent,NEGATIVE,514
+51617379,Negative,Negative 515,+,+,Background,Sample-Dependent,NEGATIVE,515
+48683430,Negative,Negative 516,+,+,Background,Sample-Dependent,NEGATIVE,516
+35714458,Negative,Negative 517,+,+,Background,Sample-Dependent,NEGATIVE,517
+69652373,Negative,Negative 518,+,+,Background,Sample-Dependent,NEGATIVE,518
+43724337,Negative,Negative 519,+,+,Background,Sample-Dependent,NEGATIVE,519
+49658386,Negative,Negative 520,+,+,Background,Sample-Dependent,NEGATIVE,520
+70766461,Negative,Negative 521,+,+,Background,Sample-Dependent,NEGATIVE,521
+20661394,Negative,Negative 522,+,+,Background,Sample-Dependent,NEGATIVE,522
+55669483,Negative,Negative 523,+,+,Background,Sample-Dependent,NEGATIVE,523
+34630325,Negative,Negative 524,+,+,Background,Sample-Dependent,NEGATIVE,524
+13710478,Negative,Negative 525,+,+,Background,Sample-Dependent,NEGATIVE,525
+46635484,Negative,Negative 526,+,+,Background,Sample-Dependent,NEGATIVE,526
+34779461,Negative,Negative 527,+,+,Background,Sample-Dependent,NEGATIVE,527
+30762347,Negative,Negative 528,+,+,Background,Sample-Dependent,NEGATIVE,528
+36808443,Negative,Negative 529,+,+,Background,Sample-Dependent,NEGATIVE,529
+45708406,Negative,Negative 530,+,+,Background,Sample-Dependent,NEGATIVE,530
+55670455,Negative,Negative 531,+,+,Background,Sample-Dependent,NEGATIVE,531
+30689326,Negative,Negative 532,+,+,Background,Sample-Dependent,NEGATIVE,532
+42643451,Negative,Negative 533,+,+,Background,Sample-Dependent,NEGATIVE,533
+33730454,Negative,Negative 534,+,+,Background,Sample-Dependent,NEGATIVE,534
+69659385,Negative,Negative 535,+,+,Background,Sample-Dependent,NEGATIVE,535
+59731452,Negative,Negative 536,+,+,Background,Sample-Dependent,NEGATIVE,536
+60632306,Negative,Negative 537,+,+,Background,Sample-Dependent,NEGATIVE,537
+66793462,Negative,Negative 538,+,+,Background,Sample-Dependent,NEGATIVE,538
+56737301,Negative,Negative 539,+,+,Background,Sample-Dependent,NEGATIVE,539
+25621346,Negative,Negative 540,+,+,Background,Sample-Dependent,NEGATIVE,540
+62653340,Negative,Negative 541,+,+,Background,Sample-Dependent,NEGATIVE,541
+56781365,Negative,Negative 542,+,+,Background,Sample-Dependent,NEGATIVE,542
+71762482,Negative,Negative 543,+,+,Background,Sample-Dependent,NEGATIVE,543
+73667338,Negative,Negative 544,+,+,Background,Sample-Dependent,NEGATIVE,544
+15769506,Negative,Negative 545,+,+,Background,Sample-Dependent,NEGATIVE,545
+19775306,Negative,Negative 546,+,+,Background,Sample-Dependent,NEGATIVE,546
+19625434,Negative,Negative 547,+,+,Background,Sample-Dependent,NEGATIVE,547
+71775347,Negative,Negative 548,+,+,Background,Sample-Dependent,NEGATIVE,548
+44618314,Negative,Negative 549,+,+,Background,Sample-Dependent,NEGATIVE,549
+21635460,Negative,Negative 550,+,+,Background,Sample-Dependent,NEGATIVE,550
+59684453,Negative,Negative 551,+,+,Background,Sample-Dependent,NEGATIVE,551
+73789449,Negative,Negative 552,+,+,Background,Sample-Dependent,NEGATIVE,552
+14719400,Negative,Negative 553,+,+,Background,Sample-Dependent,NEGATIVE,553
+26658411,Negative,Negative 554,+,+,Background,Sample-Dependent,NEGATIVE,554
+33765459,Negative,Negative 555,+,+,Background,Sample-Dependent,NEGATIVE,555
+26769463,Negative,Negative 556,+,+,Background,Sample-Dependent,NEGATIVE,556
+42768497,Negative,Negative 557,+,+,Background,Sample-Dependent,NEGATIVE,557
+10744385,Negative,Negative 558,+,+,Background,Sample-Dependent,NEGATIVE,558
+26648509,Negative,Negative 559,+,+,Background,Sample-Dependent,NEGATIVE,559
+17796358,Negative,Negative 560,+,+,Background,Sample-Dependent,NEGATIVE,560
+56626320,Negative,Negative 561,+,+,Background,Sample-Dependent,NEGATIVE,561
+36803355,Negative,Negative 562,+,+,Background,Sample-Dependent,NEGATIVE,562
+68601372,Negative,Negative 563,+,+,Background,Sample-Dependent,NEGATIVE,563
+23631316,Negative,Negative 564,+,+,Background,Sample-Dependent,NEGATIVE,564
+50636432,Negative,Negative 565,+,+,Background,Sample-Dependent,NEGATIVE,565
+20666345,Negative,Negative 566,+,+,Background,Sample-Dependent,NEGATIVE,566
+26669386,Negative,Negative 567,+,+,Background,Sample-Dependent,NEGATIVE,567
+74720399,Negative,Negative 568,+,+,Background,Sample-Dependent,NEGATIVE,568
+33657423,Negative,Negative 569,+,+,Background,Sample-Dependent,NEGATIVE,569
+62672306,Negative,Negative 570,+,+,Background,Sample-Dependent,NEGATIVE,570
+56602420,Negative,Negative 571,+,+,Background,Sample-Dependent,NEGATIVE,571
+72656385,Negative,Negative 572,+,+,Background,Sample-Dependent,NEGATIVE,572
+19658444,Negative,Negative 573,+,+,Background,Sample-Dependent,NEGATIVE,573
+61721300,Negative,Negative 574,+,+,Background,Sample-Dependent,NEGATIVE,574
+26665427,Negative,Negative 575,+,+,Background,Sample-Dependent,NEGATIVE,575
+17799458,Negative,Negative 576,+,+,Background,Sample-Dependent,NEGATIVE,576
+49700377,Negative,Negative 577,+,+,Background,Sample-Dependent,NEGATIVE,577
+60632320,Negative,Negative 578,+,+,Background,Sample-Dependent,NEGATIVE,578
+60755343,Negative,Negative 579,+,+,Background,Sample-Dependent,NEGATIVE,579
+24809342,Negative,Negative 580,+,+,Background,Sample-Dependent,NEGATIVE,580
+22705438,Negative,Negative 581,+,+,Background,Sample-Dependent,NEGATIVE,581
+33651323,Negative,Negative 582,+,+,Background,Sample-Dependent,NEGATIVE,582
+10731326,Negative,Negative 583,+,+,Background,Sample-Dependent,NEGATIVE,583
+50699483,Negative,Negative 584,+,+,Background,Sample-Dependent,NEGATIVE,584
+26770499,Negative,Negative 585,+,+,Background,Sample-Dependent,NEGATIVE,585
+15727485,Negative,Negative 586,+,+,Background,Sample-Dependent,NEGATIVE,586
+36733310,Negative,Negative 587,+,+,Background,Sample-Dependent,NEGATIVE,587
+52665450,Negative,Negative 588,+,+,Background,Sample-Dependent,NEGATIVE,588
+70717333,Negative,Negative 589,+,+,Background,Sample-Dependent,NEGATIVE,589
+62632474,Negative,Negative 590,+,+,Background,Sample-Dependent,NEGATIVE,590
+52672329,Negative,Negative 591,+,+,Background,Sample-Dependent,NEGATIVE,591
+44760439,Negative,Negative 592,+,+,Background,Sample-Dependent,NEGATIVE,592
+16673481,Negative,Negative 593,+,+,Background,Sample-Dependent,NEGATIVE,593
+56788431,Negative,Negative 594,+,+,Background,Sample-Dependent,NEGATIVE,594
+15797317,Negative,Negative 595,+,+,Background,Sample-Dependent,NEGATIVE,595
+23740309,Negative,Negative 596,+,+,Background,Sample-Dependent,NEGATIVE,596
+17641445,Negative,Negative 597,+,+,Background,Sample-Dependent,NEGATIVE,597
+10760363,Negative,Negative 598,+,+,Background,Sample-Dependent,NEGATIVE,598
+21620397,Negative,Negative 599,+,+,Background,Sample-Dependent,NEGATIVE,599
+23786490,Negative,Negative 600,+,+,Background,Sample-Dependent,NEGATIVE,600
+74654383,Negative,Negative 611,+,+,Background,Sample-Dependent,NEGATIVE,601
+45807495,Negative,Negative 612,+,+,Background,Sample-Dependent,NEGATIVE,602
+37634407,Negative,Negative 613,+,+,Background,Sample-Dependent,NEGATIVE,603
+33677481,Negative,Negative 601,+,+,Background,Sample-Dependent,NEGATIVE,604
+14777361,Negative,Negative 602,+,+,Background,Sample-Dependent,NEGATIVE,605
+69729339,Negative,Negative 603,+,+,Background,Sample-Dependent,NEGATIVE,606
+41636384,Negative,Negative 604,+,+,Background,Sample-Dependent,NEGATIVE,607
+37710397,Negative,Negative 605,+,+,Background,Sample-Dependent,NEGATIVE,608
+60682508,Negative,Negative 606,+,+,Background,Sample-Dependent,NEGATIVE,609
+40713496,Negative,Negative 607,+,+,Background,Sample-Dependent,NEGATIVE,610
+12641437,Negative,Negative 608,+,+,Background,Sample-Dependent,NEGATIVE,611
+48797398,Negative,Negative 609,+,+,Background,Sample-Dependent,NEGATIVE,612
+66764427,Negative,Negative 610,+,+,Background,Sample-Dependent,NEGATIVE,613
+73603488,Negative,Negative 614,+,+,Background,Sample-Dependent,NEGATIVE,614
+24744355,Normalization G,Normalization G 1,+,-,High,Sample-Dependent,NORM_G,1
+25661400,Normalization G,Normalization G 2,+,-,High,Sample-Dependent,NORM_G,2
+28724405,Normalization G,Normalization G 3,+,-,High,Sample-Dependent,NORM_G,3
+32689421,Normalization G,Normalization G 4,+,-,High,Sample-Dependent,NORM_G,4
+35689446,Normalization G,Normalization G 5,+,-,High,Sample-Dependent,NORM_G,5
+36806404,Normalization G,Normalization G 6,+,-,High,Sample-Dependent,NORM_G,6
+38796356,Normalization G,Normalization G 7,+,-,High,Sample-Dependent,NORM_G,7
+39662476,Normalization G,Normalization G 8,+,-,High,Sample-Dependent,NORM_G,8
+48709470,Normalization G,Normalization G 9,+,-,High,Sample-Dependent,NORM_G,9
+48757493,Normalization G,Normalization G 10,+,-,High,Sample-Dependent,NORM_G,10
+51668449,Normalization G,Normalization G 11,+,-,High,Sample-Dependent,NORM_G,11
+52807455,Normalization G,Normalization G 12,+,-,High,Sample-Dependent,NORM_G,12
+54708463,Normalization G,Normalization G 13,+,-,High,Sample-Dependent,NORM_G,13
+58676498,Normalization G,Normalization G 14,+,-,High,Sample-Dependent,NORM_G,14
+59624459,Normalization G,Normalization G 15,+,-,High,Sample-Dependent,NORM_G,15
+59734347,Normalization G,Normalization G 16,+,-,High,Sample-Dependent,NORM_G,16
+59764324,Normalization G,Normalization G 17,+,-,High,Sample-Dependent,NORM_G,17
+61760309,Normalization G,Normalization G 18,+,-,High,Sample-Dependent,NORM_G,18
+63640430,Normalization G,Normalization G 19,+,-,High,Sample-Dependent,NORM_G,19
+63724326,Normalization G,Normalization G 20,+,-,High,Sample-Dependent,NORM_G,20
+63742354,Normalization G,Normalization G 21,+,-,High,Sample-Dependent,NORM_G,21
+63775337,Normalization G,Normalization G 22,+,-,High,Sample-Dependent,NORM_G,22
+10804473,Normalization G,Normalization G 23,+,-,High,Sample-Dependent,NORM_G,23
+15642403,Normalization G,Normalization G 24,+,-,High,Sample-Dependent,NORM_G,24
+15733328,Normalization G,Normalization G 25,+,-,High,Sample-Dependent,NORM_G,25
+16690480,Normalization G,Normalization G 26,+,-,High,Sample-Dependent,NORM_G,26
+18658347,Normalization G,Normalization G 27,+,-,High,Sample-Dependent,NORM_G,27
+18733503,Normalization G,Normalization G 28,+,-,High,Sample-Dependent,NORM_G,28
+67713480,Normalization G,Normalization G 29,+,-,High,Sample-Dependent,NORM_G,29
+67721390,Normalization G,Normalization G 30,+,-,High,Sample-Dependent,NORM_G,30
+69624309,Normalization G,Normalization G 31,+,-,High,Sample-Dependent,NORM_G,31
+69667417,Normalization G,Normalization G 32,+,-,High,Sample-Dependent,NORM_G,32
+11718309,Normalization A,Normalization A 1,-,+,High,Sample-Dependent,NORM_A,1
+15639322,Normalization A,Normalization A 2,-,+,High,Sample-Dependent,NORM_A,2
+15747446,Normalization A,Normalization A 3,-,+,High,Sample-Dependent,NORM_A,3
+16723352,Normalization A,Normalization A 4,-,+,High,Sample-Dependent,NORM_A,4
+17630478,Normalization A,Normalization A 5,-,+,High,Sample-Dependent,NORM_A,5
+18654457,Normalization A,Normalization A 6,-,+,High,Sample-Dependent,NORM_A,6
+24636465,Normalization A,Normalization A 7,-,+,High,Sample-Dependent,NORM_A,7
+31786303,Normalization A,Normalization A 8,-,+,High,Sample-Dependent,NORM_A,8
+31793441,Normalization A,Normalization A 9,-,+,High,Sample-Dependent,NORM_A,9
+33613483,Normalization A,Normalization A 10,-,+,High,Sample-Dependent,NORM_A,10
+36657375,Normalization A,Normalization A 11,-,+,High,Sample-Dependent,NORM_A,11
+42624324,Normalization A,Normalization A 12,-,+,High,Sample-Dependent,NORM_A,12
+43652393,Normalization A,Normalization A 13,-,+,High,Sample-Dependent,NORM_A,13
+44620377,Normalization A,Normalization A 14,-,+,High,Sample-Dependent,NORM_A,14
+48622429,Normalization A,Normalization A 15,-,+,High,Sample-Dependent,NORM_A,15
+49636425,Normalization A,Normalization A 16,-,+,High,Sample-Dependent,NORM_A,16
+49729303,Normalization A,Normalization A 17,-,+,High,Sample-Dependent,NORM_A,17
+61620502,Normalization A,Normalization A 18,-,+,High,Sample-Dependent,NORM_A,18
+61626504,Normalization A,Normalization A 19,-,+,High,Sample-Dependent,NORM_A,19
+62710448,Normalization A,Normalization A 20,-,+,High,Sample-Dependent,NORM_A,20
+62796402,Normalization A,Normalization A 21,-,+,High,Sample-Dependent,NORM_A,21
+63602392,Normalization A,Normalization A 22,-,+,High,Sample-Dependent,NORM_A,22
+66624473,Normalization A,Normalization A 23,-,+,High,Sample-Dependent,NORM_A,23
+67699483,Normalization A,Normalization A 24,-,+,High,Sample-Dependent,NORM_A,24
+68634356,Normalization A,Normalization A 25,-,+,High,Sample-Dependent,NORM_A,25
+68641317,Normalization A,Normalization A 26,-,+,High,Sample-Dependent,NORM_A,26
+68744490,Normalization A,Normalization A 27,-,+,High,Sample-Dependent,NORM_A,27
+70603486,Normalization A,Normalization A 28,-,+,High,Sample-Dependent,NORM_A,28
+70622474,Normalization A,Normalization A 29,-,+,High,Sample-Dependent,NORM_A,29
+70700334,Normalization A,Normalization A 30,-,+,High,Sample-Dependent,NORM_A,30
+72748406,Normalization A,Normalization A 31,-,+,High,Sample-Dependent,NORM_A,31
+74662463,Normalization A,Normalization A 32,-,+,High,Sample-Dependent,NORM_A,32
+11651448,Normalization C,Normalization C 1,+,-,High,Sample-Dependent,NORM_C,1
+11739368,Normalization C,Normalization C 2,+,-,High,Sample-Dependent,NORM_C,2
+12606314,Normalization C,Normalization C 3,+,-,High,Sample-Dependent,NORM_C,3
+14669466,Normalization C,Normalization C 4,+,-,High,Sample-Dependent,NORM_C,4
+15751492,Normalization C,Normalization C 5,+,-,High,Sample-Dependent,NORM_C,5
+16739368,Normalization C,Normalization C 6,+,-,High,Sample-Dependent,NORM_C,6
+17719492,Normalization C,Normalization C 7,+,-,High,Sample-Dependent,NORM_C,7
+17801437,Normalization C,Normalization C 8,+,-,High,Sample-Dependent,NORM_C,8
+18791508,Normalization C,Normalization C 9,+,-,High,Sample-Dependent,NORM_C,9
+21666326,Normalization C,Normalization C 10,+,-,High,Sample-Dependent,NORM_C,10
+22667482,Normalization C,Normalization C 11,+,-,High,Sample-Dependent,NORM_C,11
+22786434,Normalization C,Normalization C 12,+,-,High,Sample-Dependent,NORM_C,12
+23684492,Normalization C,Normalization C 13,+,-,High,Sample-Dependent,NORM_C,13
+24711322,Normalization C,Normalization C 14,+,-,High,Sample-Dependent,NORM_C,14
+25717484,Normalization C,Normalization C 15,+,-,High,Sample-Dependent,NORM_C,15
+26787359,Normalization C,Normalization C 16,+,-,High,Sample-Dependent,NORM_C,16
+27756327,Normalization C,Normalization C 17,+,-,High,Sample-Dependent,NORM_C,17
+28673402,Normalization C,Normalization C 18,+,-,High,Sample-Dependent,NORM_C,18
+29769366,Normalization C,Normalization C 19,+,-,High,Sample-Dependent,NORM_C,19
+33780372,Normalization C,Normalization C 20,+,-,High,Sample-Dependent,NORM_C,20
+34642451,Normalization C,Normalization C 21,+,-,High,Sample-Dependent,NORM_C,21
+34710461,Normalization C,Normalization C 22,+,-,High,Sample-Dependent,NORM_C,22
+34720366,Normalization C,Normalization C 23,+,-,High,Sample-Dependent,NORM_C,23
+35717396,Normalization C,Normalization C 24,+,-,High,Sample-Dependent,NORM_C,24
+35810456,Normalization C,Normalization C 25,+,-,High,Sample-Dependent,NORM_C,25
+38663386,Normalization C,Normalization C 26,+,-,High,Sample-Dependent,NORM_C,26
+38708375,Normalization C,Normalization C 27,+,-,High,Sample-Dependent,NORM_C,27
+38781340,Normalization C,Normalization C 28,+,-,High,Sample-Dependent,NORM_C,28
+39615318,Normalization C,Normalization C 29,+,-,High,Sample-Dependent,NORM_C,29
+40720405,Normalization C,Normalization C 30,+,-,High,Sample-Dependent,NORM_C,30
+41745372,Normalization C,Normalization C 31,+,-,High,Sample-Dependent,NORM_C,31
+43647400,Normalization C,Normalization C 32,+,-,High,Sample-Dependent,NORM_C,32
+43751315,Normalization C,Normalization C 33,+,-,High,Sample-Dependent,NORM_C,33
+44650346,Normalization C,Normalization C 34,+,-,High,Sample-Dependent,NORM_C,34
+47796462,Normalization C,Normalization C 35,+,-,High,Sample-Dependent,NORM_C,35
+48634496,Normalization C,Normalization C 36,+,-,High,Sample-Dependent,NORM_C,36
+49675379,Normalization C,Normalization C 37,+,-,High,Sample-Dependent,NORM_C,37
+49714326,Normalization C,Normalization C 38,+,-,High,Sample-Dependent,NORM_C,38
+51606350,Normalization C,Normalization C 39,+,-,High,Sample-Dependent,NORM_C,39
+51761481,Normalization C,Normalization C 40,+,-,High,Sample-Dependent,NORM_C,40
+52761413,Normalization C,Normalization C 41,+,-,High,Sample-Dependent,NORM_C,41
+55732329,Normalization C,Normalization C 42,+,-,High,Sample-Dependent,NORM_C,42
+55747501,Normalization C,Normalization C 43,+,-,High,Sample-Dependent,NORM_C,43
+56656442,Normalization C,Normalization C 44,+,-,High,Sample-Dependent,NORM_C,44
+56738460,Normalization C,Normalization C 45,+,-,High,Sample-Dependent,NORM_C,45
+56778357,Normalization C,Normalization C 46,+,-,High,Sample-Dependent,NORM_C,46
+56806464,Normalization C,Normalization C 47,+,-,High,Sample-Dependent,NORM_C,47
+57640346,Normalization C,Normalization C 48,+,-,High,Sample-Dependent,NORM_C,48
+57649399,Normalization C,Normalization C 49,+,-,High,Sample-Dependent,NORM_C,49
+57799313,Normalization C,Normalization C 50,+,-,High,Sample-Dependent,NORM_C,50
+59756399,Normalization C,Normalization C 51,+,-,High,Sample-Dependent,NORM_C,51
+62708477,Normalization C,Normalization C 52,+,-,High,Sample-Dependent,NORM_C,52
+63615474,Normalization C,Normalization C 53,+,-,High,Sample-Dependent,NORM_C,53
+63709386,Normalization C,Normalization C 54,+,-,High,Sample-Dependent,NORM_C,54
+64609487,Normalization C,Normalization C 55,+,-,High,Sample-Dependent,NORM_C,55
+65610474,Normalization C,Normalization C 56,+,-,High,Sample-Dependent,NORM_C,56
+67751351,Normalization C,Normalization C 57,+,-,High,Sample-Dependent,NORM_C,57
+67775306,Normalization C,Normalization C 58,+,-,High,Sample-Dependent,NORM_C,58
+71670310,Normalization C,Normalization C 59,+,-,High,Sample-Dependent,NORM_C,59
+73784382,Normalization C,Normalization C 60,+,-,High,Sample-Dependent,NORM_C,60
+73794434,Normalization C,Normalization C 61,+,-,High,Sample-Dependent,NORM_C,61
+23770483,Normalization T,Normalization T 1,-,+,High,Sample-Dependent,NORM_T,1
+25790300,Normalization T,Normalization T 2,-,+,High,Sample-Dependent,NORM_T,2
+26704364,Normalization T,Normalization T 3,-,+,High,Sample-Dependent,NORM_T,3
+28790326,Normalization T,Normalization T 4,-,+,High,Sample-Dependent,NORM_T,4
+29618498,Normalization T,Normalization T 5,-,+,High,Sample-Dependent,NORM_T,5
+29774306,Normalization T,Normalization T 6,-,+,High,Sample-Dependent,NORM_T,6
+30750303,Normalization T,Normalization T 7,-,+,High,Sample-Dependent,NORM_T,7
+31707322,Normalization T,Normalization T 8,-,+,High,Sample-Dependent,NORM_T,8
+31736353,Normalization T,Normalization T 9,-,+,High,Sample-Dependent,NORM_T,9
+31747339,Normalization T,Normalization T 10,-,+,High,Sample-Dependent,NORM_T,10
+31775443,Normalization T,Normalization T 11,-,+,High,Sample-Dependent,NORM_T,11
+33644415,Normalization T,Normalization T 12,-,+,High,Sample-Dependent,NORM_T,12
+33806355,Normalization T,Normalization T 13,-,+,High,Sample-Dependent,NORM_T,13
+34667361,Normalization T,Normalization T 14,-,+,High,Sample-Dependent,NORM_T,14
+36621472,Normalization T,Normalization T 15,-,+,High,Sample-Dependent,NORM_T,15
+36629493,Normalization T,Normalization T 16,-,+,High,Sample-Dependent,NORM_T,16
+36711421,Normalization T,Normalization T 17,-,+,High,Sample-Dependent,NORM_T,17
+37766401,Normalization T,Normalization T 18,-,+,High,Sample-Dependent,NORM_T,18
+40666333,Normalization T,Normalization T 19,-,+,High,Sample-Dependent,NORM_T,19
+42722426,Normalization T,Normalization T 20,-,+,High,Sample-Dependent,NORM_T,20
+43724438,Normalization T,Normalization T 21,-,+,High,Sample-Dependent,NORM_T,21
+44612371,Normalization T,Normalization T 22,-,+,High,Sample-Dependent,NORM_T,22
+10714330,Normalization T,Normalization T 23,-,+,High,Sample-Dependent,NORM_T,23
+11641439,Normalization T,Normalization T 24,-,+,High,Sample-Dependent,NORM_T,24
+11742370,Normalization T,Normalization T 25,-,+,High,Sample-Dependent,NORM_T,25
+11749491,Normalization T,Normalization T 26,-,+,High,Sample-Dependent,NORM_T,26
+11758414,Normalization T,Normalization T 27,-,+,High,Sample-Dependent,NORM_T,27
+12713402,Normalization T,Normalization T 28,-,+,High,Sample-Dependent,NORM_T,28
+13742412,Normalization T,Normalization T 29,-,+,High,Sample-Dependent,NORM_T,29
+14656336,Normalization T,Normalization T 30,-,+,High,Sample-Dependent,NORM_T,30
+15681421,Normalization T,Normalization T 31,-,+,High,Sample-Dependent,NORM_T,31
+15681446,Normalization T,Normalization T 32,-,+,High,Sample-Dependent,NORM_T,32
+15754447,Normalization T,Normalization T 33,-,+,High,Sample-Dependent,NORM_T,33
+16759387,Normalization T,Normalization T 34,-,+,High,Sample-Dependent,NORM_T,34
+19695407,Normalization T,Normalization T 35,-,+,High,Sample-Dependent,NORM_T,35
+20651487,Normalization T,Normalization T 36,-,+,High,Sample-Dependent,NORM_T,36
+67735372,Normalization T,Normalization T 37,-,+,High,Sample-Dependent,NORM_T,37
+68657384,Normalization T,Normalization T 38,-,+,High,Sample-Dependent,NORM_T,38
+68705481,Normalization T,Normalization T 39,-,+,High,Sample-Dependent,NORM_T,39
+68726417,Normalization T,Normalization T 40,-,+,High,Sample-Dependent,NORM_T,40
+69660330,Normalization T,Normalization T 41,-,+,High,Sample-Dependent,NORM_T,41
+71678368,Normalization T,Normalization T 42,-,+,High,Sample-Dependent,NORM_T,42
+73635489,Normalization T,Normalization T 43,-,+,High,Sample-Dependent,NORM_T,43
+55799383,Normalization T,Normalization T 44,-,+,High,Sample-Dependent,NORM_T,44
+57713321,Normalization T,Normalization T 45,-,+,High,Sample-Dependent,NORM_T,45
+44631336,Normalization T,Normalization T 46,-,+,High,Sample-Dependent,NORM_T,46
+45648306,Normalization T,Normalization T 47,-,+,High,Sample-Dependent,NORM_T,47
+46610354,Normalization T,Normalization T 48,-,+,High,Sample-Dependent,NORM_T,48
+47715450,Normalization T,Normalization T 49,-,+,High,Sample-Dependent,NORM_T,49
+49721486,Normalization T,Normalization T 50,-,+,High,Sample-Dependent,NORM_T,50
+52668393,Normalization T,Normalization T 51,-,+,High,Sample-Dependent,NORM_T,51
+52747473,Normalization T,Normalization T 52,-,+,High,Sample-Dependent,NORM_T,52
+54713306,Normalization T,Normalization T 53,-,+,High,Sample-Dependent,NORM_T,53
+55662399,Normalization T,Normalization T 54,-,+,High,Sample-Dependent,NORM_T,54
+55684415,Normalization T,Normalization T 55,-,+,High,Sample-Dependent,NORM_T,55
+55772319,Normalization T,Normalization T 56,-,+,High,Sample-Dependent,NORM_T,56
+60810444,Normalization T,Normalization T 57,-,+,High,Sample-Dependent,NORM_T,57
+63623369,Normalization T,Normalization T 58,-,+,High,Sample-Dependent,NORM_T,58
+58768373,Normalization T,Normalization T 59,-,+,High,Sample-Dependent,NORM_T,59
+59792509,Normalization T,Normalization T 60,-,+,High,Sample-Dependent,NORM_T,60
+65622344,Normalization T,Normalization T 61,-,+,High,Sample-Dependent,NORM_T,61

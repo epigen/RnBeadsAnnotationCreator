@@ -25,7 +25,7 @@ createAnnotationPackage.hg38 <- function(){
 	## Download SNP annotation
 	logger.start("SNP Annotation")
 	vcf.files <- paste0(DBSNP.FTP.BASE, "human_9606_b141_GRCh38/VCF/", "All.vcf.gz")
-	snps <- update.annot("snps", "polymorphism information", rnb.update.dbsnp, ftp.files = vcf.files)
+	update.annot("snps", "polymorphism information", rnb.update.dbsnp, ftp.files = vcf.files)
 	logger.completed()
 
 	## Download genes from Ensembl
@@ -41,13 +41,23 @@ createAnnotationPackage.hg38 <- function(){
 			"symbol" = "hgnc_symbol",
 			"entrezID" = "entrezgene"),
 		host = "dec2014.archive.ensembl.org")
-
 	logger.start("Region Annotation")
-	regions <- update.annot("regions", "region annotation", rnb.update.region.annotation,
+	update.annot("regions", "region annotation", rnb.update.region.annotation,
 		biomart.parameters = biomart.parameters)
+	rm(biomart.parameters)
 	logger.completed()
 
+	## Define genomic sites
 	logger.start("Genomic Sites")
-	sites <- update.annot("sites", "CpG annotation", rnb.update.sites, cpgislands = regions[["cpgislands"]])
+	update.annot("sites", "CpG annotation", rnb.update.sites)
 	logger.completed()
+
+	## Create all possible mappings from regions to sites
+	logger.start("Mappings")
+	update.annot("mappings", "mappings", rnb.create.mappings)
+	logger.completed()
+
+	## Export the annotation tables
+	rnb.export.annotations.to.data.files()
+	return(invisible(TRUE))
 }

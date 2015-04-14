@@ -8,16 +8,17 @@
 
 ## F U N C T I O N S ###################################################################################################
 
-## rnb.update.sites
-##
-## Creates lists of Genomic ranges for genomic sites targeted by methylation.
-##
-## @param cpgislands Region annotation of the CpG islands. If this is specified, the sites annotation is enriched with
-##                   a column named \code{"CGI Relation"}.
-## @param snps       SNP records as a \code{list} of \code{data.frame}s, one per chromosome.
-## @return List of \code{GRangesList} objects. Every item is dedicated to a motif (e.g. CpGs), and groups \code{GRanges}
-##         instances, one per chromosome.
-## @author Fabian Mueller
+#' rnb.update.sites
+#'
+#' Creates lists of Genomic ranges for genomic sites targeted by methylation.
+#'
+#' @param cpgislands Region annotation of the CpG islands. If this is specified, the sites annotation is enriched with
+#'                   a column named \code{"CGI Relation"}.
+#' @param snps       SNP records as a \code{list} of \code{data.frame}s, one per chromosome.
+#' @return List of \code{GRangesList} objects. Every item is dedicated to a motif (e.g. CpGs), and groups \code{GRanges}
+#'         instances, one per chromosome.
+#' @author Fabian Mueller
+#' @noRd
 rnb.update.sites <- function(cpgislands = .globals[['regions']][['cpgislands']], snps = .globals[['snps']]) {
 	genome.data <- get.genome.data()
 	CHROMOSOMES <- .globals[["CHROMOSOMES"]]
@@ -65,19 +66,20 @@ rnb.update.sites <- function(cpgislands = .globals[['regions']][['cpgislands']],
 
 ########################################################################################################################
 
-## rnb.update.site.annotation.with.probes
-##
-## Enriches the annotation of genomic sites by adding columns showing if they are covered by the included platforms.
-##
-## @param sites          List of \code{GRangesList} objects, one per site type or probe annotation.
-## @param query.probes   \code{character} vector storing the names of all elements in \code{sites} that define probe
-##                       annotations.
-## @param platform.names Platform names for the probe annotations. This must be a \code{character} vector of the same
-##                       length as \code{query.probes}. This parameter effectively specifies the metadata columns in the
-##                       sites annotation that will be added or replaced.
-## @return The modified \code{sites}.
-##
-## @author Yassen Assenov
+#' rnb.update.site.annotation.with.probes
+#'
+#' Enriches the annotation of genomic sites by adding columns showing if they are covered by the included platforms.
+#'
+#' @param sites          List of \code{GRangesList} objects, one per site type or probe annotation.
+#' @param query.probes   \code{character} vector storing the names of all elements in \code{sites} that define probe
+#'                       annotations.
+#' @param platform.names Platform names for the probe annotations. This must be a \code{character} vector of the same
+#'                       length as \code{query.probes}. This parameter effectively specifies the metadata columns in the
+#'                       sites annotation that will be added or replaced.
+#' @return The modified \code{sites}.
+#'
+#' @author Yassen Assenov
+#' @noRd
 rnb.update.site.annotation.with.probes <- function(sites, query.probes = "probes450",
 	platform.names = "HumanMethylation450") {
 
@@ -99,22 +101,24 @@ rnb.update.site.annotation.with.probes <- function(sites, query.probes = "probes
 			sites[[context.name]] <- GRangesList(result)
 			rm(chroms, overlaps, result, chrom, platform.indices)
 		}
+		logger.status(c("Computed overlaps with", qprobes))
 	}
 	return(sites)
 }
 
 ########################################################################################################################
 
-## rnb.update.site.annotation.with.cgistatus
-##
-## Enriches the annotation of genomic sites by adding columns showing their relation to CpG island status. This
-## relation is one of \code{"Island"}, \code{"Shore"}, \code{"Shelf"}, \code{"Open Sea"}.
-##
-## @param sites      List of \code{GRangesList} objects, one per site type or probe annotation.
-## @param cpgislands \code{GRangesList} object specifying the locations of CpG islands.
-## @return The modified \code{sites}.
-##
-## @author Fabian Mueller
+#' rnb.update.site.annotation.with.cgistatus
+#'
+#' Enriches the annotation of genomic sites by adding columns showing their relation to CpG island status. This
+#' relation is one of \code{"Island"}, \code{"Shore"}, \code{"Shelf"}, \code{"Open Sea"}.
+#'
+#' @param sites      List of \code{GRangesList} objects, one per site type or probe annotation.
+#' @param cpgislands \code{GRangesList} object specifying the locations of CpG islands.
+#' @return The modified \code{sites}.
+#'
+#' @author Fabian Mueller
+#' @noRd
 rnb.update.site.annotation.with.cgistatus <- function(sites, cpgislands) {
 	chromosomes <- names(cpgislands)
 
