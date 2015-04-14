@@ -21,7 +21,7 @@
 #' @author Yassen Assenov
 #' @noRd
 update.annot <- function(object.name, info, update.fun, ...) {
-	location <- file.path(.globals[['DIR.PACKAGE']], 'temp')
+	location <- file.path(.globals[['DIR.PACKAGE']], "temp")
 	fname <- file.path(location, paste0(object.name, ".RDS"))
 	if (file.exists(fname)) {
 		obj <- readRDS(fname)

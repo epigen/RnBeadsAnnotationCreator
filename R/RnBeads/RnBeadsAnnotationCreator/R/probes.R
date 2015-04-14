@@ -6,6 +6,21 @@
 ## Common functions for creating and updating Infinium probe annotation tables.
 ########################################################################################################################
 
+## F U N C T I O N S ###################################################################################################
+
+#' rnb.load.probe.annotation.geo
+#'
+#' Loads the specified probe annotation table from GEO.
+#'
+#' @param ftp.table     FTP link to the probe annotation table in GEO.
+#' @param table.columns Expected columns in the probe annotation table, given as a named \code{character} vector.
+#' @return \code{list} of two \code{data.frame}s:
+#'         \describe{
+#'           \item{\code{"probes"}}{Probe annotation; column names are the ones specified in \code{table.columns}.}
+#'           \item{\code{"controls"}}{Control probe annotation.}
+#'         }
+#' @author Yassen Assenov
+#' @noRd
 rnb.load.probe.annotation.geo <- function(ftp.table, table.columns, platform = "HumanMethylation27k") {
 
 	## Download probe definition table from GEO
@@ -28,7 +43,7 @@ rnb.load.probe.annotation.geo <- function(ftp.table, table.columns, platform = "
 	# it is faster to re-read the file than to call read.csv from textConnection(txt)
 	probe.infos <- read.csv(destfile, skip = assay.start, nrows = controls.start - assay.start - 2, check.names = FALSE)
 	control.probe.infos <- read.csv(destfile, header = FALSE, skip = controls.start, check.names = FALSE)
-	logger.status("Loaded the probe definition tables")
+	logger.status("Loaded the probe definition tables from GEO")
 
 	## Validate probe.infos columns
 	N <- length(table.columns)
@@ -71,8 +86,6 @@ rnb.update.probe.annotation.methylumi <- function(platform = "HumanMethylation27
 		Location = start(probe.infos),
 		Context = mcols(probe.infos)[, "probeType"],
 		Channel = mcols(probe.infos)[, "channel"],
-#		Context = as.factor(mcols(probe.infos)[, "probeType"]),
-#		Channel = as.factor(mcols(probe.infos)[, "channel"]),
 		AddressA = as.integer(mcols(probe.infos)[, "addressA"]),
 		AddressB = as.integer(mcols(probe.infos)[, "addressB"]),
 		check.names = FALSE, stringsAsFactors = FALSE)
@@ -278,7 +291,7 @@ rnb.update.probe.annotation.msnps <- function(probe.infos, snps = .globals[['snp
 		probe.infos[[cname]] <- as.integer(NA)
 		probe.infos[i, cname] <- snp.stats[, cname]
 	}
-	logger.status("Marked overlapping of probes with dbSNP records")
+	logger.status("Marked overlaps of probes with dbSNP records")
 
 	probe.infos
 }
@@ -303,7 +316,6 @@ rnb.update.probe.annotation.snps <- function(probe.regs, snps) {
 	if (!is.null(snps)) {
 		## Count SNPs in probe regions
 		for (i in 1:nrow(probe.regs)) {
-#i <- 1
 			i.snps <- which(probe.regs[i, "start"] <= snps[, "end"] & snps[, "start"] <= probe.regs[i, "end"])
 			if (length(i.snps) != 0) {
 				cname <- ifelse(probe.regs[i, "strand"] == "-", "G2A", "C2T")

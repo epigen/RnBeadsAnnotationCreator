@@ -10,7 +10,7 @@
 ## Global variables for the targeted genome assembly
 
 ## Environment used to store the global variables:
-##   assembly, DIR.PACKAGE, CHROMOSOMES, snps, regions, sites, mappings
+##   assembly, DIR.PACKAGE, CHROMOSOMES, snps, regions, sites, mappings, ...
 .globals <- new.env()
 
 ########################################################################################################################
@@ -92,13 +92,3 @@ CONTROL.COLORS.GREEN <- c("Black", "Blue", "Cyan", "Green", "Lime", "LimeGreen",
 
 ## Control probe colors associated with the evaluation of the Red channel
 CONTROL.COLORS.RED <- c("Gold", "Orange", "Purple", "Red", "Tomato", "Yellow")
-
-########################################################################################################################
-
-## Location of the control probe annotation table compiled by Pavlo Lutsik
-COMPILED.TABLE.FILE <- "tables/control.meta.data.csv"
-
-## Column names in the CSV file compiled by Pavlo Lutsik
-COMPILED.TABLE.COLUMNS <- c("Address", "Purpose", "Description", "Evaluate.Green", "Evaluate.Red", "Expected.Intensity",
-	"Control.Type", "TargetID", "Index")
-

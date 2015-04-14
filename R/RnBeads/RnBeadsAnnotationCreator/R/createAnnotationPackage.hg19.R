@@ -28,6 +28,7 @@ createAnnotationPackage.hg19 <- function() {
 	vcf.files <- paste0(DBSNP.FTP.BASE, "human_9606_b141_GRCh37p13/VCF/", "00-All.vcf.gz")
 	update.annot("snps", "polymorphism information", rnb.update.dbsnp, ftp.files = vcf.files)
 	logger.info(paste("Using:", attr(.globals[['snps']], "version")))
+	rm(vcf.files)
 	logger.completed()
 
 	## Define genomic regions - tiling, genes (download from Ensembl), promoters, CpG islands (download from UCSC)
@@ -46,8 +47,8 @@ createAnnotationPackage.hg19 <- function() {
 	logger.start("Region Annotation")
 	update.annot("regions", "region annotation", rnb.update.region.annotation,
 		biomart.parameters = biomart.parameters)
-	logger.completed()
 	rm(biomart.parameters)
+	logger.completed()
 
 	## Define genomic sites
 	logger.start("Genomic Sites")
@@ -135,7 +136,14 @@ createAnnotationPackage.hg19 <- function() {
 		"DHS" = "DHS")
 	update.annot("probes450", "Infinium 450K annotation", rnb.update.probe450k.annotation,
 		ftp.table = ftp.table, table.columns = table.columns)
-	.globals[['sites']][['probes450']] <- .globals[['probes450']][["probes"]]
+	.globals[['sites']][["probes450"]] <- .globals[['probes450']][["probes"]]
+	rm(ftp.table, table.columns)
+	logger.completed()
+
+	## Add annotation columns to the context probes, showing if they are covered by an assay
+	logger.start("Updating Site Annotation with Probes")
+	.globals[['sites']] <- rnb.update.site.annotation.with.probes(sites = .globals[['sites']], query.probes = c("probes27", "probes450"),
+		platform.names = c("HumanMethylation27", "HumanMethylation450"))
 	logger.completed()
 
 	## Create all possible mappings from regions to sites
