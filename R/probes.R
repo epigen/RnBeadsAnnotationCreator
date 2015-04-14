@@ -339,3 +339,56 @@ rnb.update.probe.annotation.snps <- function(probe.regs, snps) {
 
 	return(snp.stats)
 }
+
+########################################################################################################################
+
+#' rnb.update.probe.annotation.cr
+#'
+#' Extracts information on cross-reactive probes.
+#'
+#' @param probe.ids All probe identifiers in a \code{character} vector.
+#' @return \code{integer} vector of the same length as \code{probe.ids}. The \code{i}th element in this vector stores
+#'         the number of cross-reactive targets matching 47 or more bases in the sequence of probe \code{i}.
+#' @author Yassen Assenov
+#' @noRd
+rnb.update.probe.annotation.cr <- function(probe.ids) {
+	fname <- paste0("extdata/", .globals[['assembly']], ".probes450.crossreactive.txt")
+	fname <- system.file(fname, package = "RnBeadsAnnotationCreator")
+	if (file.exists(fname)) {
+		tbl <- read.delim(fname, quote = "", check.names = FALSE, stringsAsFactors = FALSE)
+		logger.status(c("Loaded list of cross-reactive probes from", fname))
+		if (nrow(tbl) < 1) {
+			logger.error("Empty table")
+		}
+		expected <- c("TargetID" = "character", "47" = "integer", "48" = "integer", "49" = "integer", "50" = "integer")
+		if (!identical(sapply(tbl, class), expected)) {
+			logger.error("Unexpected table structure")
+		}
+		if (anyDuplicated(tbl[, 1]) != 0) {
+			logger.error("Unexpected table structure; duplicated probe identifiers found")
+		}
+		rownames(tbl) <- tbl[, 1]
+		tbl <- as.matrix(tbl[, -1])
+		if (any(tbl < 0L)) {
+			logger.error("Unexpected table structure; negative counts found")
+		}
+		tbl <- apply(tbl, 1, sum, na.rm = TRUE)
+		ids.notfound <- setdiff(names(tbl), probe.ids)
+		if (length(ids.notfound) != 0) {
+			if (length(ids.notfound) == length(tbl)) {
+				logger.error("None of the probe IDs in the table is a valid probe ID")
+			}
+			logger.warning(c("Ignoring", length(ids.notfound), "invalid probe IDs in the table"))
+			tbl <- tbl[intersect(probe.ids, names(tbl))]
+		}
+		result <- rep(0L, length(probe.ids))
+		names(result) <- probe.ids
+		result[names(tbl)] <- tbl
+		result <- unname(result)
+		logger.status("Added information on cross-reactive probes")
+	} else {
+		result <- rep(as.integer(NA), length(probe.ids))
+		logger.warning("No list of cross-reactive probes available; creating a column with NAs")
+	}
+	result
+}
