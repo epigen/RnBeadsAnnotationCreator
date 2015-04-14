@@ -16,7 +16,7 @@
 #' @param info        Human-readable description of the annotation. This must be a one-element \code{character} vector.
 #' @param unpdate.fun Function to be called for creating the annotation object.
 #' @param ...         Parameters passed to the updating function.
-#' @return The loaded or initialized annotation object.
+#' @return The loaded or initialized annotation object, invisibly.
 #' 
 #' @author Yassen Assenov
 #' @noRd
@@ -33,7 +33,8 @@ update.annot <- function(object.name, info, update.fun, ...) {
 		close(con)
 		logger.status(c("Saved", info, "to", fname))
 	}
-	return(obj)
+	assign(object.name, obj, .globals)
+	return(invisible(obj))
 }
 
 ########################################################################################################################
@@ -49,18 +50,25 @@ update.annot <- function(object.name, info, update.fun, ...) {
 #' @author Yassen Assenov
 #' @noRd
 rnb.get.package.data.file <- function(annotation.name) {
-	fname <- paste0(.globals[["assembly"]], ".", annotation.name, ".RData")
-	file.path(.globals[["DIR.PACKAGE"]], "data", fname)
+	fname <- paste0(.globals[['assembly']], ".", annotation.name, ".RData")
+	file.path(.globals[['DIR.PACKAGE']], "data", fname)
 }
 
 ########################################################################################################################
 
+#' rnb.export.annotations.to.data.files
+#'
+#' Exports the annotation tables and mappings in the environment \code{.globals} to the \code{"data"} directory of the
+#' annotation package currently being constructed.
+#'
+#' @author Yassen Assenov
+#' @noRd
 rnb.export.annotations.to.data.files <- function() {
 	sites.full <- .globals[['sites']]
 	for (sname in names(sites.full)) {
 		sites <- list("sites" = sites.full[[sname]], "mappings" = lapply(.globals[['mappings']], "[[", sname))
-		if (sname == "probes450") { sites[["controls450"]] <- .globals[['controls450']] }
-		else if (sname == "probes27") { sites[["controls27"]] <- .globals[['controls27']] }
+		if (sname == "probes450") { sites[["controls450"]] <- .globals[['probes450']][["controls"]] }
+		else if (sname == "probes27") { sites[["controls27"]] <- .globals[['probes27']][["controls"]] }
 		save(sites, file = rnb.get.package.data.file(sname), compression_level = 9L)
 		logger.status(c("Saved", sname, "annotation table and mappings to the package data"))
 	}

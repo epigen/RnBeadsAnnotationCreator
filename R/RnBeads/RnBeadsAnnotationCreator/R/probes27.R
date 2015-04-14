@@ -10,20 +10,22 @@
 
 #' rnb.update.probe27k.annotation
 #'
-#' Creates probe annotation tables for Infinium 27K. STILL IN TESTING STAGE.
+#' Creates probe annotation tables for Infinium 27K.
 #'
-#' @param cpgislands Region annotation of the CpG islands. If this is specified, the sites annotation is enriched with
-#'                   a column named \code{"CGI Relation"}.
-#' @param snps       SNP records as a \code{list} of \code{data.frame}s, one per chromosome.
-#' @param ftp.table  ...
-#' @param table.columns ...
-#' @return \code{GRangesList} instance containing probe annotations, one \code{GRanges} per chromosome.
+#' @param ftp.table     FTP link to the probe annotation table in GEO.
+#' @param table.columns Expected columns in the probe annotation table, given as a named \code{character} vector.
+#' @return \code{list} of two items:
+#'         \describe{
+#'           \item{\code{"probes"}}{\code{GRangesList} instance containing probe annotations, one \code{GRanges} per
+#'                chromosome.}
+#'           \item{\code{"controls"}}{\code{data.frame} with control probe annotation.}
+#'         }
 #' @author Yassen Assenov
 #' @noRd
-rnb.update.probe27k.annotation <- function(cpgislands = NULL, snps = NULL, ftp.table, table.columns) {
+rnb.update.probe27k.annotation <- function(ftp.table, table.columns) {
 
 	## Download probe definition table from GEO
-	probes27.geo <- rnb.load.probe.annotation.geo("HumanMethylation27k")
+	probes27.geo <- rnb.load.probe.annotation.geo("HumanMethylation27k", table.columns)
 	geo <- probes27.geo$probes
 
 	## Validate the columns in the downloaded table

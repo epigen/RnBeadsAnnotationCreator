@@ -26,9 +26,8 @@ createAnnotationPackage.hg19 <- function() {
 	## Download SNP annotation
 	logger.start("SNP Annotation")
 	vcf.files <- paste0(DBSNP.FTP.BASE, "human_9606_b141_GRCh37p13/VCF/", "00-All.vcf.gz")
-	snps <- update.annot("snps", "polymorphism information", rnb.update.dbsnp, ftp.files = vcf.files)
-	logger.info(paste("Using:", attr(snps, "version")))
-	assign('snps', snps, .globals)
+	update.annot("snps", "polymorphism information", rnb.update.dbsnp, ftp.files = vcf.files)
+	logger.info(paste("Using:", attr(.globals[['snps']], "version")))
 	logger.completed()
 
 	## Define genomic regions - tiling, genes (download from Ensembl), promoters, CpG islands (download from UCSC)
@@ -48,6 +47,7 @@ createAnnotationPackage.hg19 <- function() {
 	update.annot("regions", "region annotation", rnb.update.region.annotation,
 		biomart.parameters = biomart.parameters)
 	logger.completed()
+	rm(biomart.parameters)
 
 	## Define genomic sites
 	logger.start("Genomic Sites")
@@ -93,9 +93,11 @@ createAnnotationPackage.hg19 <- function() {
 		"MIR_NAMES" = "MIR Names")
 	update.annot("probes27", "Infinium 27K annotation", rnb.update.probe27k.annotation,
 		ftp.table = ftp.table, table.columns = table.columns)
+	.globals[['sites']][['probes27']] <- .globals[['probes27']][["probes"]]
 	logger.completed()
 
 	## Define Infinium 450k probe annotations
+	logger.start("Infinium 450k")
 	ftp.table <- paste0(GEO.FTP.BASE, "GPL13534/GPL13534_HumanMethylation450_15017482_v.1.1.csv.gz")
 	table.columns <- c(
 		"IlmnID" = "ID",
@@ -131,7 +133,10 @@ createAnnotationPackage.hg19 <- function() {
 		"Regulatory_Feature_Name" = "Regulatory Feature Name",
 		"Regulatory_Feature_Group" = "Regulatory Feature Group",
 		"DHS" = "DHS")
-	#...
+	update.annot("probes450", "Infinium 450K annotation", rnb.update.probe450k.annotation,
+		ftp.table = ftp.table, table.columns = table.columns)
+	.globals[['sites']][['probes450']] <- .globals[['probes450']][["probes"]]
+	logger.completed()
 
 	## Create all possible mappings from regions to sites
 	logger.start("Mappings")
@@ -140,4 +145,5 @@ createAnnotationPackage.hg19 <- function() {
 
 	## Export the annotation tables
 	rnb.export.annotations.to.data.files()
+	return(invisible(TRUE))
 }
