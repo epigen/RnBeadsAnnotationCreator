@@ -8,7 +8,7 @@
 
 ## F U N C T I O N S ###################################################################################################
 
-#' rnb.update.probe27k.annotation
+#' rnb.update.probe450k.annotation
 #'
 #' Creates probe annotation tables for Infinium 450k.
 #'
@@ -350,6 +350,7 @@ rnb.update.probes450.combine <- function(methylumi, geo) {
 	if (!("Context" %in% colnames(geo))) {
 		geo[["Context"]] <- as.character(NA)
 	}
+	## FIXME: Remove the following line
 	geo <- geo[, c("ID", "Design", "Color", "Context", "Random", "HumanMethylation27",
 			"Mismatches A", "Mismatches B", "Genome Build", "Chromosome", "Location", "Strand", "CGI Relation",
 			"AlleleA Probe Sequence", "AlleleB Probe Sequence")]
@@ -368,7 +369,7 @@ rnb.update.probes450.combine <- function(methylumi, geo) {
 		"Design" = geo[, "Design"], "Color" = geo[, "Color"],
 		"Context" = geo[, "Context"], "Random" = geo[, "Random"],
 		"HumanMethylation27" = geo[, "HumanMethylation27"],
-		"HumanMethylation450" = geo[, "HumanMethylation450"],
+		"HumanMethylation450" = rep(TRUE, nrow(geo)),
 		"Mismatches A" = geo[, "Mismatches A"], "Mismatches B" = geo[, "Mismatches B"],
 		"CGI Relation" = geo[, "CGI Relation"], "CpG" = geo[, "CpG"], "GC" = geo[, "GC"],
 		"SNPs 3" = geo[, "SNPs 3"], "SNPs 5" = geo[, "SNPs 5"], "SNPs Full" = geo[, "SNPs Full"],
