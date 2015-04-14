@@ -87,6 +87,7 @@ rnb.export.annotations.to.data.files <- function() {
 #'                    \code{"mm9"}, \code{"rn5"}.
 #' @param dest        Destination directory where the package should be generated.
 #' @param cores.count Number of processing cores to be used in the computations.
+#' @return None (invisible \code{NULL}).
 #' @author Fabian Mueller
 #' @examples
 #' createAnnotationPackage("hg38")
@@ -146,4 +147,5 @@ createAnnotationPackage <- function(assembly,dest=getwd(),cores.count=1L){
 	} else {
 		logger.error("Could not clean package temporary directory")
 	}
+	logger.completed()
 }

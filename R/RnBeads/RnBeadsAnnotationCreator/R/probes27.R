@@ -135,5 +135,6 @@ rnb.update.probe27k.annotation <- function(ftp.table, table.columns) {
 	}
 	logger.completed()
 
+	seqinfo(probes.gr) <- seqinfo(get.genome.data())[.globals[['CHROMOSOMES']], ]
 	return(list(probes = probes.gr, controls = geo))
 }

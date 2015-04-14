@@ -350,7 +350,6 @@ rnb.update.probes450.combine <- function(methylumi, geo) {
 	if (!("Context" %in% colnames(geo))) {
 		geo[["Context"]] <- as.character(NA)
 	}
-	## FIXME: Remove the following line
 	geo <- geo[, c("ID", "Design", "Color", "Context", "Random", "HumanMethylation27",
 			"Mismatches A", "Mismatches B", "Genome Build", "Chromosome", "Location", "Strand", "CGI Relation",
 			"AlleleA Probe Sequence", "AlleleB Probe Sequence")]
@@ -358,6 +357,9 @@ rnb.update.probes450.combine <- function(methylumi, geo) {
 	## Add information about CpG counts and GC content in the neighborhood, context, overlaps with SNPs
 	geo <- rnb.update.probe.annotation.cpg.context(geo)
 	geo <- rnb.update.probe.annotation.msnps(geo)
+
+	## Add data on cross-hybridization	
+	geo[, "Cross-reactive"] <- rnb.update.probe.annotation.cr(geo[, "ID"])
 
 	## Convert to GRangesList
 	chromosomes <- names(.globals[['CHROMOSOMES']])
@@ -373,11 +375,13 @@ rnb.update.probes450.combine <- function(methylumi, geo) {
 		"Mismatches A" = geo[, "Mismatches A"], "Mismatches B" = geo[, "Mismatches B"],
 		"CGI Relation" = geo[, "CGI Relation"], "CpG" = geo[, "CpG"], "GC" = geo[, "GC"],
 		"SNPs 3" = geo[, "SNPs 3"], "SNPs 5" = geo[, "SNPs 5"], "SNPs Full" = geo[, "SNPs Full"],
+		"Cross-reactive" = geo[, "Cross-reactive"],
 		check.names = FALSE)
 	seqlevels(probes.gr) <- chromosomes
 	seqlengths(probes.gr) <- as.integer(seqlengths(get.genome.data())[chromosomes])
 	probes.gr <- rnb.sort.regions(probes.gr)
 	probes.gr <- GenomicRanges::split(probes.gr, seqnames(probes.gr))[chromosomes]
 
+	seqinfo(probes.gr) <- seqinfo(get.genome.data())[.globals[['CHROMOSOMES']], ]
 	return(probes.gr)
 }

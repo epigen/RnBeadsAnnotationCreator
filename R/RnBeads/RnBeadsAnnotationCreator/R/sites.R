@@ -173,7 +173,7 @@ rnb.update.site.annotation.with.snps <- function(sites, snps) {
 	chromosomes <- names(snps)
 
 	for (i in names(sites)) {
-		sites[[i]] <- endoapply(sites[[i]], function(x) { mcols(x)[, "SNP"] <- as.character(NA); x })
+		sites[[i]] <- endoapply(sites[[i]], function(x) { mcols(x)[, "SNPs"] <- as.character(NA); x })
 		logger.status(c("Added column SNP to the annotation of sites", i))
 		for (chrom in names(sites[[i]])) {
 			cpg.coords <- start(sites[[i]][[chrom]])
@@ -185,11 +185,11 @@ rnb.update.site.annotation.with.snps <- function(sites, snps) {
 				lbls <- tapply(subjectHits(hits), queryHits(hits),
 					function(j) { paste(rownames(dfr)[j], collapse = ",") })
 				j <- rep(as.integer(names(lbls)), each = 2L) * 2L - c(1L, 0L)
-				mcols(sites[[i]][[chrom]])[j, "SNP"] <- rep(unname(lbls), each = 2L)
+				mcols(sites[[i]][[chrom]])[j, "SNPs"] <- rep(unname(lbls), each = 2L)
 				rm(dfr, hits, lbls, j)
 			}
 		}
-		logger.status(c("Overlapped sites", i, "with SNPs"))
+		logger.status(c("Overlapped", i, "sites with SNPs"))
 		rm(chrom, cpg.coords)
 	}
 	return(sites)
