@@ -236,6 +236,5 @@ rnb.update.region.annotation <- function(biomart.parameters) {
 
 	attr(result, "builtin") <- sapply(result, function(x) { TRUE })
 	result <- rnb.add.descriptions(result)
-	assign('regions', result, .globals)
-	return(invisible(result))
+	return(result)
 }

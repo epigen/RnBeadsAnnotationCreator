@@ -60,8 +60,7 @@ rnb.update.sites <- function(cpgislands = .globals[['regions']][['cpgislands']],
 	}
 
 	sites <- rnb.add.descriptions(sites)
-	assign('sites', sites, .globals)
-	return(invisible(sites))
+	return(sites)
 }
 
 ########################################################################################################################
