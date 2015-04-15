@@ -14,6 +14,7 @@
 #'
 #' @param ftp.table     FTP link to the probe annotation table in GEO.
 #' @param table.columns Expected columns in the probe annotation table, given as a named \code{character} vector.
+#' @param platform      Assay name; must be one \code{"HumanMehylation27"} or \code{"HumanMehylation450"}.
 #' @return \code{list} of two \code{data.frame}s:
 #'         \describe{
 #'           \item{\code{"probes"}}{Probe annotation; column names are the ones specified in \code{table.columns}.}
@@ -21,7 +22,7 @@
 #'         }
 #' @author Yassen Assenov
 #' @noRd
-rnb.load.probe.annotation.geo <- function(ftp.table, table.columns, platform = "HumanMethylation27k") {
+rnb.load.probe.annotation.geo <- function(ftp.table, table.columns, platform) {
 
 	## Download probe definition table from GEO
 	destfile <- file.path(.globals[['DIR.PACKAGE']], "temp", paste0(platform, ".csv.gz"))
@@ -64,7 +65,7 @@ rnb.load.probe.annotation.geo <- function(ftp.table, table.columns, platform = "
 #' Creates probe annotation \code{data.frame}s using the data avaible in the package
 #' \pkg{IlluminaHumanMethylation450k.db}.
 #'
-#' @param platform Assay name, must be one of \code{"HumanMethylation27k"} or \code{"HumanMethylation450k"}.
+#' @param platform Assay name, must be one of \code{"HumanMethylation27"} or \code{"HumanMethylation450"}.
 #' @return \code{list} of two elements:
 #'         \describe{
 #'           \item{\code{probes}}{Table of annotation for all methylation and SNP-based probes in the assay. It
@@ -75,9 +76,9 @@ rnb.load.probe.annotation.geo <- function(ftp.table, table.columns, platform = "
 #'         }
 #' @author Yassen Assenov
 #' @noRd
-rnb.update.probe.annotation.methylumi <- function(platform = "HumanMethylation27k") {
+rnb.update.probe.annotation.methylumi <- function(platform = "HumanMethylation27") {
 
-	pltrf <- ifelse(platform == "HumanMethylation27k", "HM27", "HM450")
+	pltrf <- ifelse(platform == "HumanMethylation27", "HM27", "HM450")
 	probe.infos <- suppressMessages(getPlatform(platform = pltrf, genome = .globals[['assembly']]))
 	# mcols()[, "addressA", "addressB", "channel", "probeType", "platform", "percentGC"]
 	probe.infos <- data.frame(
@@ -105,9 +106,9 @@ rnb.update.probe.annotation.methylumi <- function(platform = "HumanMethylation27
 	logger.status("Extracted probe annotation from the methylumi package")
 
 	## Extract a table with control probe annotations
-	if (platform == "HumanMethylation27k") {
+	if (platform == "HumanMethylation27") {
 		control.probe.infos <- hm27.controls # [, "Address", "Type", "Color_Channel", "Name"]
-	} else { # platform == "HumanMethylation450k"
+	} else { # platform == "HumanMethylation450"
 		control.probe.infos <- hm450.controls # [, "Address", "Type", "Color_Channel", "Name"]
 	}
 	rownames(control.probe.infos) <- control.probe.infos[, "Address"]
@@ -347,12 +348,14 @@ rnb.update.probe.annotation.snps <- function(probe.regs, snps) {
 #' Extracts information on cross-reactive probes.
 #'
 #' @param probe.ids All probe identifiers in a \code{character} vector.
+#' @param platform      Assay name; must be one \code{"HumanMehylation27"} or \code{"HumanMehylation450"}.
 #' @return \code{integer} vector of the same length as \code{probe.ids}. The \code{i}th element in this vector stores
 #'         the number of cross-reactive targets matching 47 or more bases in the sequence of probe \code{i}.
 #' @author Yassen Assenov
 #' @noRd
-rnb.update.probe.annotation.cr <- function(probe.ids) {
-	fname <- paste0("extdata/", .globals[['assembly']], ".probes450.crossreactive.txt")
+rnb.update.probe.annotation.cr <- function(probe.ids, platform) {
+	fname <- ifelse(platform == "HumanMethylation27", "probes27", "probes450")
+	fname <- paste0("extdata/", .globals[['assembly']], ".", fname, ".crossreactive.txt")
 	fname <- system.file(fname, package = "RnBeadsAnnotationCreator")
 	if (file.exists(fname)) {
 		tbl <- read.delim(fname, quote = "", check.names = FALSE, stringsAsFactors = FALSE)

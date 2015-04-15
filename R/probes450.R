@@ -3,7 +3,7 @@
 ## created: 2015-04-10
 ## creator: Yassen Assenov
 ## ---------------------------------------------------------------------------------------------------------------------
-## Initializes the Infinium HumanMethylation450K probe definition tables by loading them from various sources.
+## Initializes the Infinium HumanMethylation450 probe definition tables by loading them from various sources.
 ########################################################################################################################
 
 ## F U N C T I O N S ###################################################################################################
@@ -26,7 +26,7 @@ rnb.update.probe450k.annotation <- function(ftp.table, table.columns) {
 
 	logger.start("Loading Probe Definitions")
 	geo <- rnb.update.probe.annotation.geo(ftp.table, table.columns)
-	methylumi <- rnb.update.probe.annotation.methylumi("HumanMethylation450k")
+	methylumi <- rnb.update.probe.annotation.methylumi("HumanMethylation450")
 	compiled <- rnb.update.probe.annotation.compiled()
 	logger.completed()
 
@@ -53,7 +53,7 @@ rnb.update.probe450k.annotation <- function(ftp.table, table.columns) {
 rnb.update.probe.annotation.geo <- function(ftp.table, table.columns) {
 
 	## Download probe definition table from GEO
-	result <- rnb.load.probe.annotation.geo(ftp.table, table.columns, "HumanMethylation450k")
+	result <- rnb.load.probe.annotation.geo(ftp.table, table.columns, "HumanMethylation450")
 	probe.infos <- result$probes
 	control.probe.infos <- result$controls
 	rm(result)
@@ -359,7 +359,7 @@ rnb.update.probes450.combine <- function(methylumi, geo) {
 	geo <- rnb.update.probe.annotation.msnps(geo)
 
 	## Add data on cross-hybridization	
-	geo[, "Cross-reactive"] <- rnb.update.probe.annotation.cr(geo[, "ID"])
+	geo[, "Cross-reactive"] <- rnb.update.probe.annotation.cr(geo[, "ID"], "HumanMethylation450")
 
 	## Convert to GRangesList
 	chromosomes <- names(.globals[['CHROMOSOMES']])
