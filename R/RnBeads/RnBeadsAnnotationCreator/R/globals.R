@@ -78,7 +78,7 @@ UCSC.FTP.BASE <- "ftp://hgdownload.cse.ucsc.edu/goldenPath/"
 ########################################################################################################################
 ## Gene Expression Omnibus
 
-## Base FPT directory of GEO's records dedicated to HumanMethylation27K and HumanMethylation450K
+## Base FPT directory of GEO's records dedicated to HumanMethylation27 and HumanMethylation450
 GEO.FTP.BASE <- "ftp://ftp.ncbi.nlm.nih.gov/pub/geo/DATA/supplementary/platforms/"
 
 ########################################################################################################################

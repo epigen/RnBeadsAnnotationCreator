@@ -3,7 +3,7 @@
 ## created: 2015-04-10
 ## creator: Yassen Assenov
 ## ---------------------------------------------------------------------------------------------------------------------
-## Initializes the Infinium HumanMethylation27K probe definition tables by loading them from various sources.
+## Initializes the Infinium HumanMethylation27 probe definition tables by loading them from various sources.
 ########################################################################################################################
 
 ## F U N C T I O N S ###################################################################################################
@@ -25,7 +25,7 @@
 rnb.update.probe27k.annotation <- function(ftp.table, table.columns) {
 
 	## Download probe definition table from GEO
-	probes27.geo <- rnb.load.probe.annotation.geo("HumanMethylation27k", table.columns)
+	probes27.geo <- rnb.load.probe.annotation.geo(ftp.table, table.columns, "HumanMethylation27")
 	geo <- probes27.geo$probes
 
 	## Validate the columns in the downloaded table
@@ -49,7 +49,7 @@ rnb.update.probe27k.annotation <- function(ftp.table, table.columns) {
 	levels(geo[["Color"]]) <- c("green", "red")
 
 	## Obtain probe definition table from FDb.InfiniumMethylation.hg19
-	probes27.bioc <- rnb.update.probe.annotation.methylumi("HumanMethylation27k")
+	probes27.bioc <- rnb.update.probe.annotation.methylumi("HumanMethylation27")
 	methylumi <- probes27.bioc$probes # this table contains also 14 SNP probes
 	methylumi <- methylumi[!is.na(methylumi[, "Chromosome"]), ]
 	logger.status("Extracted probe definition table from FDb.InfiniumMethylation.hg19")
@@ -88,6 +88,9 @@ rnb.update.probe27k.annotation <- function(ftp.table, table.columns) {
 		logger.status("Updated probe annotation with SNP information")
 	}
 
+	## Add data on cross-hybridization
+	probe.infos[, "Cross-reactive"] <- rnb.update.probe.annotation.cr(probe.infos[, "ID"], "HumanMethylation27")
+
 	## Convert to GRangesList
 	starts <- probe.infos[, "Location"]
 	starts[is.na(starts)] <- 0L
@@ -99,8 +102,10 @@ rnb.update.probe27k.annotation <- function(ftp.table, table.columns) {
 #		"CGI Relation" = probe.infos[, "CGI Relation"],
 		"CpG" = probe.infos[, "CpG"], "GC" = probe.infos[, "GC"],
 		"SNPs 3" = probe.infos[, "SNPs 3"], "SNPs 5" = probe.infos[, "SNPs 5"],
-		"SNPs Full" = probe.infos[, "SNPs Full"], check.names = FALSE,
-		seqinfo = seqinfo(Hsapiens)[levels(probe.infos[, "Chromosome"])])
+		"SNPs Full" = probe.infos[, "SNPs Full"],
+		"Cross-reactive" = probe.infos[, "Cross-reactive"],
+		check.names = FALSE,
+		seqinfo = seqinfo(get.genome.data())[.globals[['CHROMOSOMES']], ])
 	probes.gr <- rnb.sort.regions(probes.gr)
 	probes.gr <- GenomicRanges::split(probes.gr, seqnames(probes.gr))[levels(probe.infos[, "Chromosome"])]
 
@@ -135,6 +140,5 @@ rnb.update.probe27k.annotation <- function(ftp.table, table.columns) {
 	}
 	logger.completed()
 
-	seqinfo(probes.gr) <- seqinfo(get.genome.data())[.globals[['CHROMOSOMES']], ]
 	return(list(probes = probes.gr, controls = geo))
 }
