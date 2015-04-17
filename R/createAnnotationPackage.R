@@ -86,12 +86,13 @@ rnb.export.annotations.to.data.files <- function() {
 #' @param assembly    Targeted genome assembly. Must be one of \code{"hg38"}, \code{"hg19"}, \code{"mm10"},
 #'                    \code{"mm9"}, \code{"rn5"}.
 #' @param dest        Destination directory where the package should be generated.
+#' @param cleanUp	  Should the temporary directory in the package be removed (default:TRUE)
 #' @return None (invisible \code{NULL}).
 #' @author Fabian Mueller
 #' @examples
 #' createAnnotationPackage("hg38")
 #' @export
-createAnnotationPackage <- function(assembly,dest=getwd()){
+createAnnotationPackage <- function(assembly,dest=getwd(),cleanUp=TRUE){
 	## Validate parameters
 	if (!(is.character(assembly) && length(assembly) == 1 && (isTRUE(assembly != "")))) {
 		stop("invalid value for assembly")
@@ -134,10 +135,12 @@ createAnnotationPackage <- function(assembly,dest=getwd()){
 	do.call(function.name, list())
 
 	## Clean the temporary directory
-	if (unlink(file.path(.globals[['DIR.PACKAGE']], "temp"), recursive = TRUE) != 0L) {
-		logger.status("Cleaned package temporary directory")
-	} else {
-		logger.error("Could not clean package temporary directory")
+	if (cleanUp){
+		if (unlink(file.path(.globals[['DIR.PACKAGE']], "temp"), recursive = TRUE) != 0L) {
+			logger.status("Cleaned package temporary directory")
+		} else {
+			logger.error("Could not clean package temporary directory")
+		}
 	}
 	logger.completed()
 	if (logging2console) {
