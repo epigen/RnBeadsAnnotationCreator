@@ -83,10 +83,11 @@ rnb.export.annotations.to.data.files <- function() {
 #' 
 #' Generates an R package containing the RnBeads annotation for the specified genome assembly.
 #'
-#' @param assembly    Targeted genome assembly. Must be one of \code{"hg38"}, \code{"hg19"}, \code{"mm10"},
-#'                    \code{"mm9"}, \code{"rn5"}.
-#' @param dest        Destination directory where the package should be generated.
-#' @param cleanUp	  Should the temporary directory in the package be removed (default:TRUE)
+#' @param assembly Targeted genome assembly. Must be one of \code{"hg38"}, \code{"hg19"}, \code{"mm10"}, \code{"mm9"},
+#'                 \code{"rn5"}.
+#' @param dest     Destination directory where the package should be generated.
+#' @param cleanUp  Flag indicating if the temporary directory in the generated package (containing downloaded and
+#'                 partially processed resource files) be removed after all annotation structures are created.
 #' @return None (invisible \code{NULL}).
 #' @author Fabian Mueller
 #' @examples
@@ -99,6 +100,9 @@ createAnnotationPackage <- function(assembly,dest=getwd(),cleanUp=TRUE){
 	}
 	if (!(is.character(dest) && length(dest) == 1 && (isTRUE(dest != "")))) {
 		stop("invalid value for dest")
+	}
+	if (!(is.logical(cleanUp) && length(cleanUp) == 1 && (!is.na(cleanUp)))) {
+		stop("invalid value for cleanUp")
 	}
 
 	## Validate the genome assembly

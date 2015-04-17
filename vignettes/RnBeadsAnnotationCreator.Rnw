@@ -1,0 +1,76 @@
+%\VignetteIndexEntry{Creating Annotation Packages for RnBeads}
+%\VignetteKeywords{annotation, genome, methylation, RnBeads}
+
+\documentclass[a4paper]{scrartcl}
+\usepackage[OT1]{fontenc}
+\usepackage{Sweave}
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage{vmargin}
+\usepackage[american]{babel}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{amsmath}
+
+\selectlanguage{american}
+\definecolor{darkblue}{rgb}{0.0,0.0,0.3}
+\hypersetup{colorlinks,breaklinks,
+            linkcolor=darkblue,urlcolor=darkblue,
+            anchorcolor=darkblue,citecolor=darkblue}
+\setpapersize{A4}
+\setmargins{2.5cm}{2.0cm}% % left margin and upper margin
+           {16cm}{23cm}%   % text width and height
+           {60pt}{22pt}%   % Header height and margin
+           {0pt}{30pt}%    % \footheight (egal) und Fusszeilenabstand
+
+% Style settings
+
+\newcommand{\insertemptypage}[0]{\newpage \thispagestyle{empty} \vspace*{\fill}}
+\newcommand{\cs}[1]{\texttt{#1}}
+
+% Main
+
+\lhead{\cs{RnBeadsAnnotationCreator}}
+\rhead{\thepage}
+\cfoot{}
+
+\pagestyle{fancy}
+
+\begin{document}
+
+\title{Creating Annotation Packages for \cs{RnBeads}}
+
+\author{Yassen Assenov, Fabian M\"uller, Pavlo Lutsik \\
+	\small{Contact: \cs{rnbeads@mpi-inf.mpg.de}} \\
+	\small{Package version: \cs{0.1}}}
+
+\thispagestyle{empty}
+\maketitle
+
+\cs{RnBeads} is an R package for comprehensive analysis of genome-wide DNA methylation data with single-CpG resolution. Its functionality depends on annotation packages -- one for every supported genome assembly. \cs{RnBeadsAnnotationCreator} facilitates the generation of annotation packages for \cs{RnBeads}.\\
+
+This vignette is a valuable resource for researchers who wish to apply RnBeads to currently unsupported genomes. It describes the overall structure of annotation packages for \cs{RnBeads} and how \cs{RnBeadsAnnotationCreator} automatizes the process of creating and validating a new annotation package.
+
+\tableofcontents
+
+\section{Anatomy of an Annotation Package}
+
+The \cs{RnBeads} analysis pipeline depends on an annotation package, dedicated to a specific genome assembly. The name of an annotation package consists of the prefix \cs{RnBeads.} followed by the assembly code in lower case. For example, \cs{RnBeads} needs the package \cs{RnBeads.hg19} in order to provide analysis of methylome data on the human genome hg19.\\
+
+Bla-bla. Blu-blu.\\
+
+Note that \cs{RnBeads} annotation packages do not export any R functions or classes. In fact, an annotation package is expected to contain no R code at all.
+
+\section{How the Annotation Creator Works}
+
+Bla-bla. Blu-blu.
+
+\section{Adding Support for a Genome Assembly}
+
+Bla-bla. Blu-blu.
+
+\section{Tips and Tricks}
+
+Bla-bla. Blu-blu.
+
+\end{document}
