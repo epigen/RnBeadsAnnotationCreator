@@ -19,12 +19,13 @@ createAnnotationPackage.hg38 <- function(){
 
 	suppressPackageStartupMessages(library(BSgenome.Hsapiens.NCBI.GRCh38))
 
+
 	## Supported chromosomes
 	assignChromosomes(c(1:22, "X", "Y"))
 
 	## Download SNP annotation
 	logger.start("SNP Annotation")
-	vcf.files <- paste0(DBSNP.FTP.BASE, "human_9606_b141_GRCh38/VCF/", "All.vcf.gz")
+	vcf.files <- paste0(DBSNP.FTP.BASE, "human_9606_b142_GRCh38/VCF/", "All.vcf.gz")
 	update.annot("snps", "polymorphism information", rnb.update.dbsnp, ftp.files = vcf.files)
 	logger.completed()
 

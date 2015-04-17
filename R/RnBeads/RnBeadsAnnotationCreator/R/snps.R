@@ -104,10 +104,16 @@ rnb.update.load.vcf <- function(fname) {
 	}
 
 	## Extract SNP information
-	txt <- strsplit(txt[-(1:length(i.header))], "\t", fixed = TRUE)
+	txt <- strsplit(txt[-(1:length(i.header))], "\t", fixed = TRUE)	
 	i <- which(sapply(txt, length) != length(cnames))
 	if (length(i) != 0) {
 		logger.error(c("unexpected number of columns at line", (i[1] + length(i.header))))
+	}
+	# remove duplicate rows
+	dupRows <- duplicated(txt)
+	if(sum(dupRows) > 0){
+		txt <- txt[!dupRows]
+		logger.warning(c("Removed",sum(dupRows),"duplicate rows"))
 	}
 	chroms <- sapply(txt, '[', 1)
 	is.valid.chromosome <- (chroms %in% names(.globals[['CHROMOSOMES']]))
@@ -145,9 +151,16 @@ rnb.update.load.vcf <- function(fname) {
 	regex.frequency <- "^.*CAF=\\[([0-9\\.,]+)\\].*$"
 	i <- which(grepl(regex.frequency, infos))
 	if (length(i) == 0) {
-		is.valid.frequency <- rep(TRUE, length(infos))
 		major.frequency <- rep(as.double(NA), length(infos))
-		logger.warning(c("Could not detect MAF data; allele frequency is not considered"))
+		logger.warning(c("Could not detect MAF data (CAF field)"))
+		regex.frequency.g5ind <- "(^G5.*$|^.*;G5$|^.*;G5;.*$)"
+		hasG5tag <- grepl(regex.frequency.g5ind, infos)
+		if (sum(hasG5tag) > 0) {
+			is.valid.frequency <- hasG5tag
+		} else {
+			is.valid.frequency <- rep(TRUE, length(infos))
+			logger.warning(c("Could not detect MAF data (G5 field); allele frequency is not considered"))
+		}
 	} else {
 		major.frequency <- rep(as.double(NA), length(infos))
 		frequencies <- strsplit(gsub(regex.frequency, "\\1", infos[i]), ",", fixed = TRUE)
