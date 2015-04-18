@@ -49,19 +49,67 @@
 
 \cs{RnBeads} is an R package for comprehensive analysis of genome-wide DNA methylation data with single-CpG resolution. Its functionality depends on annotation packages -- one for every supported genome assembly. \cs{RnBeadsAnnotationCreator} facilitates the generation of annotation packages for \cs{RnBeads}.\\
 
-This vignette is a valuable resource for researchers who wish to apply RnBeads to currently unsupported genomes. It describes the overall structure of annotation packages for \cs{RnBeads} and how \cs{RnBeadsAnnotationCreator} automatizes the process of creating and validating a new annotation package.
+This vignette is a valuable resource for researchers who wish to apply RnBeads to currently unsupported genomes. It describes the overall structure of annotation packages for \cs{RnBeads} and how \cs{RnBeadsAnnotationCreator} (also referred to as \emph{annotation creator}) automatizes the process of creating and validating a new annotation package.
 
 \tableofcontents
 
 \section{Anatomy of an Annotation Package}
 
-The \cs{RnBeads} analysis pipeline depends on an annotation package, dedicated to a specific genome assembly. The name of an annotation package consists of the prefix \cs{RnBeads.} followed by the assembly code in lower case. For example, \cs{RnBeads} needs the package \cs{RnBeads.hg19} in order to provide analysis of methylome data on the human genome hg19.\\
+The \cs{RnBeads} analysis pipeline depends on an annotation package, dedicated to a specific genome assembly. The name of an annotation package consists of the prefix \cs{RnBeads.}, followed by the assembly code in lower case. For example, \cs{RnBeads} needs the package \cs{RnBeads.hg19} in order to provide analysis of methylome data on the human genome hg19.\\
+
+Every annotation package contains exclusively R data structures of three types, along with their documentation. The different types are described below.\\
+
+\subsection{Site Annotation Tables}
+
+A site annotation table lists all genomic sites that are theoretically targeted by a platform. For example, every annotation package contains the CpG site annotation table which lists all CpG dinucleotides in the dedicated genome assembly\footnote{More precisely, in the predefined list of supported chromosomes for the dedicated assembly.}. This table is in the form of a \cs{GRangesList} object, containing one \cs{GRanges} instance per chromosome. Genomic coordinates are 1-based. Every site annotation table contains the following metadata columns:
+
+\begin{description}
+  \item[CpG] \hfill \\
+    Number of CpG dinucleotides in a window of length 100 base pairs, centered at the site's location. This is an \cs{integer} value between \cs{0} and \cs{50}.
+  \item[GC] \hfill \\
+    Number of C and G nucleotides in a window of length 100 base pairs, centered at the site's location. This is an \cs{integer} value between \cs{0} and \cs{100}.
+  \item[CGI Relation] \hfill \\
+    Relationship of the respective site to (its closest) CpG island. This is a \cs{factor} with values among the following levels: \cs{"Open Sea"}, \cs{"Shelf"}, \cs{"Shore"} and \cs{"Island"}.
+\end{description}
+
+Annotation tables could contain additional metadata. For example, the CpG site annotation table in \cs{RnBeads.hg19} contains also the following metadata columns:
+
+\begin{description}
+  \item[SNPs] \hfill \\
+    Identifiers of all (prefiltered) dbSNP records that overlap with the respective site. This is a \cs{character} value containing a comma-separated list of identifiers, or \cs{NA} if no dbSNP records overlap with the respective site.
+  \item[HumanMethylation27] \hfill \\
+    Index (within the same chromosome) of the probe in the Infinium HumanMethylation27 Bead Chip assay that targets the respective CpG dinucleotide. This is a positive \cs{integer} value, or \cs{NA} if the CpG dinucleotide is not covered by this platform.
+  \item[HumanMethylation450] \hfill \\
+    Index (within the same chromosome) of the probe in the Infinium HumanMethylation450 Bead Chip assay that targets the respective CpG dinucleotide. This is a positive \cs{integer} value, or \cs{NA} if the CpG dinucleotide is not covered by this platform.
+\end{description}
+
+Bla-bla. Blu-blu.\\
+
+\subsection{Region Annotation Tables}
+
+Bla-bla. Blu-blu.\\
+
+\subsection{Mappings}
 
 Bla-bla. Blu-blu.\\
 
 Note that \cs{RnBeads} annotation packages do not export any R functions or classes. In fact, an annotation package is expected to contain no R code at all.
 
 \section{How the Annotation Creator Works}
+
+\cs{RnBeadsAnnotationCreator} contains routines that initialize a new annotation package and create the expected data structures. The general workflow consists of 4 major steps, described below.
+\begin{enumerate}
+  \item Create a new R source package structure, including the package's base directory, the file \cs{DESCRIPTION}, subdirectories \cs{data}, \cs{inst}, \cs{man} and \cs{R}, as well as some additional files.
+  \item Download and process genomic annotation from public repositories, such as:
+    \begin{itemize}
+      \item SNP records from \href{http://www.ncbi.nlm.nih.gov/SNP/}{dbSNP}.
+      \item Gene definitions from \href{http://www.ensembl.org/}{Ensembl}.
+      \item CpG island definitions from the \href{https://genome.ucsc.edu/}{UCSC Genome Browser}.
+      \item HumanMethylation27 and HumanMethylation450 probe assay annotation from the \href{http://www.ncbi.nlm.nih.gov/geo/}{Gene Expression Omnibus}.
+    \end{itemize}
+  \item Construct annotation tables for the targeted genome's CpG dinucleotides and Infinium probes (site annotation tables), as well as for four different region types - genome tiling regions, gene bodies, gene promoters and CpG islands (region annotation tables).
+  \item Contruct mapping structures between every pair of region type and site type. A mapping stores how many and which sites are contained in each individual region.
+\end{enumerate}
 
 Bla-bla. Blu-blu.
 
