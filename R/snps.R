@@ -153,7 +153,7 @@ rnb.update.load.vcf <- function(fname) {
 	if (length(i) == 0) {
 		major.frequency <- rep(as.double(NA), length(infos))
 		logger.warning(c("Could not detect MAF data (CAF field)"))
-		regex.frequency.g5ind <- "(^G5.*$|^.*;G5$|^.*;G5;.*$)"
+		regex.frequency.g5ind <- "(^G5.*$|^.*;G5A?$|^.*;G5A?;.*$)"
 		hasG5tag <- grepl(regex.frequency.g5ind, infos)
 		if (sum(hasG5tag) > 0) {
 			is.valid.frequency <- hasG5tag
