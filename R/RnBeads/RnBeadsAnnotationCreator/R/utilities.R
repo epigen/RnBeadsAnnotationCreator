@@ -276,6 +276,8 @@ createPackageScaffold <- function(
 	## Create DESCRIPTION file
 	desc.lines <- paste(names(desc),desc,sep=": ")
 	writeLines(desc.lines,file.path(pkg.base.dir,"DESCRIPTION"))
+	## Create NAMESPACE file
+	writeLines(c(""),file.path(pkg.base.dir,"NAMESPACE"))
 	## Create documentation (Rd) file
 	assembly <- .globals[["assembly"]]
 	fname <- system.file("extdata/templateRd.txt", package = "RnBeadsAnnotationCreator")
