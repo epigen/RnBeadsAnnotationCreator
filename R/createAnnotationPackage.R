@@ -121,7 +121,23 @@ createAnnotationPackage <- function(assembly,dest=getwd(),cleanUp=TRUE){
 	if (file.exists(dir.package)) {
 		dir.package.state <- "(existing)"
 	} else {
-		if (!createPackageScaffold(paste0("RnBeads.", assembly), dest = dest)) {
+		pkgName <- paste0("RnBeads.", assembly)
+		createdScaffold <- createPackageScaffold(
+			pkgName,
+			desc=c(
+				Package=pkgName,
+				Title=pkgName,
+				Description="automatically generated package",
+				Author="RnBeadsAnnotationCreator",
+				Date=format(Sys.Date(), format="%Y-%m-%d"),
+				License="GPL-3",
+				Version="0.1",
+				Depends="\n\tR (>= 3.0.0),\tGenomicRanges",
+				Suggests="\n\tRnBeads"
+			)
+			dest = dest
+		)
+		if (!createdScaffold) {
 			stop("Could not create package directory")
 		}
 		dir.package.state <- "(created)"
