@@ -10,9 +10,9 @@
 
 #' createAnnotationPackage.hg19
 #' 
-#' Helper function to create annotation package for genome assembly hg19.
+#' Helper function to create RnBeads annotation package for genome assembly hg19.
 #'
-#' @return invisible \code{TRUE} if successful
+#' @return None (invisible \code{NULL}).
 #' @author Fabian Mueller
 #' @noRd
 createAnnotationPackage.hg19 <- function() {
@@ -20,18 +20,23 @@ createAnnotationPackage.hg19 <- function() {
 	suppressPackageStartupMessages(library(BSgenome.Hsapiens.UCSC.hg19))
 	suppressPackageStartupMessages(library(FDb.InfiniumMethylation.hg19))
 
-	## Supported chromosomes
-	assignChromosomes(c(1:22, "X", "Y"))
+	## Genomic sequence and supported chromosomes
+	GENOME <- 'BSgenome.Hsapiens.UCSC.hg19'
+	assign('GENOME', GENOME, .globals)
+	CHROMOSOMES <- c(1:22, "X", "Y")
+	names(CHROMOSOMES) <- paste0("chr", CHROMOSOMES)
+	assign('CHROMOSOMES', CHROMOSOMES, .globals)
+	rm(GENOME, CHROMOSOMES)
 
 	## Download SNP annotation
 	logger.start("SNP Annotation")
-	vcf.files <- paste0(DBSNP.FTP.BASE, "human_9606_b141_GRCh37p13/VCF/", "00-All.vcf.gz")
+	vcf.files <- paste0(DBSNP.FTP.BASE, "human_9606_b141_GRCh37p13/VCF/00-All.vcf.gz")
 	update.annot("snps", "polymorphism information", rnb.update.dbsnp, ftp.files = vcf.files)
 	logger.info(paste("Using:", attr(.globals[['snps']], "version")))
 	rm(vcf.files)
 	logger.completed()
 
-	## Define genomic regions - tiling, genes (download from Ensembl), promoters, CpG islands (download from UCSC)
+	## Define genomic regions
 	biomart.parameters <- list(
 		database.name = "ENSEMBL_MART_ENSEMBL",
 		dataset.name = "hsapiens_gene_ensembl",
@@ -153,5 +158,4 @@ createAnnotationPackage.hg19 <- function() {
 
 	## Export the annotation tables
 	rnb.export.annotations.to.data.files()
-	return(invisible(TRUE))
 }

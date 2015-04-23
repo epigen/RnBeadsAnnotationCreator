@@ -116,11 +116,18 @@ rnb.update.load.vcf <- function(fname) {
 		logger.warning(c("Removed",sum(dupRows),"duplicate rows"))
 	}
 	chroms <- sapply(txt, '[', 1)
-	is.valid.chromosome <- (chroms %in% names(.globals[['CHROMOSOMES']]))
+	CHROMOSOMES <- .globals[['CHROMOSOMES']]
+	is.valid.chromosome <- (chroms %in% names(CHROMOSOMES))
 	if (all(!is.valid.chromosome)) {
 		# FIXME: Use a general mapping from short names to long names in chromosomes; "MT" should map to "chrM"
-		chroms <- paste0("chr", chroms)
-		is.valid.chromosome <- (chroms %in% names(.globals[['CHROMOSOMES']]))
+		i <- which(chroms %in% unname(CHROMOSOMES))
+		if (length(i) != 0) {
+			short2long.name <- names(CHROMOSOMES)
+			names(short2long.name) <- unname(CHROMOSOMES)
+			chroms[i] <- unname(short2long.name[chroms[i]])
+			rm(short2long.name)
+		}
+		is.valid.chromosome <- (chroms %in% names(CHROMOSOMES))
 	}
 	logger.info(c("Records with supported chromosome:", sum(is.valid.chromosome), ", with unsupported ones:",
 		sum(!is.valid.chromosome)))
@@ -178,7 +185,7 @@ rnb.update.load.vcf <- function(fname) {
 		base.reference = sapply(txt, '[', 4)[i], base.alt = sapply(txt, '[', 5)[i],
 		origin = allele.origin[i], frequency = major.frequency[i],
 		row.names = ids[i], check.names = FALSE, stringsAsFactors = FALSE)
-	result$chromosome <- factor(result$chromosome, levels = names(.globals[['CHROMOSOMES']]))
+	result$chromosome <- factor(result$chromosome, levels = names(CHROMOSOMES))
 	result <- result[with(result, order(chromosome, location)), ]
 	attr(result, "version") <- version.string
 	result
@@ -295,7 +302,7 @@ rnb.update.dbsnp <- function(ftp.files) {
 
 	## Construct tables of polymorphism types
 #	chromosomes <- names(snps)
-#	snps <- foreach(snp.df = snps) %dopar% rnb.construct.snp.types(snp.df)
+#	snps <- suppressWarnings(foreach(snp.df = snps) %dopar% rnb.construct.snp.types(snp.df))
 #	names(snps) <- chromosomes
 	for (chrom in names(snps)) {
 		snps[[chrom]] <- rnb.construct.snp.types(snps[[chrom]])

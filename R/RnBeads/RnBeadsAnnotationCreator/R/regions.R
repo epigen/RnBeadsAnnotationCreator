@@ -92,17 +92,19 @@ rnb.update.region.annotation.genes <- function(biomart.parameters) {
 	strands <- rnb.fix.strand(strands)
 	symbols <- sapply(gene.id.inds, function(i) { combine.multiple(ensembl.genes[i, "symbol"]) })
 	entrezids <- sapply(gene.id.inds, function(i) { combine.multiple(ensembl.genes[i, "entrezID"]) })
-	ensembl.genes.gr <- lapply(.globals[['CHROMOSOMES']], function(chrom) {
+	CHROMOSOMES <- names(.globals[['CHROMOSOMES']])
+	ensembl.genes.gr <- lapply(CHROMOSOMES, function(chrom) {
 			cinds <- which(chroms == chrom)
 			genes <- GRanges(seqnames = chrom,
 				ranges = IRanges(start = starts[cinds], end = ends[cinds], names = names(gene.id.inds)[cinds]),
 				strand = strands[cinds], symbol = symbols[cinds], entrezID = entrezids[cinds])
-			seqlevels(genes) <- names(.globals[['CHROMOSOMES']])
-			seqlengths(genes) <- as.integer(seqlengths(get.genome.data())[.globals[['CHROMOSOMES']]])
+			seqlevels(genes) <- CHROMOSOMES
+			seqlengths(genes) <- as.integer(seqlengths(rnb.genome.data())[CHROMOSOMES])
 			genes <- rnb.sort.regions(genes)
 			return(genes)
 		}
 	)
+	names(ensembl.genes.gr) <- CHROMOSOMES
 	rm(get.single, combine.multiple, ensembl.genes, gene.id.inds, chroms, starts, ends, strands, symbols, entrezids)
 	ensembl.genes.gr <- GRangesList(ensembl.genes.gr)
 	logger.status("Basic gene annotation completed")
@@ -118,7 +120,7 @@ rnb.update.region.annotation.genes <- function(biomart.parameters) {
 	)
 	logger.status("Basic promoter annotation completed")
 
-	genome.data <- get.genome.data()
+	genome.data <- rnb.genome.data()
 	ensembl.genes.gr <- append.cpg.stats(genome.data, ensembl.genes.gr)
 	attr(ensembl.genes.gr, "version") <- db.version
 	ensembl.promoters.gr <- append.cpg.stats(genome.data, ensembl.promoters.gr)
@@ -147,8 +149,8 @@ rnb.update.region.annotation.genes <- function(biomart.parameters) {
 ##
 ## @author Fabian Mueller
 rnb.update.region.annotation.tiling <- function(window.size=LENGTH.TILING){
-	genome.data <- get.genome.data(.globals[['assembly']])
-	CHROMOSOMES <- .globals[['CHROMOSOMES']]
+	genome.data <- rnb.genome.data()
+	CHROMOSOMES <- names(.globals[['CHROMOSOMES']])
 	tiling.chrom <- function(chrom) {
 		chromNames.gd <- match.chrom.names(CHROMOSOMES,seqnames(genome.data))
 		chrom.length <- seqlengths(genome.data)[chromNames.gd[chrom]]
@@ -159,8 +161,9 @@ rnb.update.region.annotation.tiling <- function(window.size=LENGTH.TILING){
 		GRanges(seqnames = chrom, ranges = IRanges(starts, ends),
 			seqlengths = seq.lengths)
 	}
-	tiling.gr <- foreach(chrom = CHROMOSOMES, .packages = "GenomicRanges", .export = "CHROMOSOMES") %dopar%
-		tiling.chrom(chrom)
+	tiling.gr <- suppressWarnings(
+		foreach(chrom = CHROMOSOMES, .packages = "GenomicRanges", .export = "CHROMOSOMES") %dopar%
+			tiling.chrom(chrom))
 	names(tiling.gr) <- CHROMOSOMES
 	logger.status("Defined tiling regions for all supported chromosomes")
 	tiling.gr <- append.cpg.stats(genome.data, tiling.gr)
@@ -178,9 +181,8 @@ rnb.update.region.annotation.tiling <- function(window.size=LENGTH.TILING){
 ## @return CpG islands as an object of type \code{GRangesList}. Every element in this list corresponds to a chromosome.
 ##
 ## @author Yassen Assenov
-rnb.update.download.cgis <- function(
-	download.url = paste0("ftp://hgdownload.cse.ucsc.edu/goldenPath/", .globals[['assembly']], "/database/cpgIslandExt.txt.gz")) {
-	genome.data <- get.genome.data()
+rnb.update.download.cgis <- function(download.url) {
+	genome.data <- rnb.genome.data()
 
 	## Download the corresponding track from the UCSC Genome Browser
 	cgis.file <- file.path(.globals[["DIR.PACKAGE"]], "temp", "cgis.txt.gz")
@@ -199,12 +201,13 @@ rnb.update.download.cgis <- function(
 	cgis.table[, 2] <- cgis.table[, 2] + 1L # adjust start locations to 1-based
 
 	## Convert the table to GRangesList
+	CHROMOSOMES <- names(.globals[['CHROMOSOMES']])
 	cgis.gr <- data.frame2GRanges(cgis.table, NULL, 1, 2, 3, NULL, assembly=NULL)
-	cgis.gr <- cgis.gr[as.character(seqnames(cgis.gr)) %in% .globals[['CHROMOSOMES']]]
-	seqlevels(cgis.gr) <- .globals[['CHROMOSOMES']]
+	cgis.gr <- cgis.gr[as.character(seqnames(cgis.gr)) %in% CHROMOSOMES]
+	seqlevels(cgis.gr) <- CHROMOSOMES
 	cgis.gr <- GenomicRanges::split(cgis.gr,seqnames(cgis.gr))
-	chromNames.gd <- match.chrom.names(.globals[['CHROMOSOMES']],seqnames(genome.data))
-	seqlengths(cgis.gr) <- as.integer(seqlengths(genome.data)[chromNames.gd[.globals[['CHROMOSOMES']]]])
+	chromNames.gd <- match.chrom.names(CHROMOSOMES,seqnames(genome.data))
+	seqlengths(cgis.gr) <- as.integer(seqlengths(genome.data)[chromNames.gd[CHROMOSOMES]])
 	cgis.gr <- append.cpg.stats(genome.data, rnb.sort.regions(cgis.gr))
 	return(cgis.gr)
 }
@@ -221,7 +224,9 @@ rnb.update.download.cgis <- function(
 #'
 #' @author Fabian Mueller
 #' @noRd
-rnb.update.region.annotation <- function(biomart.parameters) {
+rnb.update.region.annotation <- function(biomart.parameters, cgi.download.url =
+		paste0(UCSC.FTP.BASE, .globals[['assembly']], "/database/cpgIslandExt.txt.gz")) {
+
 	logger.start("Tiling Region Annotation")
 	result <- list("tiling" = rnb.update.region.annotation.tiling())
 	logger.completed()
@@ -231,7 +236,7 @@ rnb.update.region.annotation <- function(biomart.parameters) {
 	logger.completed()
 
 	logger.start("CpG Island Region Annotation")
-	result[["cpgislands"]] <- rnb.update.download.cgis()
+	result[["cpgislands"]] <- rnb.update.download.cgis(cgi.download.url)
 	logger.completed()
 
 	attr(result, "builtin") <- sapply(result, function(x) { TRUE })

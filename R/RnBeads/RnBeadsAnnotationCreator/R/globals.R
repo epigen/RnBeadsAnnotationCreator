@@ -10,7 +10,7 @@
 ## Global variables for the targeted genome assembly
 
 ## Environment used to store the global variables:
-##   assembly, DIR.PACKAGE, CHROMOSOMES, snps, regions, sites, mappings, ...
+##   assembly, DIR.PACKAGE, GENOME, CHROMOSOMES, snps, regions, sites, mappings, ...
 .globals <- new.env()
 
 ########################################################################################################################
@@ -56,8 +56,11 @@ DBSNP.FTP.BASE <- "ftp://ftp.ncbi.nih.gov/snp/organisms/"
 REFERENCE2ASSEMBLY <- c(
 	"GRCh38" = "hg38",
 	"GRCh37.p13" = "hg19",
-	"GCF_000001635.21" = "mm10", # Genome Reference Consortium Mouse Build 38 patch release 1 (GRCm38.p1) 
-	"GCF_000001895.4" = "rn5")
+	"GCF_000001635.21" = "mm10", # GRCm38.p1
+	"GCF_000001635.22" = "mm10", # GRCm38.p2
+	"GCF_000001895.4" = "rn5",
+	"GCF_000001895.5" = "rn6",
+	"GCF_000002035.4" = "zv9")
 
 ## Maximum value for a major allele frequency to consider
 MAJOR.ALLELE.FREQUENCY <- 0.95
@@ -67,13 +70,6 @@ MAJOR.ALLELE.FREQUENCY <- 0.95
 
 ## Base FTP location of files from the UCSC Genome Browser
 UCSC.FTP.BASE <- "ftp://hgdownload.cse.ucsc.edu/goldenPath/"
-
-## Text file containing the CpG Island track in the UCSC Genome Browser
-#UCSC.FTP.CGIS <- paste0(UCSC.FTP.BASE, assembly, "/database/cpgIslandExt.txt.gz")
-
-## Text file containing the definition of chromosome bands
-#UCSC.FTP.BANDS <- paste0(UCSC.FTP.BASE, assembly, "/database/cytoBand.txt.gz")
-#rm(UCSC.FTP.BASE)
 
 ########################################################################################################################
 ## Gene Expression Omnibus

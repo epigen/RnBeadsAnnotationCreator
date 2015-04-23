@@ -30,8 +30,8 @@ rnb.update.probe450k.annotation <- function(ftp.table, table.columns) {
 	compiled <- rnb.update.probe.annotation.compiled()
 	logger.completed()
 
-	probes450 <- rnb.update.probes450.combine(methylumi$probes, geo$probes)
 	controls450 <- rnb.update.controls450.combine(methylumi$controls, compiled, geo$controls)
+	probes450 <- rnb.update.probes450.combine(methylumi$probes, geo$probes)
 	logger.status("Updated information on probe sequence overlap with SNPs")
 	return(list(probes = probes450, controls = controls450))
 }
@@ -378,10 +378,10 @@ rnb.update.probes450.combine <- function(methylumi, geo) {
 		"Cross-reactive" = geo[, "Cross-reactive"],
 		check.names = FALSE)
 	seqlevels(probes.gr) <- chromosomes
-	seqlengths(probes.gr) <- as.integer(seqlengths(get.genome.data())[chromosomes])
+	seqlengths(probes.gr) <- as.integer(seqlengths(rnb.genome.data())[chromosomes])
 	probes.gr <- rnb.sort.regions(probes.gr)
 	probes.gr <- GenomicRanges::split(probes.gr, seqnames(probes.gr))[chromosomes]
 
-	seqinfo(probes.gr) <- seqinfo(get.genome.data())[.globals[['CHROMOSOMES']], ]
+	seqinfo(probes.gr) <- seqinfo(rnb.genome.data())[names(.globals[['CHROMOSOMES']]), ]
 	return(probes.gr)
 }

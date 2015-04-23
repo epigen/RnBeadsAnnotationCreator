@@ -105,7 +105,7 @@ rnb.update.probe27k.annotation <- function(ftp.table, table.columns) {
 		"SNPs Full" = probe.infos[, "SNPs Full"],
 		"Cross-reactive" = probe.infos[, "Cross-reactive"],
 		check.names = FALSE,
-		seqinfo = seqinfo(get.genome.data())[.globals[['CHROMOSOMES']], ])
+		seqinfo = seqinfo(rnb.genome.data())[names(.globals[['CHROMOSOMES']]), ])
 	probes.gr <- rnb.sort.regions(probes.gr)
 	probes.gr <- GenomicRanges::split(probes.gr, seqnames(probes.gr))[levels(probe.infos[, "Chromosome"])]
 

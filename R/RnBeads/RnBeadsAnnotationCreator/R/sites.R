@@ -20,8 +20,8 @@
 #' @author Fabian Mueller
 #' @noRd
 rnb.update.sites <- function(cpgislands = .globals[['regions']][['cpgislands']], snps = .globals[['snps']]) {
-	genome.data <- get.genome.data()
-	CHROMOSOMES <- .globals[["CHROMOSOMES"]]
+	genome.data <- rnb.genome.data()
+	CHROMOSOMES <- names(.globals[['CHROMOSOMES']])
 	chromNames.gd <- match.chrom.names(CHROMOSOMES,seqnames(genome.data))
 	chrom.lengths <- seqlengths(genome.data)[chromNames.gd[CHROMOSOMES]]
 	names(chrom.lengths) <- CHROMOSOMES
@@ -40,11 +40,11 @@ rnb.update.sites <- function(cpgislands = .globals[['regions']][['cpgislands']],
 			matches.gr <- mapply(GRanges, seqnames = list(chrom), ranges = matches.st, strand = list("+", "-"),
 				"CpG" = list(cpg.stats[, "CpG"]), "GC" = list(cpg.stats[, "GC"]))
 			matches.gr <- rnb.sort.regions(do.call(c, matches.gr))
-#			names(matches.gr) <- paste("cg", chrom, start(matches.gr), strand(matches.gr), sep = ".")
-			seqlevels(matches.gr) <- names(CHROMOSOMES)
+			seqlevels(matches.gr) <- CHROMOSOMES
 			seqlengths(matches.gr) <- chrom.lengths
 			matches.gr
 		})
+		names(curSites) <- CHROMOSOMES
 		sites[[i]] <- GRangesList(curSites)
 		logger.status(c("Created site annotation for", i))
 	}
@@ -60,8 +60,7 @@ rnb.update.sites <- function(cpgislands = .globals[['regions']][['cpgislands']],
 		sites <- rnb.update.site.annotation.with.snps(sites, snps)
 	}
 
-	sites <- rnb.add.descriptions(sites)
-	return(sites)
+	rnb.add.descriptions(sites)
 }
 
 ########################################################################################################################
@@ -143,8 +142,9 @@ rnb.update.site.annotation.with.cgistatus <- function(sites, cpgislands) {
 		if (!setequal(chromosomes, names(sites[[i]]))) {
 			stop("Incompatible sites and CGI ranges")
 		}
-		grl <- foreach(ss = as.list(sites[[i]][chromosomes]), cgis = as.list(cpgislands),
-				.export = c("LENGTH.CGI.SHELF", "LENGTH.CGI.SHORE")) %dopar% enrich.f(ss, cgis)
+		grl <- suppressWarnings(
+			foreach(ss = as.list(sites[[i]][chromosomes]), cgis = as.list(cpgislands),
+				.export = c("LENGTH.CGI.SHELF", "LENGTH.CGI.SHORE")) %dopar% enrich.f(ss, cgis))
 		names(grl) <- chromosomes
 		sites.new[[i]] <- GRangesList(grl)
 	}

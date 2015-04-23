@@ -134,7 +134,7 @@ rnb.update.probe.annotation.cpg.context <- function(probe.infos) {
 
 	locations <- tapply(probe.infos[, "Location"], probe.infos[, "Chromosome"], identity, simplify = FALSE)
 
-	genome.data <- get.genome.data()
+	genome.data <- rnb.genome.data()
 	calculate.cg <- function(chrom, loci, l.neighborhood) {
 		starts <- loci - l.neighborhood / 2L + 1L
 		ends <- loci + l.neighborhood / 2L - 1L
@@ -223,10 +223,10 @@ rnb.update.probe.annotation.msnps <- function(probe.infos, snps = .globals[['snp
 	mismatches <- function(expected, observed) {
 		mapply(function(x, y) sum(x != y), strsplit(expected, ""), strsplit(observed, ""))
 	}
-	genome.data <- get.genome.data()
+	genome.data <- rnb.genome.data()
 	probe.regs <- list()
-	for (chromosome in .globals[['CHROMOSOMES']]) {
-#chromosome <- .globals[['CHROMOSOMES']][1]
+	for (chromosome in names(.globals[['CHROMOSOMES']])) {
+#chromosome <- names(.globals[['CHROMOSOMES']])[1]
 		inds <- which((probe.infos[["Chromosome"]] == chromosome) & (probe.infos[["Strand"]] != "*"))
 		loci <- probe.infos[inds, "Location"]
 		probe.regs[[chromosome]] <- data.frame(
@@ -284,9 +284,10 @@ rnb.update.probe.annotation.msnps <- function(probe.infos, snps = .globals[['snp
 	suppressWarnings(rm(dna.seq, alleles.exp))
 	logger.status("Counted mismatches between expected and defined allele sequence")
 
-	snp.stats <- foreach(pr.regs = probe.regs, snp.regs = snps[names(probe.regs)], .combine = rbind,
-		.export = "rnb.update.probe.annotation.snps") %dopar%
-		rnb.update.probe.annotation.snps(pr.regs, snp.regs)
+	snp.stats <- suppressWarnings(
+		foreach(pr.regs = probe.regs, snp.regs = snps[names(probe.regs)], .combine = rbind,
+			.export = "rnb.update.probe.annotation.snps") %dopar%
+				rnb.update.probe.annotation.snps(pr.regs, snp.regs))
 	i <- as.integer(rownames(snp.stats))
 	for (cname in colnames(snp.stats)) {
 		probe.infos[[cname]] <- as.integer(NA)
