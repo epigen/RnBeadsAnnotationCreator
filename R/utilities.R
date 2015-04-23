@@ -8,52 +8,19 @@
 
 ## F U N C T I O N S ###################################################################################################
 
-#' assignChromosomes
+#' rnb.genome.data
 #'
-#' Assigns the supported chromosomes to the \code{CHROMOSOME} variable in the global variables environment.
+#' Gets the targeted genome assembly sequence.
 #'
-#' @param chromosomes Chromosome names to be supported. This function prepends the string \code{"chr"} to each name.
-#'
-#' @author Yassen Assenov
-#' @noRd
-assignChromosomes <- function(chromosomes) {
-	chromosomes <- paste0("chr", chromosomes)
-	names(chromosomes) <- chromosomes
-	assign('CHROMOSOMES', chromosomes, .globals)
-}
-
-########################################################################################################################
-
-#' get.genome.data
-#'
-#' Gets the specified genome.
-#'
-#' @param assembly Genome assembly of interest. Currently the only supported genomes are \code{"hg38"}, \code{"hg19"},
-#'                 \code{"mm9"}, \code{"mm10"} and \code{"rn5"}.
-#' @return Sequence data object for the specified assembly.
+#' @return Sequence data object for the current assembly.
 #'
 #' @author Yassen Assenov
 #' @noRd
-get.genome.data <- function(assembly = .globals[["assembly"]]) {
-	if (assembly == "hg38") {
-		suppressPackageStartupMessages(require(BSgenome.Hsapiens.NCBI.GRCh38))
-		genome.data <- BSgenome.Hsapiens.NCBI.GRCh38::Hsapiens
-	} else if (assembly == "hg19") {
-		suppressPackageStartupMessages(require(BSgenome.Hsapiens.UCSC.hg19))
-		genome.data <- BSgenome.Hsapiens.UCSC.hg19::Hsapiens
-	} else if (assembly == "mm9") {
-		suppressPackageStartupMessages(require(BSgenome.Mmusculus.UCSC.mm9))
-		genome.data <- BSgenome.Mmusculus.UCSC.mm9::Mmusculus
-	} else if (assembly == "mm10") {
-		suppressPackageStartupMessages(require(BSgenome.Mmusculus.UCSC.mm10))
-		genome.data <- BSgenome.Mmusculus.UCSC.mm10::Mmusculus
-	} else if (assembly == "rn5") {
-		suppressPackageStartupMessages(require(BSgenome.Rnorvegicus.UCSC.rn5))
-		genome.data <- BSgenome.Rnorvegicus.UCSC.rn5::Rnorvegicus
-	} else {
-		stop("unsupported assembly")
+rnb.genome.data <- function() {
+	if (is.null(.globals[['GENOME']])) {
+		stop("undefined assembly")
 	}
-	return(genome.data)
+	get(.globals[['GENOME']])
 }
 
 ########################################################################################################################
@@ -165,7 +132,7 @@ rnb.load.bed <- function(fname) {
 #'         bases in each region.
 #'
 #' @author Yassen Assenov
-#' @export
+#' @noRd
 get.cpg.stats <- function(chrom.sequence, starts, ends) {
 	if (!(inherits(chrom.sequence, "MaskedDNAString") || inherits(chrom.sequence, "DNAString"))) {
 		stop("invalid value for chrom.sequence")
@@ -209,8 +176,9 @@ append.cpg.stats <- function(genome.data, regionlist) {
 		mcols(result) <- IRanges::cbind(mcols(result), DataFrame(stats))
 		result
 	}
-	regions.enriched <- foreach(chrom = names(regionlist), .packages = "GenomicRanges",
-		.export = c("get.cpg.stats", "genome.data", "regionlist")) %dopar% cpg.stats(chrom)
+	regions.enriched <- suppressWarnings(
+		foreach(chrom = names(regionlist), .packages = "GenomicRanges",
+			.export = c("get.cpg.stats", "genome.data", "regionlist")) %dopar% cpg.stats(chrom))
 	names(regions.enriched) <- names(regionlist)
 	return(GRangesList(regions.enriched))
 }
@@ -335,7 +303,8 @@ rnb.add.descriptions <- function(anns) {
 #' @author Yassen Assenov
 #' @noRd
 rnb.create.mappings <- function(regions = .globals[['regions']], sites = .globals[['sites']]) {
-	mappings <- foreach(re = regions) %:% foreach(si = sites) %dopar% RnBeads:::rnb.regions2sites(re, si)
+	mappings <- 
+		suppressWarnings(foreach(re = regions) %:% foreach(si = sites) %dopar% RnBeads:::rnb.regions2sites(re, si))
 	names(mappings) <- names(regions)
 	for (rname in names(mappings)) {
 		names(mappings[[rname]]) <- names(sites)

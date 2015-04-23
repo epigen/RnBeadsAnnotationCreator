@@ -72,8 +72,10 @@ rnb.export.annotations.to.data.files <- function() {
 		save(sites, file = rnb.get.package.data.file(sname), compression_level = 9L)
 		logger.status(c("Saved", sname, "annotation table and mappings to the package data"))
 	}
+	GENOME <- .globals[['GENOME']]
+	CHROMOSOMES <- .globals[['CHROMOSOMES']]
 	regions <- .globals[['regions']]
-	save(regions, file = rnb.get.package.data.file("regions"), compression_level = 9L)
+	save(GENOME, CHROMOSOMES, regions, file = rnb.get.package.data.file("regions"), compression_level = 9L)
 	logger.status("Saved region annotation table to the package data")
 }
 
@@ -134,7 +136,7 @@ createAnnotationPackage <- function(assembly,dest=getwd(),cleanUp=TRUE){
 				Version="0.1",
 				Depends="\n\tR (>= 3.0.0),\tGenomicRanges",
 				Suggests="\n\tRnBeads"
-			)
+			),
 			dest = dest
 		)
 		if (!createdScaffold) {

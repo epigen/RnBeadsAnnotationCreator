@@ -1,3 +1,4 @@
+%\VignetteEngine{knitr::knitr}
 %\VignetteIndexEntry{Creating Annotation Packages for RnBeads}
 %\VignetteKeywords{annotation, genome, methylation, RnBeads}
 
@@ -6,11 +7,14 @@
 \usepackage{Sweave}
 \usepackage{hyperref}
 \usepackage{color}
+\usepackage[table]{xcolor}
+\usepackage{multirow}
 \usepackage{vmargin}
 \usepackage[american]{babel}
 \usepackage{fancyhdr}
 \usepackage{listings}
 \usepackage{amsmath}
+\usepackage{rotating}
 
 \selectlanguage{american}
 \definecolor{darkblue}{rgb}{0.0,0.0,0.3}
@@ -24,6 +28,11 @@
            {0pt}{30pt}%    % \footheight (egal) und Fusszeilenabstand
 
 % Style settings
+
+\definecolor{grey}{rgb}{0.6,0.6,0.6}
+\definecolor{backgroundtabheader}{rgb}{0.7,0.7,0.7}
+\definecolor{backgroundtabrow1}{rgb}{1,1,1}
+\definecolor{backgroundtabrow2}{rgb}{0.9,0.9,0.9}
 
 \newcommand{\insertemptypage}[0]{\newpage \thispagestyle{empty} \vspace*{\fill}}
 \newcommand{\cs}[1]{\texttt{#1}}
@@ -42,12 +51,12 @@
 
 \author{Yassen Assenov, Fabian M\"uller, Pavlo Lutsik \\
 	\small{Contact: \cs{rnbeads@mpi-inf.mpg.de}} \\
-	\small{Package version: \cs{0.1}}}
+	\small{Package version: \cs{0.99.0}}}
 
 \thispagestyle{empty}
 \maketitle
 
-\cs{RnBeads} is an R package for comprehensive analysis of genome-wide DNA methylation data with single-CpG resolution. Its functionality depends on annotation packages -- one for every supported genome assembly. \cs{RnBeadsAnnotationCreator} facilitates the generation of annotation packages for \cs{RnBeads}.\\
+\cs{RnBeads} is an R package for comprehensive analysis of genome-wide DNA methylation data with single-CpG resolution. It relies on annotation packages -- one for every supported genome assembly. \cs{RnBeadsAnnotationCreator} facilitates the generation of annotation packages for \cs{RnBeads}.\\
 
 This vignette is a valuable resource for researchers who wish to apply RnBeads to currently unsupported genomes. It describes the overall structure of annotation packages for \cs{RnBeads} and how \cs{RnBeadsAnnotationCreator} (also referred to as \emph{annotation creator}) automatizes the process of creating and validating a new annotation package.
 
@@ -55,13 +64,44 @@ This vignette is a valuable resource for researchers who wish to apply RnBeads t
 
 \section{Anatomy of an Annotation Package}
 
-The \cs{RnBeads} analysis pipeline depends on an annotation package, dedicated to a specific genome assembly. The name of an annotation package consists of the prefix \cs{RnBeads.}, followed by the assembly code in lower case. For example, \cs{RnBeads} needs the package \cs{RnBeads.hg19} in order to provide analysis of methylome data on the human genome hg19.\\
+The \cs{RnBeads} analysis pipeline depends on an annotation package, dedicated to a specific genome assembly. The name of every annotation package consists of the prefix \emph{RnBeads.}, followed by an assembly code in lower case. For example, \cs{RnBeads} needs the package \cs{RnBeads.hg19} in order to provide analysis of methylome data on the human genome hg19.\\
 
-Every annotation package contains exclusively R data structures of three types, along with their documentation. The different types are described below.\\
+Every annotation package contains exclusively R data structures of three types, along with their documentation. As an example, Table~\ref{tab:hg19data} shows all RData files in the \cs{data} subdirectory of the package \cs{RnBeads.hg19}, as well as the objects they contain. The different data types are described in details in the following paragraphs. \\
+
+\begin{sidewaystable}
+\centering
+\begin{tabular}{|p{3.7cm}|p{3.3cm}|p{2.3cm}|p{7cm}|}
+\hline
+\multicolumn{1}{|c}{\textbf{File}} & \multicolumn{1}{c}{\textbf{Object}} & \multicolumn{1}{c}{\textbf{Type}} & \multicolumn{1}{c|}{\textbf{Description}} \\
+\hline
+\multirow{2}{*}{\small \cs{hg19.sites}} & \small \cs{sites\$sites} & \small \cs{GRangesList} & \small CpG site annotation table. \\
+& \small \cs{sites\$mappings} & \small \cs{list} & \small Mappings from built-in regions to sites. \\
+\hline
+\multirow{3}{*}{\small \cs{hg19.probes27}} & \small \cs{sites\$sites} & \small \cs{GRangesList} & \small Probe annotation table. \\
+& \small \cs{sites\$mappings} & \small \cs{list} & \small Mappings from built-in regions to probes. \\
+& \small \cs{sites\$controls27} & \small \cs{data.frame} & \small Control probe annotation table. \\
+\hline
+\multirow{3}{*}{\small \cs{hg19.probes450}} & \small \cs{sites\$sites} & \small \cs{GRangesList} & \small Probe annotation table. \\
+& \small \cs{sites\$mappings} & \small \cs{list} & \small Mappings from built-in regions to probes. \\
+& \small \cs{sites\$controls450} & \small \cs{data.frame} & \small Control probe annotation table. \\
+\hline
+\multirow{5}{*}{\small \cs{hg19.regions}} & \small \cs{GENOME} & \small \cs{character} & \small Bioconductor package with genomic sequence. \\
+& \small \cs{CHROMOSOMES} & \small \cs{character} & \small Names of all supported chromosomes. \\
+& \small \cs{regions\$tiling} & \small \cs{GRangesList} & \small Tiling region annotation table. \\
+& \small \cs{regions\$genes} & \small \cs{GRangesList} & \small Gene body annotation table. \\
+& \small \cs{regions\$promoters} & \small \cs{GRangesList} & \small Gene promoter annotation table. \\
+& \small \cs{regions\$cpgislands} & \small \cs{GRangesList} & \small CpG island annotation table. \\
+\hline
+\small \cs{small.example.object} & \small \cs{rnb.set.example} & \small \cs{RnBeadRawSet} & \small Example Infinium 450k dataset. \\
+\hline
+\end{tabular}
+\caption{Metadata accompanying the HumanMethylation450 probe definitions.}
+\label{tab:hg19data}
+\end{sidewaystable}
 
 \subsection{Site Annotation Tables}
 
-A site annotation table lists all genomic sites that are theoretically targeted by a platform. For example, every annotation package contains the CpG site annotation table which lists all CpG dinucleotides in the dedicated genome assembly\footnote{More precisely, in the predefined list of supported chromosomes for the dedicated assembly.}. This table is in the form of a \cs{GRangesList} object, containing one \cs{GRanges} instance per chromosome. Genomic coordinates are 1-based. Every site annotation table contains the following metadata columns:
+A site annotation table lists all genomic sites that are theoretically targeted by a platform. For example, every annotation package contains the CpG site annotation table which lists all CpG dinucleotides in the dedicated genome assembly\footnote{More precisely, in the predefined list of supported chromosomes for the dedicated assembly.}. This table is in the form of a \cs{GRangesList} object, containing one \cs{GRanges} instance per chromosome. Genomic coordinates are 1-based and sites are sorted based on their genomic position. Every site annotation table contains the following metadata columns:
 
 \begin{description}
   \item[CpG] \hfill \\
@@ -76,22 +116,90 @@ Annotation tables could contain additional metadata. For example, the CpG site a
 
 \begin{description}
   \item[SNPs] \hfill \\
-    Identifiers of all (prefiltered) dbSNP records that overlap with the respective site. This is a \cs{character} value containing a comma-separated list of identifiers, or \cs{NA} if no dbSNP records overlap with the respective site.
+    Identifiers of all prefiltered dbSNP records that overlap with the respective site. This is a \cs{character} value containing a comma-separated list of identifiers, or \cs{NA} if no dbSNP records overlap with the respective site.
   \item[HumanMethylation27] \hfill \\
     Index (within the same chromosome) of the probe in the Infinium HumanMethylation27 Bead Chip assay that targets the respective CpG dinucleotide. This is a positive \cs{integer} value, or \cs{NA} if the CpG dinucleotide is not covered by this platform.
   \item[HumanMethylation450] \hfill \\
     Index (within the same chromosome) of the probe in the Infinium HumanMethylation450 Bead Chip assay that targets the respective CpG dinucleotide. This is a positive \cs{integer} value, or \cs{NA} if the CpG dinucleotide is not covered by this platform.
 \end{description}
 
-Bla-bla. Blu-blu.\\
+Probe annotation tables are a special case of site annotation tables. They define Infinium probes targeting individual CpGs, and define some special features that are used in loading data, as well as by normalization and filtering procedures. Table~\ref{tab:probes450} gives an overview of the Infinium 450k probes for the hg19 genome assembly.\\
+
+\begin{table}
+\centering
+\rowcolors{2}{backgroundtabrow2}{backgroundtabrow1}
+\begin{tabular}{|c|p{5.1cm}|p{7cm}|}
+\hline
+\multicolumn{1}{|c}{\textbf{No.}} & \multicolumn{1}{c}{\textbf{Column Name}} & \multicolumn{1}{c|}{\textbf{Description}} \\
+\hline
+1 & Design             & Probe design type. \tabularnewline
+2 & Color              & Color channel. \tabularnewline
+3 & Context            & Probe context. \tabularnewline
+4 & Random             & Flag indicating if the probe\'s location was randomly chosen. \tabularnewline
+5 & HumanMethylation27 & Flag indicating if the probe is also covered by HumanMethylation27k assay. \tabularnewline
+6 & Mismatches A       & Number of base mismatches between the provided and expected probe sequence. \tabularnewline
+7 & Mismatches B       & Number of base mismatches between the provided and expected probe sequence. \tabularnewline
+8 & CGI Relation       & Relation to a CpG island. \tabularnewline
+9 & CpG                & Number of CpG dinucleotides in the sequence neighborhood of the target. \tabularnewline
+10 & GC                & Percentage of C and G bases in the sequence neighborhood of the target. \tabularnewline
+11 & SNPs 3            & Number of SNPs that overlap with the last 3 bases of a probe's target sequence. \tabularnewline
+12 & SNPs 5            & Number of SNPs that overlap with the last 5 bases of a probe's target sequence. \tabularnewline
+13 & SNPs Full         & Number of SNPs that overlap with the probe's sequence. \\
+\hline
+\end{tabular}
+\caption{Metadata accompanying the HumanMethylation450 probe definitions.}
+\label{tab:probes450}
+\end{table}
+
+Finally, control probe annotation tables are \cs{data.frame} objects that list all control probes in a given assay, along with their characteristics. In a given genomic assembly, every probe annotation table is accompanied by a corresponding control probe annotation table. This allows different control probe definitions for different assemblies, although control probes are generally unrelated to the targeted genomic sequence. Table~\ref{tab:controls450} lists the columns of the Infinium 450k control probe annotation table for hg19.
+
+\begin{table}
+\centering
+\rowcolors{2}{backgroundtabrow2}{backgroundtabrow1}
+\begin{tabular}{|c|p{5.1cm}|p{7cm}|}
+\hline
+\multicolumn{1}{|c}{\textbf{No.}} & \multicolumn{1}{c}{\textbf{Column Name}} & \multicolumn{1}{c|}{\textbf{Description}} \\
+\hline
+1 & ID                 & Probe identifier. \\
+2 & Target             & Probe category. \\
+3 & Color              & Probe color. \\
+4 & Description        & Probe description, abbreviated. \\
+5 & AVG                & ... \\
+6 & Evaluate Green     & If probe is used in the evaluation of the green channel. \\
+7 & Evaluate Red       & If probe is used in the evaluation of the red channel. \\
+8 & Expected Intensity & Expected intensity of the probe (background, low, medium or high). \\
+9 & Sample-dependent   & Flag indicating if the intensity of the probe is sample-dependent. \\
+10 & Index             & Index of the probe in its category. \\
+\hline
+\end{tabular}
+\caption{Columns in the HumanMethylation450 control probe annotation table.}
+\label{tab:controls450}
+\end{table}
 
 \subsection{Region Annotation Tables}
 
-Bla-bla. Blu-blu.\\
+A region annotation table lists all regions in the targeted genome characterized by a specific annotation. For example, the gene body annotation table contains all Ensembl gene records, defined as genomic regions between the transcription start site and the transcription termination site of a gene. Similarly to the annotation of sites, every region annotation is a single \cs{GRangesList} object, containing one \cs{GRanges} instance per chromosome. Regions are sorted based on their first genomic positions.\footnote{For a region defined on the complementary strand, its first position is the end of the region.} Also, the following two columns are always present in the metadata of the object:
+
+\begin{description}
+  \item[CpG] \hfill \\
+    Number of CpG dinucleotides in the region. This is a non-negative \cs{integer} value.
+  \item[GC] \hfill \\
+    Number of C and G nucleotides in the region. This is a non-negative \cs{integer} value.
+\end{description}
+
+Successfully contructed \cs{RnBeads} annotation packages should contain the following 4 built-in region annotation tables: tiling regions, gene bodies, gene promoters and CpG islands. More details about these annotations are provided in the following sections.\\
+
+Note that regions in an annotation table are not necessarily targeted by a methylation assay, or by methylation in general. For example, most of the genomic tiling regions in hg19 are not targeted by Infinium 450k; a significant fraction of these regions contain no CpG dinucleotides at all.
 
 \subsection{Mappings}
 
-Bla-bla. Blu-blu.\\
+Mapping structures link regions to site annotations and are implemented as \cs{list}s of \cs{IRanges} instances, one per chromosome. For example, a mapping from gene promoters to Infinium 27k probes in hg19 is a \cs{list} of 24 \cs{IRanges} objects. Only promoters that are targeted by Infinium 27k appear in the mapping structure. For every such promoter, the corresponding \cs{IRanges} instance stores the range of all probes as indices (on the same chromosome) that lie in the promoter region. Note that sites in an annotation table are always sorted based on their genomic coordinates, therefore, all sites that overlap a given region have consecutive indices in the \cs{GRanges} object of their annotation table.\\
+
+Mappings are extensively used in \cs{RnBeads}. They enable summarizing methylation levels at pre-defined genomic regions, defining methylation profiles based on regions and the identification of differentially methylated regions between sample groups. As shown in Table~\ref{tab:hg19data}, an \cs{.RData} file that stores a site annotation table also contains the mapping structures from all built-in regions to the respective sites.
+
+\subsection{Managing Annotations}
+
+All currently loaded annotation structures are located in a dedicated environment managed internally by \cs{RnBeads}. In order to achieve parsimonious use of the system resources, data provided from an annotation package is loaded dynamically, i.e. on demand. Initial request for a genome assembly support triggers loading the chromosome names and the built-in region annotation tables. An example for such event is the request to obtain a list of supported chromosome names, or a list of supported site or region annotations. A site annotation table (along with its associated mapping structures) is loaded only when it is needed for analysis, e.g. a dataset of the corresponding type is loaded, or when the user explicitly requests annotation information.\\
 
 Note that \cs{RnBeads} annotation packages do not export any R functions or classes. In fact, an annotation package is expected to contain no R code at all.
 
@@ -99,7 +207,7 @@ Note that \cs{RnBeads} annotation packages do not export any R functions or clas
 
 \cs{RnBeadsAnnotationCreator} contains routines that initialize a new annotation package and create the expected data structures. The general workflow consists of 4 major steps, described below.
 \begin{enumerate}
-  \item Create a new R source package structure, including the package's base directory, the file \cs{DESCRIPTION}, subdirectories \cs{data}, \cs{inst}, \cs{man} and \cs{R}, as well as some additional files.
+  \item Create a new R source package structure, including the package's base directory, the files \cs{DESCRIPTION} and \cs{NAMESPACE}, subdirectories \cs{data}, \cs{inst}, \cs{man} and \cs{R}, as well as some additional files and/or directories.
   \item Download and process genomic annotation from public repositories, such as:
     \begin{itemize}
       \item SNP records from \href{http://www.ncbi.nlm.nih.gov/SNP/}{dbSNP}.
@@ -111,14 +219,255 @@ Note that \cs{RnBeads} annotation packages do not export any R functions or clas
   \item Contruct mapping structures between every pair of region type and site type. A mapping stores how many and which sites are contained in each individual region.
 \end{enumerate}
 
-Bla-bla. Blu-blu.
+Creating a new annotation package is achieved by calling the only exported function by the annotation creator. For example, the following code attempts to create a new annotation package for the currently not supported Zv9 assembly (zebrafish genome):
+
+<<eval=FALSE>>=
+createAnnotation("zv9", dest="/path/to/package")
+@
+
+The function above creates the new package directory named \cs{RnBeads.zv9} in \cs{path/to/package} and initializes the annotation tables and mappings. If the directory already exists, the function assumes that the package is partially created and resumes processing from the first step that was not completed. All downloaded and preprocessed intermediate resources are saved in the \cs{temp} subdirectory of the package, which is (by default) removed after all annotation structures are successfully initialized and saved to the subdirectory \cs{data}.\\
+
+Note that some processing steps are computationally and memory intensive because they operate on large tables. Examples for such steps include merging and sorting dbSNP records, calculating CpG density and GC content at the neighborhood of every CpG dinucleotide, and others. The creation of an hg19 annotation package may take several days on a single processing core and have a peak memory usage of over 80 GB.\\
+
+The following section in this documentation gives on overview of the steps needed to add a support for a new genome assembly.
 
 \section{Adding Support for a Genome Assembly}
 
-Bla-bla. Blu-blu.
+In a tutorial fashion, this section lists the steps to add support for the zebrafish genome to the annotation creator. This involves downloading and unpacking the source version of the \cs{RnBeadsAnnotationCreator} package. The archive can be obtained from the \href{http://rnbeads.mpi-inf.mpg.de/installation.php}{RnBeads website}. After modifying the source code of the package according to the instructions presented here, the annotation creator will be able to construct a package \cs{RnBeads.zv9}.
+
+\subsection{Prerequisites}
+\label{sec:prerequisites}
+
+There are several prerequisites to adding support for a new genome assembly to the annotation creator, and thus to \cs{RnBeads}.
+
+\begin{enumerate}
+  \item \textbf{The genomic sequence is known, and a corresponding package is available in \href{http://www.bioconductor.org/}{Bioconductor}.}\\
+    The annotation creator relies on an object of type \cs{BSgenome} in order to extract all genomic CpG dinucleotides, as well as to compute CpG density and GC content values.
+  \item \textbf{Gene definitions are available in Ensembl.}\\
+    The annotation creator uses the \cs{biomaRt} package to download gene definition tables from Ensembl.
+  \item \textbf{CpG island definitions are available in the UCSC Genome Browser.}\\
+    The annotation creator downloads the list of CpG islands to make it available as a built-in region type, and also to enrich the site annotation tables.
+\end{enumerate}
+
+The following sections guide \cs{RnBeadsAnnotationCreator} to the corresponding Bioconductor package, Ensembl table and URL for the zebrafish genome.
+
+\subsection{Adding a New File}
+
+In \cs{RnBeadsAnnotationCreator}, support for a given assembly is implemented in a function with a name consisting of the prefix \cs{createAnnotationPackage.}, followed by the assembly code. Every such function is implemented in a separate R file. Notice the file names in the \cs{R} subdirectory of the \cs{RnBeadsAnnotationCreator} package source.\\
+
+For the zebrafish genome, we need a function named \cs{createAnnotationPackage.zv9}. An easy approach to implement it is to use an already existing function as a template. Please create a copy of the file \cs{createAnnotationPackage.mm10.R} and save it as \cs{createAnnotationPackage.zv9.R} in the same directory.
+
+\subsection{Adjusting the R Code}
+
+Now let us open the newly created file. As a first step, we need to rename the function being defined to \cs{createAnnotationPackage.zv9}. Feel free to adjust the documentation in the header of the file, as well as the Roxygen-style documentation of the function.\\
+
+\subsubsection{Genome Assembly Package and Chromosomes}
+
+The Zebrafish genome contains 25 chromosomes, named \cs{"chr1"} to \cs{"chr25"}. The Bioconductor package defining the genomic sequence of zv9 is \cs{BSgenome.Drerio.UCSC.danRer7}. Therefore, we need to install this package (follow the instructions on its \href{http://master.bioconductor.org/packages/release/data/annotation/html/BSgenome.Drerio.UCSC.danRer7.html}{Bioconductor web page}) and modify the first section of the package creation function to:
+
+<<eval=FALSE>>=
+suppressPackageStartupMessages(library(BSgenome.Drerio.UCSC.danRer7))
+
+## Genomic sequence and supported chromosomes
+GENOME <- 'BSgenome.Drerio.UCSC.danRer7'
+assign('GENOME', GENOME, .globals)
+CHROMOSOMES <- as.character(1:25)
+names(CHROMOSOMES) <- paste0("chr", CHROMOSOMES)
+assign('CHROMOSOMES', CHROMOSOMES, .globals)
+rm(GENOME)
+@
+
+The environment \cs{.globals} is extensively used during the annotation package initialization. The code above sets the variables \cs{GENOME} and \cs{CHROMOSOMES} in this environment, which are later read by other functions of the annotation creator. Once initialized, every site and region annotation table are also saved as variables in the \cs{.globals} environment. This is the reason why they cannot be seen as variables defined in the function \cs{createAnnotationPackage.zv9}.
+
+\subsubsection{SNP Definitions}
+
+The dbSNP database contains records for small variations in zebrafish. The annotation creator includes functions for downloading and processing VCF files from dbSNP. Similarly to the mm10 assembly, there is one file per zebrafish chromosome in dbSNP. The only R code we need to modify in this section is the initialization of the \cs{vcf.files} variable:
+
+<<eval=FALSE>>=
+vcf.files <- gsub("^chr(.+)$", "vcf_chr_\\1.vcf.gz", names(CHROMOSOMES))
+vcf.files <- paste0(DBSNP.FTP.BASE, "zebrafish_7955/VCF/", vcf.files)
+@
+
+The annotation creator currently uses a hard-coded mapping from RefSeq assembly identifiers (used in dbSNP) to the assembly codes used in \cs{RnBeads} and other Bioconductor packages. When including SNP support for a genome assembly, you might need to update the variable \cs{REFERENCE2ASSEMBLY} in \cs{globals.R}.\\
+
+It is important to note that the availability of SNP definitions is not a requirement for the construction of an annotation package. \cs{RnBeads.mm9}, for example, does not incorporate SNP data in its site annotation table.
+
+\subsubsection{Region Annotations}
+
+In order to construct region annotation tables, the annotation creator needs the specific parameters to access the gene definition table using biomaRt. These parameters are summarized in the variable \cs{biomart.params}. In addition, we will overwrite the default URL for the CpG island definition table from the UCSC Genome Browser. The reason to use a non-default path is that the zv9 assembly is referred to as \cs{danRer7} by the Genome Browser. The section on creating region annotations should look like:
+
+<<eval=FALSE>>=
+## Define genomic regions
+biomart.parameters <- list(
+  database.name = "ensembl",
+  dataset.name = "drerio_gene_ensembl",
+  required.columns = c(
+    "id" = "ensembl_gene_id",
+    "chromosome" = "chromosome_name",
+    "start" = "start_position",
+    "end" = "end_position",
+    "strand" = "strand",
+    "symbol" = "hgnc_symbol",
+    "entrezID" = "entrezgene"))
+cgi.url <- paste0(UCSC.FTP.BASE, "danRer7/database/cpgIslandExt.txt.gz")
+logger.start("Region Annotation")
+update.annot("regions", "region annotation", rnb.update.region.annotation,
+  biomart.parameters = biomart.parameters, cgi.download.url = cgi.url)
+rm(biomart.parameters, cgi.url)
+logger.completed()
+@
+
+\subsubsection{Sites and Mappings}
+
+We can keep the remaining code in the function unchanged. Now all that is left to do is to build the package (e.g. using \cs{R CMD BUILD}), install it and test the code using the command introduced earlier:
+
+<<eval=FALSE>>=
+createAnnotation("zv9", dest="/path/to/package")
+@
 
 \section{Tips and Tricks}
 
-Bla-bla. Blu-blu.
+This section contains practical advices on approaches for testing R code in \cs{RnBeadsAnnotationCreator} and investigating its functionality in details.
+
+\subsection{Testing and Production Phases}
+\label{sec:testing}
+
+Creating an annotation package can be time- and memory-consuming. Here, we present some suggestions for debugging this process.
+
+\begin{itemize}
+  \item \textbf{Use logging.}\\
+    By default, the function \cs{createAnnotationPackage} enables logging to the console. Keeping logs to a file (see the function \cs{logger.start} in \cs{RnBeads}) might help recognizing issues and measuring efficiency.
+  \item \textbf{Disable cleaning up.}\\
+    The last parameter of the function \cs{createAnnotationPackage} is a flag specifying if the temporary directory should be removed at the end of the annotation package creation. Setting this to \cs{FALSE} for debugging purposes might save a lot of time in re-runs.
+  \item \textbf{Limit supported chromosomes.}\\
+    Making a test run of a package creation process using only two chromosomes as supported ones could validate that the code behaves as expected before starting the function for a 'full' annotation package.
+\end{itemize}
+
+\subsection{Data Tables and Columns in Ensembl}
+\label{sec:dataensembl}
+
+Adjusting the biomaRt parameters for downloading gene definition tables might not be trivial, especially when the targeted assembly is not a commonly used one. Here, we present the approach we used to find these parameters for the zebrafish genome.\\
+
+First, we need to find the dataset name that corresponds to the assembly of interest. The following code snippet extracts a table with all datasets available from the biomaRt service.
+
+<<>>=
+suppressPackageStartupMessages(library(biomaRt))
+database.name <- "ensembl"
+mart <- useMart(database.name)
+datasets <- listMarts(mart)
+head(datasets)
+@
+
+The variable \cs{datasets} is a \cs{data.frame} with three columns: \cs{"dataset"}, \cs{"description"} and \cs{"version"}. The first column contains the dataset name we should use. After manual inspection of the table, we find that the dataset for Zebrafish is \cs{"drerio\_gene\_ensembl"}. The next step is to extract all possible attributes (table columns) and select the ones related to gene body definitions.
+
+<<>>=
+dataset.name <- "drerio_gene_ensembl"
+mart <- useMart(database.name, dataset.name)
+data.attributes <- unique(listAttributes(mart))
+head(data.attributes)
+@
+
+The variable \cs{data.attributes} is a large \cs{data.frame} with two columns: \cs{"name"} and \cs{"description"}. One way to pinpoint relevant attribute names is by searching for keywords. For example, the following code shows the attributes related to gene symbols.
+
+<<>>=
+data.attributes[grep("symbol", data.attributes[, 1]), ]
+@
+
+\section*{Appendices}
+
+\subsection*{Appendix A}
+
+Full R code of the function \cs{createAnnotationPackage.zv9}.
+
+<<eval=FALSE>>=
+createAnnotationPackage.zv9 <- function() {
+
+  suppressPackageStartupMessages(library(BSgenome.Drerio.UCSC.danRer7))
+
+  ## Genomic sequence and supported chromosomes
+  GENOME <- 'BSgenome.Drerio.UCSC.danRer7'
+  assign('GENOME', GENOME, .globals)
+  CHROMOSOMES <- as.character(1:25)
+  names(CHROMOSOMES) <- paste0("chr", CHROMOSOMES)
+  assign('CHROMOSOMES', CHROMOSOMES, .globals)
+  rm(GENOME)
+
+  ## Download SNP annotation
+  logger.start("SNP Annotation")
+  vcf.files <- gsub("^chr(.+)$", "vcf_chr_\\1.vcf.gz", names(CHROMOSOMES))
+  vcf.files <- paste0(DBSNP.FTP.BASE, "zebrafish_7955/VCF/", vcf.files)
+  update.annot("snps", "polymorphism information", rnb.update.dbsnp,
+    ftp.files = vcf.files)
+  logger.info(paste("Using:", attr(.globals[['snps']], "version")))
+  rm(vcf.files)
+  logger.completed()
+
+  ## Define genomic regions
+  biomart.parameters <- list(
+    database.name = "ensembl",
+    dataset.name = "drerio_gene_ensembl",
+    required.columns = c(
+      "id" = "ensembl_gene_id",
+      "chromosome" = "chromosome_name",
+      "start" = "start_position",
+      "end" = "end_position",
+      "strand" = "strand",
+      "symbol" = "hgnc_symbol",
+      "entrezID" = "entrezgene"))
+  cgi.url <- paste0(UCSC.FTP.BASE, "danRer7/database/cpgIslandExt.txt.gz")
+  logger.start("Region Annotation")
+  update.annot("regions", "region annotation", rnb.update.region.annotation,
+    biomart.parameters = biomart.parameters, cgi.download.url = cgi.url)
+  rm(biomart.parameters, cgi.url)
+  logger.completed()
+
+  ## Define genomic sites
+  logger.start("Genomic Sites")
+  update.annot("sites", "CpG annotation", rnb.update.sites)
+  logger.completed()
+
+  ## Create all possible mappings from regions to sites
+  logger.start("Mappings")
+  update.annot("mappings", "mappings", rnb.create.mappings)
+  logger.completed()
+
+  ## Export the annotation tables
+  rnb.export.annotations.to.data.files()
+}
+@
+
+\subsection*{Appendix B}
+
+\begin{figure}
+	\label{fig:flow-regions}
+	\noindent \begin{centering}
+		\includegraphics{"figures/flow-regions"}
+	\par \end{centering}
+	\caption{Workflow of initializating region annotation tables. The responsible function is \cs{rnb.update.region.annotation}.}
+\end{figure}
+
+\begin{figure}
+	\label{fig:flow-sites}
+	\noindent \begin{centering}
+		\includegraphics{"figures/flow-sites"}
+	\par \end{centering}
+	\caption{Workflow of initializating site annotation tables. The responsible function is \cs{rnb.update.sites}.}
+\end{figure}
+
+\begin{figure}
+	\label{fig:flow-probes450}
+	\noindent \begin{centering}
+		\includegraphics{"figures/flow-probes450"}
+	\par \end{centering}
+	\caption{Workflow of initializating an Infinium 450k probe annotation table. The responsible function is \cs{rnb.update.probe450k.annotation}.}
+\end{figure}
+
+\begin{figure}
+	\label{fig:flow-probes27}
+	\noindent \begin{centering}
+		\includegraphics{"figures/flow-probes27"}
+	\par \end{centering}
+	\caption{Workflow of initializating an Infinium 27k probe annotation table. The responsible function is \cs{rnb.update.probe27k.annotation}.}
+\end{figure}
 
 \end{document}
