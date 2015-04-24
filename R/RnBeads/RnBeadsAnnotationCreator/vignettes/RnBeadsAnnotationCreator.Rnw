@@ -413,7 +413,7 @@ createAnnotationPackage.zv9 <- function() {
       "start" = "start_position",
       "end" = "end_position",
       "strand" = "strand",
-      "symbol" = "hgnc_symbol",
+      "symbol" = "zfin_symbol",
       "entrezID" = "entrezgene"))
   cgi.url <- paste0(UCSC.FTP.BASE, "danRer7/database/cpgIslandExt.txt.gz")
   logger.start("Region Annotation")
