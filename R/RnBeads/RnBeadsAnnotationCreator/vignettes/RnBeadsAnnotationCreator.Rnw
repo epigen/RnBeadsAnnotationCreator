@@ -117,9 +117,9 @@ Annotation tables could contain additional metadata. For example, the CpG site a
 \begin{description}
   \item[SNPs] \hfill \\
     Identifiers of all prefiltered dbSNP records that overlap with the respective site. This is a \cs{character} value containing a comma-separated list of identifiers, or \cs{NA} if no dbSNP records overlap with the respective site.
-  \item[HumanMethylation27] \hfill \\
+  \item[HumanMethylation27] (human assemblies only)\hfill \\
     Index (within the same chromosome) of the probe in the Infinium HumanMethylation27 Bead Chip assay that targets the respective CpG dinucleotide. This is a positive \cs{integer} value, or \cs{NA} if the CpG dinucleotide is not covered by this platform.
-  \item[HumanMethylation450] \hfill \\
+  \item[HumanMethylation450] (human assemblies only)\hfill \\
     Index (within the same chromosome) of the probe in the Infinium HumanMethylation450 Bead Chip assay that targets the respective CpG dinucleotide. This is a positive \cs{integer} value, or \cs{NA} if the CpG dinucleotide is not covered by this platform.
 \end{description}
 
@@ -219,12 +219,13 @@ Note that \cs{RnBeads} annotation packages do not export any R functions or clas
   \item Contruct mapping structures between every pair of region type and site type. A mapping stores how many and which sites are contained in each individual region.
 \end{enumerate}
 
-Creating a new annotation package is achieved by calling the only exported function by the annotation creator. For example, the following code attempts to create a new annotation package for the currently not supported Zv9 assembly (zebrafish genome):
+Creating a new annotation package is achieved by calling the only exported function by the annotation creator. For example, the following code attempts to create a new annotation package for the Zv9 assembly (zebrafish genome) that is currently not natively supported by \cs{RnBeads}:
 
 <<eval=FALSE>>=
-createAnnotation("zv9", dest="/path/to/package")
+createAnnotationPackage("zv9", dest="/path/to/package")
 @
 
+Note, that this command will not work until the corresponding functionality has been implemented in the \cs{RnBeadsAnnotationCreator} package. The following section provides an example on how this can be done.
 The function above creates the new package directory named \cs{RnBeads.zv9} in \cs{path/to/package} and initializes the annotation tables and mappings. If the directory already exists, the function assumes that the package is partially created and resumes processing from the first step that was not completed. All downloaded and preprocessed intermediate resources are saved in the \cs{temp} subdirectory of the package, which is (by default) removed after all annotation structures are successfully initialized and saved to the subdirectory \cs{data}.\\
 
 Note that some processing steps are computationally and memory intensive because they operate on large tables. Examples for such steps include merging and sorting dbSNP records, calculating CpG density and GC content at the neighborhood of every CpG dinucleotide, and others. The creation of an hg19 annotation package may take several days on a single processing core and have a peak memory usage of over 80 GB.\\
@@ -233,7 +234,7 @@ The following section in this documentation gives on overview of the steps neede
 
 \section{Adding Support for a Genome Assembly}
 
-In a tutorial fashion, this section lists the steps to add support for the zebrafish genome to the annotation creator. This involves downloading and unpacking the source version of the \cs{RnBeadsAnnotationCreator} package. The archive can be obtained from the \href{http://rnbeads.mpi-inf.mpg.de/installation.php}{RnBeads website}. After modifying the source code of the package according to the instructions presented here, the annotation creator will be able to construct a package \cs{RnBeads.zv9}.
+This section lists the steps to add support for the zebrafish genome to the annotation creator. This involves downloading and unpacking the source version of the \cs{RnBeadsAnnotationCreator} package. The archive can be obtained from the \href{http://rnbeads.mpi-inf.mpg.de/installation.php}{RnBeads website}. After modifying the source code of the package according to the instructions presented here, the annotation creator will be able to construct a package \cs{RnBeads.zv9}.
 
 \subsection{Prerequisites}
 \label{sec:prerequisites}
@@ -243,7 +244,7 @@ There are several prerequisites to adding support for a new genome assembly to t
 \begin{enumerate}
   \item \textbf{The genomic sequence is known, and a corresponding package is available in \href{http://www.bioconductor.org/}{Bioconductor}.}\\
     The annotation creator relies on an object of type \cs{BSgenome} in order to extract all genomic CpG dinucleotides, as well as to compute CpG density and GC content values.
-  \item \textbf{Gene definitions are available in Ensembl.}\\
+  \item \textbf{Gene definitions are available in an Ensembl biomart.}\\
     The annotation creator uses the \cs{biomaRt} package to download gene definition tables from Ensembl.
   \item \textbf{CpG island definitions are available in the UCSC Genome Browser.}\\
     The annotation creator downloads the list of CpG islands to make it available as a built-in region type, and also to enrich the site annotation tables.
@@ -253,7 +254,7 @@ The following sections guide \cs{RnBeadsAnnotationCreator} to the corresponding 
 
 \subsection{Adding a New File}
 
-In \cs{RnBeadsAnnotationCreator}, support for a given assembly is implemented in a function with a name consisting of the prefix \cs{createAnnotationPackage.}, followed by the assembly code. Every such function is implemented in a separate R file. Notice the file names in the \cs{R} subdirectory of the \cs{RnBeadsAnnotationCreator} package source.\\
+In \cs{RnBeadsAnnotationCreator}, support for a given assembly is implemented in a function with a name consisting of the prefix \cs{createAnnotationPackage.*}, where \cs{*} resembles the assembly identifier. Every such function is implemented in a separate R file. Notice the file names in the \cs{R} subdirectory of the \cs{RnBeadsAnnotationCreator} package source.\\
 
 For the zebrafish genome, we need a function named \cs{createAnnotationPackage.zv9}. An easy approach to implement it is to use an already existing function as a template. Please create a copy of the file \cs{createAnnotationPackage.mm10.R} and save it as \cs{createAnnotationPackage.zv9.R} in the same directory.
 
@@ -281,7 +282,7 @@ The environment \cs{.globals} is extensively used during the annotation package 
 
 \subsubsection{SNP Definitions}
 
-The dbSNP database contains records for small variations in zebrafish. The annotation creator includes functions for downloading and processing VCF files from dbSNP. Similarly to the mm10 assembly, there is one file per zebrafish chromosome in dbSNP. The only R code we need to modify in this section is the initialization of the \cs{vcf.files} variable:
+The dbSNP database contains records for small variations in zebrafish. The annotation creator includes functions for downloading and processing VCF files from dbSNP\footnote{The FTP server we use here can be found at \href{ftp://ftp.ncbi.nih.gov/snp/organisms/}{ftp://ftp.ncbi.nih.gov/snp/organisms/}}. Similarly to the mm10 assembly, there is one file per zebrafish chromosome in dbSNP. The only R code we need to modify in this section is the initialization of the \cs{vcf.files} variable:
 
 <<eval=FALSE>>=
 vcf.files <- gsub("^chr(.+)$", "vcf_chr_\\1.vcf.gz", names(CHROMOSOMES))
@@ -307,7 +308,7 @@ biomart.parameters <- list(
     "start" = "start_position",
     "end" = "end_position",
     "strand" = "strand",
-    "symbol" = "hgnc_symbol",
+    "symbol" = "zfin_symbol",
     "entrezID" = "entrezgene"))
 cgi.url <- paste0(UCSC.FTP.BASE, "danRer7/database/cpgIslandExt.txt.gz")
 logger.start("Region Annotation")
@@ -319,10 +320,10 @@ logger.completed()
 
 \subsubsection{Sites and Mappings}
 
-We can keep the remaining code in the function unchanged. Now all that is left to do is to build the package (e.g. using \cs{R CMD BUILD}), install it and test the code using the command introduced earlier:
+We can keep the remaining code in the function unchanged. Now all that is left to do is to build and install the modified \cs{RnBeadsAnnotationCreator} package (e.g. using \cs{R CMD BUILD} and \cs{R CMD INSTALL}), and test the code using the command introduced earlier:
 
 <<eval=FALSE>>=
-createAnnotation("zv9", dest="/path/to/package")
+createAnnotationPackage("zv9", dest="/path/to/package")
 @
 
 \section{Tips and Tricks}
@@ -358,7 +359,7 @@ datasets <- listMarts(mart)
 head(datasets)
 @
 
-The variable \cs{datasets} is a \cs{data.frame} with three columns: \cs{"dataset"}, \cs{"description"} and \cs{"version"}. The first column contains the dataset name we should use. After manual inspection of the table, we find that the dataset for Zebrafish is \cs{"drerio\_gene\_ensembl"}. The next step is to extract all possible attributes (table columns) and select the ones related to gene body definitions.
+The variable \cs{datasets} is a \cs{data.frame} with three columns: \cs{"dataset"}, \cs{"description"} and \cs{"version"}. The first column contains the dataset name we should use. After manual inspection of the table, we find that the dataset for Zebrafish is \cs{"drerio\_gene\_ensembl"}. Carefully also verify that the gene annotation fits the genome assembly you used. The next step is to extract all possible attributes (table columns) and select the ones related to gene body definitions.
 
 <<>>=
 dataset.name <- "drerio_gene_ensembl"
