@@ -4,7 +4,6 @@
 
 \documentclass[a4paper]{scrartcl}
 \usepackage[OT1]{fontenc}
-\usepackage{Sweave}
 \usepackage{hyperref}
 \usepackage{color}
 \usepackage[table]{xcolor}
