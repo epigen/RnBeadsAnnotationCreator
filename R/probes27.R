@@ -35,10 +35,10 @@ rnb.update.probe27k.annotation <- function(ftp.table, table.columns) {
 	rownames(geo) <- as.character(geo[, "ID"])
 	geo[["Strand"]] <- rnb.fix.strand(geo[["Strand"]])
 	geo[["IlmnStrand"]] <- rnb.fix.strand(geo[["IlmnStrand"]])
-	if (!is.integer(geo[["AddressA ID"]])) {
+	if (!is.integer(geo[["AddressA"]])) {
 		logger.error("Invalid values in column AddressA ID")
 	}
-	if (!is.integer(geo[["AddressB ID"]])) {
+	if (!is.integer(geo[["AddressB"]])) {
 		logger.error("Invalid values in column AddressB ID")
 	}
 	geo[, "AlleleA Probe Sequence"] <- as.character(geo[["AlleleA Probe Sequence"]])
@@ -67,6 +67,8 @@ rnb.update.probe27k.annotation <- function(ftp.table, table.columns) {
 		"Chromosome" = methylumi[, "Chromosome"],
 		"Location" = methylumi[, "Location"],
 		"Strand" = geo[rownames(methylumi), "Strand"],
+		"AddressA" = methylumi[, "AddressA"],
+		"AddressB" = methylumi[, "AddressB"],
 		"Design" = factor("I", levels = c("I", "II")),
 		"IlmnStrand" = geo[rownames(methylumi), "IlmnStrand"],
 		"AlleleA Probe Sequence" = geo[rownames(methylumi), "AlleleA Probe Sequence"],
@@ -76,6 +78,10 @@ rnb.update.probe27k.annotation <- function(ftp.table, table.columns) {
 	rownames(probe.infos) <- probe.infos[, "ID"]
 	probe.infos[is.na(probe.infos[["Strand"]]), "Strand"] <- "*"
 	probe.infos[is.na(probe.infos[["IlmnStrand"]]), "IlmnStrand"] <- "*"
+	i <- which(is.na(probe.infos[, "AddressB"]))
+	if (length(i) != 0) {
+		probe.infos[i, "AddressB"] <- probe.infos[i, "AddressA"]
+	}
 	logger.status("Combined both probe annotation tables")
 
 	## Sort based on chromosome and position
@@ -97,6 +103,7 @@ rnb.update.probe27k.annotation <- function(ftp.table, table.columns) {
 	probes.gr <- GRanges(seqnames = probe.infos[, "Chromosome"],
 		ranges = IRanges(start = starts, end = starts + 1L, names = probe.infos[, "ID"]),
 		strand = probe.infos[, "Strand"],
+		"AddressA" = probe.infos[, "AddressA"], "AddressB" = probe.infos[, "AddressB"],
 		"Color" = probe.infos[, "Color"], "Context" = probe.infos[, "Context"],
 		"Mismatches A" = probe.infos[, "Mismatches A"], "Mismatches B" = probe.infos[, "Mismatches B"],
 #		"CGI Relation" = probe.infos[, "CGI Relation"],

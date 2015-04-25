@@ -102,7 +102,7 @@ rnb.update.probe.annotation.geo <- function(ftp.table, table.columns) {
 	rownames(probe.infos) <- probe.infos[["ID"]]
 	probe.infos <- probe.infos[, c("ID", "Design", "Color", "Random", "HumanMethylation27",
 			"Genome Build", "Chromosome", "Location", "Strand", "CGI Relation",
-			"AlleleA Probe Sequence", "AlleleB Probe Sequence")]
+			"AlleleA Probe Sequence", "AlleleB Probe Sequence", "AddressA", "AddressB")]
 	probe.infos[is.na(probe.infos[["Random"]]), "Random"] <- FALSE
 	probe.infos[is.na(probe.infos[["HumanMethylation27"]]), "HumanMethylation27"] <- FALSE
 	probe.infos[, "Strand"] <- rnb.fix.strand(probe.infos[, "Strand"])
@@ -352,7 +352,11 @@ rnb.update.probes450.combine <- function(methylumi, geo) {
 	}
 	geo <- geo[, c("ID", "Design", "Color", "Context", "Random", "HumanMethylation27",
 			"Mismatches A", "Mismatches B", "Genome Build", "Chromosome", "Location", "Strand", "CGI Relation",
-			"AlleleA Probe Sequence", "AlleleB Probe Sequence")]
+			"AlleleA Probe Sequence", "AlleleB Probe Sequence", "AddressA", "AddressB")]
+	i <- which(is.na(geo[, "AddressB"]))
+	if (length(i) != 0) {
+		geo[i, "AddressB"] <- geo[i, "AddressA"]
+	}
 
 	## Add information about CpG counts and GC content in the neighborhood, context, overlaps with SNPs
 	geo <- rnb.update.probe.annotation.cpg.context(geo)
@@ -368,6 +372,7 @@ rnb.update.probes450.combine <- function(methylumi, geo) {
 	starts[is.na(starts)] <- 0L
 	probes.gr <- GRanges(seqnames = as.character(geo[["Chromosome"]]),
 		ranges = IRanges(start = starts, end = starts + 1L, names = geo[, "ID"]), strand = strands,
+		"AddressA" = geo[, "AddressA"], "AddressB" = geo[, "AddressB"],
 		"Design" = geo[, "Design"], "Color" = geo[, "Color"],
 		"Context" = geo[, "Context"], "Random" = geo[, "Random"],
 		"HumanMethylation27" = geo[, "HumanMethylation27"],
