@@ -182,6 +182,7 @@ append.cpg.stats <- function(genome.data, regionlist) {
 	names(regions.enriched) <- names(regionlist)
 	return(GRangesList(regions.enriched))
 }
+
 ########################################################################################################################
 
 #' match.chrom.names
@@ -255,7 +256,7 @@ createPackageScaffold <- function(
 	## Create NEWS file
 	fname <- system.file(paste0("extdata/NEWS.", assembly), package = "RnBeadsAnnotationCreator")
 	if (file.exists(fname)) {
-		txt <- scan(fname, "", sep = "\n", na.strings = character(), quiet = TRUE)
+		txt <- scan(fname, "", sep = "\n", na.strings = character(), quiet = TRUE, blank.lines.skip = FALSE)
 	} else {
 		txt <- paste0("RnBeads.", assembly, " ", desc["Version"])
 		txt <- c(txt, paste(rep("=", nchar(txt)), collapse = ""))

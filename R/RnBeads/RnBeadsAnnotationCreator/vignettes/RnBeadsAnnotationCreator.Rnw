@@ -319,10 +319,17 @@ logger.completed()
 
 \subsubsection{Sites and Mappings}
 
-We can keep the remaining code in the function unchanged. Now all that is left to do is to build and install the modified \cs{RnBeadsAnnotationCreator} package (e.g. using \cs{R CMD BUILD} and \cs{R CMD INSTALL}), and test the code using the command introduced earlier:
+We can keep the remaining code in the function unchanged. Now all that is left to do is to build and install the modified \cs{RnBeadsAnnotationCreator} package (e.g. using \cs{R CMD build} and \cs{R CMD INSTALL}), and test the code using the command introduced earlier:
 
 <<eval=FALSE>>=
 createAnnotationPackage("zv9", dest="/path/to/package")
+@
+
+Upon completion, this function creates a directory named \cs{RnBeads.zv9} in the specified path. You should look at the \cs{DESCRIPTION} file, include additional fields if you wish to, and maybe also create a file \cs{inst/NEWS}. More information on the directory structure and files in an R package is available in the tutorial \href{http://cran.r-project.org/doc/manuals/R-exts.html}{Writing R Extensions}. The last step is to build and install the newly created package. You can validate that the zebrafish genome is now supported by \cs{RnBeads} by starting a new R session and typing the following commands:
+
+<<eval=FALSE>>=
+suppressPackageStartupMessages(library(RnBeads))
+rnb.get.assemblies()
 @
 
 \section{Tips and Tricks}
