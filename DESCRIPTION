@@ -11,10 +11,10 @@ Authors@R: c(
 Date: 2015-02-13
 Suggests:
     biomaRt,
-	knitr
+    knitr
 Depends:
-	doParallel,
-	RnBeads
+    doParallel,
+    RnBeads
 License: GPL-3
 Version: 0.99.0
 VignetteBuilder: knitr

@@ -229,7 +229,7 @@ The function above creates the new package directory named \cs{RnBeads.zv9} in \
 
 Note that some processing steps are computationally and memory intensive because they operate on large tables. Examples for such steps include merging and sorting dbSNP records, calculating CpG density and GC content at the neighborhood of every CpG dinucleotide, and others. The creation of an hg19 annotation package may take several days on a single processing core and have a peak memory usage of over 80 GB.\\
 
-The following section in this documentation gives on overview of the steps needed to add a support for a new genome assembly.
+The following section in this documentation gives on overview of the steps needed to add support for a new genome assembly.
 
 \section{Adding Support for a Genome Assembly}
 
