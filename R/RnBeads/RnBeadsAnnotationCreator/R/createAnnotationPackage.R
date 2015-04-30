@@ -50,8 +50,7 @@ update.annot <- function(object.name, info, update.fun, ...) {
 #' @author Yassen Assenov
 #' @noRd
 rnb.get.package.data.file <- function(annotation.name) {
-	fname <- paste0(.globals[['assembly']], ".", annotation.name, ".RData")
-	file.path(.globals[['DIR.PACKAGE']], "data", fname)
+	file.path(.globals[['DIR.PACKAGE']], "data", paste0(annotation.name, ".RData"))
 }
 
 ########################################################################################################################
@@ -65,17 +64,38 @@ rnb.get.package.data.file <- function(annotation.name) {
 #' @noRd
 rnb.export.annotations.to.data.files <- function() {
 	sites.full <- .globals[['sites']]
+	framework <- list(
+		"GENOME" = .globals[['GENOME']],
+		"CHROMOSOMES" = .globals[['CHROMOSOMES']],
+		"regions" = list(),
+		"sites" = lapply(sites.full, function(x) { NULL }),
+		"controls" = list(),
+		"mappings" = list())
 	for (sname in names(sites.full)) {
 		sites <- list("sites" = sites.full[[sname]], "mappings" = lapply(.globals[['mappings']], "[[", sname))
-		if (sname == "probes450") { sites[["controls450"]] <- .globals[['probes450']][["controls"]] }
-		else if (sname == "probes27") { sites[["controls27"]] <- .globals[['probes27']][["controls"]] }
+		if (sname == "probes450") {
+			sites[["controls450"]] <- .globals[['probes450']][["controls"]]
+			framework[["controls"]]["controls450"] <- list(NULL)
+		} else if (sname == "probes27") {
+			sites[["controls27"]] <- .globals[['probes27']][["controls"]]
+			framework[["controls"]]["controls27"] <- list(NULL)
+		}
 		save(sites, file = rnb.get.package.data.file(sname), compression_level = 9L)
 		logger.status(c("Saved", sname, "annotation table and mappings to the package data"))
 	}
-	GENOME <- .globals[['GENOME']]
-	CHROMOSOMES <- .globals[['CHROMOSOMES']]
+	if (length(framework[["controls"]]) == 0) {
+		framework[["controls"]] <- NULL
+	} else {
+		cinfo <- names(framework[["controls"]])
+		names(cinfo) <- sub("^controls", "probes", cinfo)
+		attr(framework[["controls"]], "sites") <- cinfo
+		rm(cinfo)
+	}
+	assembly <- .globals[['assembly']]
+	.globals[[assembly]] <- framework
+	save(list = assembly, file = rnb.get.package.data.file(assembly), envir = .globals, compression_level = 9L)
 	regions <- .globals[['regions']]
-	save(GENOME, CHROMOSOMES, regions, file = rnb.get.package.data.file("regions"), compression_level = 9L)
+	save(regions, file = rnb.get.package.data.file("regions"), compression_level = 9L)
 	logger.status("Saved region annotation table to the package data")
 }
 
@@ -93,7 +113,9 @@ rnb.export.annotations.to.data.files <- function() {
 #' @return None (invisible \code{NULL}).
 #' @author Fabian Mueller
 #' @examples
+#' \donttest{
 #' createAnnotationPackage("hg38")
+#' }
 #' @export
 createAnnotationPackage <- function(assembly,dest=getwd(),cleanUp=TRUE){
 	## Validate parameters
@@ -124,13 +146,15 @@ createAnnotationPackage <- function(assembly,dest=getwd(),cleanUp=TRUE){
 		dir.package.state <- "(existing)"
 	} else {
 		pkgName <- paste0("RnBeads.", assembly)
+		txt <- paste0("Automatically generated RnBeads annotation package for the assembly ", assembly, ".")
 		createdScaffold <- createPackageScaffold(
 			pkgName,
 			desc=c(
 				Package=pkgName,
 				Title=pkgName,
-				Description="automatically generated package",
+				Description=txt,
 				Author="RnBeadsAnnotationCreator",
+				Maintainer="RnBeadsAnnotationCreator <rnbeads@mpi-inf.mpg.de>",
 				Date=format(Sys.Date(), format="%Y-%m-%d"),
 				License="GPL-3",
 				Version="0.1",
@@ -159,9 +183,9 @@ createAnnotationPackage <- function(assembly,dest=getwd(),cleanUp=TRUE){
 	## Clean the temporary directory
 	if (cleanUp){
 		if (unlink(file.path(.globals[['DIR.PACKAGE']], "temp"), recursive = TRUE) != 0L) {
-			logger.status("Cleaned package temporary directory")
+			logger.warning("Could not clean package temporary directory")
 		} else {
-			logger.error("Could not clean package temporary directory")
+			logger.status("Cleaned package temporary directory")
 		}
 	}
 	logger.completed()
