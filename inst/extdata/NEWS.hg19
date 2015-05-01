@@ -1,15 +1,21 @@
-RnBeads.hg19 0.99.3
-===================
- * Added information on a genomic sequence package; updated all anotation tables.
+RnBeads.hg19 1.0.1
+==================
+
+ * Added information on a genomic sequence package.
+ * Added information on targeted chromosomes.
+ * Updated all anotation tables.
 
 RnBeads.hg19 0.99.2
 ===================
+
  * Included Address ID information for Infinium 27K and Infinium 450k probes.
 
 RnBeads.hg19 0.99.1
 ===================
+
  * Included a mini example dataset.
 
 RnBeads.hg19 0.99.0
 ===================
+
  * Initial release of RnBeads.hg19.
