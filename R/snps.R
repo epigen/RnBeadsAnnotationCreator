@@ -304,12 +304,193 @@ rnb.update.dbsnp <- function(ftp.files) {
 #	chromosomes <- names(snps)
 #	snps <- suppressWarnings(foreach(snp.df = snps) %dopar% rnb.construct.snp.types(snp.df))
 #	names(snps) <- chromosomes
+	fnames <- file.path(.globals[["DIR.PACKAGE"]], "temp", "snps", paste0("snps.", names(snps), ".RDS"))
+	names(fnames) <- names(snps)
 	for (chrom in names(snps)) {
-		snps[[chrom]] <- rnb.construct.snp.types(snps[[chrom]])
-		logger.status(c("Processed", chrom))
+		fname <- fnames[chrom]
+		if (file.exists(fname)) {
+			snps[[chrom]] <- readRDS(fname)
+			logger.status(c("Loaded", chrom))
+		} else {
+			snps[[chrom]] <- rnb.construct.snp.types(snps[[chrom]])
+			con <- gzfile(fname, "wb", compression = 9L); saveRDS(snps[[chrom]], con); close(con); rm(con)
+			logger.status(c("Processed", chrom))
+		}
+		invisible(gc())
 	}
 	attr(snps, "version") <- db.version
 	logger.status("Constructed tables of polymorphism types")
 
 	return(snps)
+}
+
+########################################################################################################################
+
+#' rnb.split.snps
+#' 
+#' Performs dbSNP record post-processing using the MapReduce programming model. This function defines and submits jobs
+#' to a computational cluster using the PBS scheduling system.
+#' 
+#' @param snps.file      Full path of the file (named \code{snps.RData}) that stores the combined and filtered table(s)
+#'                       from dbSNP. The processed tables (one per chromosome) that result from calling this function
+#'                       will be written to dedicated files in a subdirectory named \code{snps} of the directory in
+#'                       which this file is located.
+#' @param temp.directory Full path of the directory to be for the storage of intermediate data files, log files and
+#'                       scripts. This must be a non-existent path as this function attempts to create it. Note that
+#'                       this temporary directory is \emph{not} cleaned after the completion of all jobs.
+#' @param R.executable   Full path of the R executable file; used for the execution in R scripts in the PBS system.
+#' @param batch.size     Maximum size, in number of records, of a table processed in a single job. This must be an
+#'                       \code{integer} value between \code{10^3} and \code{10^6}.
+#' @return Invisibly, the identifiers of all processes submitted to PBS.
+#' 
+#' @author Yassen Assenov
+#' @export
+rnb.split.snps <- function(snps.file, temp.directory, R.executable = paste0(Sys.getenv("R_HOME"), "/bin/R"),
+	batch.size = 200000L) {
+
+	## Validate parameters
+	validate.path <- function(x, pname, is.file = TRUE) {
+		if (!(is.character(x) && length(x) == 1 && isTRUE(x) != "")) {
+			stop(paste("invalid value for", pname))
+		}
+		if (!grepl("^(/|[A-Za-z]:).+$", x)) {
+			stop(paste0("invalid value for ", pname, "; absolute path expected"))
+		}
+		if (grepl('"', x, fixed = TRUE)) {
+			stop(paste0("invalid value for ", pname, "; double quotes are not allowed"))
+		}
+		pexists <- file.exists(x)
+		if (is.file) {
+			if (!pexists) {
+				stop(paste0("invalid value for ", pname, "; file not found"))
+			}
+		} else if (pexists) {
+			stop(paste0("invalid value for ", pname, "; must be a non-existent path"))
+		}
+	}
+	validate.path(snps.file, "snps.file")
+	validate.path(temp.directory, "temp.directory", FALSE)
+	if (is.double(batch.size) && isTRUE(all(batch.size == as.integer(batch.size)))) {
+		batch.size <- as.integer(batch.size)
+	}
+	if (!(is.integer(batch.size) && length(batch.size) == 1)) {
+		stop("invalid value for batch.size")
+	}
+	if (!isTRUE(1000L < batch.size && batch.size <= 1000000L)) {
+		stop("invalid value for batch.size; expected a value between 10^3 and 10^6")
+	}
+	validate.path(R.executable, "R.executable")
+
+	## Load the tables of SNP records
+	result <- tryCatch(suppressWarnings(load(snps.file)), error = function(err) { character() })
+	if (!setequal(result, c("snps", "db.version"))) {
+		stop(paste("File", snps.file, "is inaccessible or invalid"))
+	}
+	if (!(is.list(snps) && length(snps) != 0 && all(sapply(snps, class) == "data.frame") && (!is.null(names(snps))))) {
+		stop("Loaded object snps contains invalid data")
+	}
+	if (!isTRUE(all(grepl("^[A-Za-z0-9_]+$", names(snps))))) {
+		stop("Loaded object snps contains invalid names")
+	}
+	rm(validate.path, result, db.version)
+	
+	## Attempt to create the temporary directory
+	if (!dir.create(temp.directory, FALSE, TRUE)) {
+		stop("could not create temp.directory")
+	}
+
+	## Split the SNP records into smaller tables
+	batch.chromosomes <- rep(names(snps), as.integer(ceiling(sapply(snps, nrow) / batch.size)))
+	batch.chromosomes <- factor(batch.chromosomes, levels = names(snps))
+	i <- 0L
+	for (chrom in names(snps)) {
+		n <- 0L
+		while (n != nrow(snps[[chrom]])) {
+			n.start <- n + 1L
+			n <- min(n + batch.size, nrow(snps[[chrom]]))
+			i <- i + 1L
+			fname <- sprintf("db.%05d.RDS", i)
+			con <- gzfile(file.path(temp.directory, fname), "wb", compression = 9L)
+			saveRDS(snps[[chrom]][n.start:n, ], con)
+			close(con)
+		}
+	}
+	fname <- "chromosomes.RDS"
+	saveRDS(batch.chromosomes, fname)
+	rm(snps, i, chrom, n, n.start, fname, con)
+	invisible(gc())
+
+	## Generate an R script for processing a single file
+	txt <- capture.output(show(RnBeadsAnnotationCreator:::rnb.construct.snp.types))
+	txt[1] <- paste("rnb.construct.snp.types <-", txt[1])
+	txt[length(txt)] <- ''
+	txt <- c(txt, 'i <- commandArgs()[length(commandArgs())]',
+		'fnames <- paste0(c("db.", "tp."), i, ".RDS")',
+		'tbl <- rnb.construct.snp.types(readRDS(fnames[1]))',
+		'con <- gzfile(fnames[2], "wb", compression = 9L)',
+		'saveRDS(tbl, con)',
+		'close(con)',
+		'file.remove(fnames[1])', '')
+	cat(paste(txt, collapse = "\n"), file = file.path(temp.directory, "snp.types.R"))
+
+	## Generate a shell script for processing a single file
+	generate.shell <- function(fname, logfile, R.args, set.resources = TRUE) {
+		txt <- c('#!/bin/bash', '',
+			'#PBS -l mem=200m',
+			'#PBS -l walltime=3:00:00',
+			'#PBS -l nodes=1:ppn=1',
+			'#PBS -m ae',
+			'#PBS -j oe',
+			paste0('#PBS -o "', temp.directory, '/', logfile, '.log"'), '',
+			paste0('cd "', temp.directory, '"'),
+			paste0('"', R.executable, '" --no-restore --no-save --args ', R.args, ' < ', fname, '.R'), '')
+		if (!set.resources) {
+			txt <- txt[-(3:4)]
+		}
+		cat(paste(txt, collapse = "\n"), file = file.path(temp.directory, paste0(fname, ".sh")))
+	}
+	generate.shell('snp.types', '${i}', '${i}')
+
+	## Generate an R script for combining results
+	txt <- c('arguments <- tail(commandArgs(), 3)',
+		'ii <- as.integer(arguments[1:2])',
+		'fnames <- sprintf("tp.%05d.RDS", ii[1]:ii[2])',
+		'tbl <- do.call(rbind, unname(lapply(fnames, readRDS)))',
+		'tbl <- tbl[order(tbl[, 1], tbl[, 2]), ]',
+		'dname <- dirname(arguments[3])',
+		'if (!file.exists(dname)) { dir.create(dname, FALSE, TRUE) }',
+		'con <- gzfile(arguments[3], "wb", compression = 9L)',
+		'saveRDS(tbl, con)',
+		'close(con)',
+		'fnames[!file.remove(fnames)]', '')
+	fname <- file.path(temp.directory, "snp.combine.R")
+	cat(paste(txt, collapse = "\n"), file = fname)
+
+	## Generate a shell script for combining results
+	generate.shell('snp.combine', '${chrom}', '${istart} ${iend} ${fn}', FALSE)
+
+	## Submit jobs for processing
+	ids1 <- rep("", length(batch.chromosomes))
+	for (i in 1:length(batch.chromosomes)) {
+		ids1[i] <- sprintf('qsub -N SNPs_%05d -v i=%05d "%s/snp.types.sh"', i, i, temp.directory)
+#		cat(paste0(ids1[i], "\n")); ids1[i] <- sprintf("%05d", as.integer(round(runif(1, 1, 10000))))
+		ids1[i] <- system(ids1[i], intern = TRUE)
+		Sys.sleep(0.5)
+	}
+	rm(generate.shell, i)
+
+	## Submit jobs for combining
+	ids2 <- character()
+	for (chrom in levels(batch.chromosomes)) {
+		i <- range(which(batch.chromosomes == chrom))
+		fname <- paste0(dirname(snps.file), '/snps2/snps.', chrom, '.RDS')
+		mem <- ceiling(0.12 * (i[2] - i[1] + 1))
+		txt <- paste0('qsub -N SNPs_combine_', chrom, ' -l mem=', mem, 'g -l walltime=', (mem *2), ':00:00 ',
+			'-W depend=afterok:', paste0(ids[i[1]:i[2]], collapse = ':'),
+			' -v chrom=', chrom, ',istart=', i[1], ',iend=', i[2], ',fn="', fname, '" snp.combine.sh')
+#		cat(paste0(txt, "\n"))
+		ids2 <- c(ids2, system(txt, intern = TRUE))
+		Sys.sleep(0.5)
+	}
+	invisible(c(ids1, ids2))
 }
