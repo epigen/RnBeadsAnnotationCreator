@@ -484,7 +484,8 @@ rnb.split.snps <- function(snps.file, temp.directory, R.executable = paste0(Sys.
 		mem <- ceiling(0.12 * (i[2] - i[1] + 1))
 		txt <- paste0('qsub -N SNPs_combine_', chrom, ' -l mem=', mem, 'g -l walltime=', (mem *2), ':00:00 ',
 			'-W depend=afterok:', paste0(ids1[i[1]:i[2]], collapse = ':'),
-			' -v chrom=', chrom, ',istart=', i[1], ',iend=', i[2], ',fn="', fname, '" snp.combine.sh')
+			' -v chrom=', chrom, ',istart=', i[1], ',iend=', i[2], ',fn="', fname, '" ',
+			'"', temp.directory, '/snp.combine.sh"')
 		ids2 <- c(ids2, system(txt, intern = TRUE))
 		Sys.sleep(0.5)
 	}
