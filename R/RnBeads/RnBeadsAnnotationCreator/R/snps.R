@@ -415,7 +415,7 @@ rnb.split.snps <- function(snps.file, temp.directory, R.executable = paste0(Sys.
 			close(con)
 		}
 	}
-	fname <- "chromosomes.RDS"
+	fname <- file.path(temp.directory, "chromosomes.RDS")
 	saveRDS(batch.chromosomes, fname)
 	rm(snps, i, chrom, n, n.start, fname, con)
 	invisible(gc())
@@ -434,22 +434,20 @@ rnb.split.snps <- function(snps.file, temp.directory, R.executable = paste0(Sys.
 	cat(paste(txt, collapse = "\n"), file = file.path(temp.directory, "snp.types.R"))
 
 	## Generate a shell script for processing a single file
-	generate.shell <- function(fname, logfile, R.args, set.resources = TRUE) {
-		txt <- c('#!/bin/bash', '',
-			'#PBS -l mem=200m',
-			'#PBS -l walltime=3:00:00',
-			'#PBS -l nodes=1:ppn=1',
+	generate.shell <- function(fname, logfile, R.args, mem = NULL, walltime = NULL) {
+		txt <- c('#!/bin/bash', '')
+		if (!is.null(mem)) { txt <- c(txt, paste0('#PBS -l mem=', mem)) }
+		if (!is.null(walltime)) { txt <- c(txt, paste0('#PBS -l walltime=', walltime, ':00:00')) }
+		txt <- c(txt, '#PBS -l nodes=1:ppn=1',
 			'#PBS -m ae',
 			'#PBS -j oe',
 			paste0('#PBS -o "', temp.directory, '/', logfile, '.log"'), '',
 			paste0('cd "', temp.directory, '"'),
 			paste0('"', R.executable, '" --no-restore --no-save --args ', R.args, ' < ', fname, '.R'), '')
-		if (!set.resources) {
-			txt <- txt[-(3:4)]
-		}
 		cat(paste(txt, collapse = "\n"), file = file.path(temp.directory, paste0(fname, ".sh")))
 	}
-	generate.shell('snp.types', '${i}', '${i}')
+	generate.shell('snp.types', '${i}', '${i}', paste0(ceiling(batch.size / 2000L), "m"),
+		as.integer(ceiling(batch.size / 70000)))
 
 	## Generate an R script for combining results
 	txt <- c('arguments <- tail(commandArgs(), 3)',
@@ -467,7 +465,7 @@ rnb.split.snps <- function(snps.file, temp.directory, R.executable = paste0(Sys.
 	cat(paste(txt, collapse = "\n"), file = fname)
 
 	## Generate a shell script for combining results
-	generate.shell('snp.combine', '${chrom}', '${istart} ${iend} ${fn}', FALSE)
+	generate.shell('snp.combine', '${chrom}', '${istart} ${iend} ${fn}')
 
 	## Submit jobs for processing
 	ids1 <- rep("", length(batch.chromosomes))
