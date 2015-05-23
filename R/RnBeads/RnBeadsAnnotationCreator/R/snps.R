@@ -301,6 +301,17 @@ rnb.update.dbsnp <- function(ftp.files) {
 	}
 
 	## Construct tables of polymorphism types
+	if (.globals[['SNP_MAX']] != 0 && .globals[['SNP_MAX']] <= max(sapply(snps, nrow))) {
+		fname <- normalizePath(fname, '/')
+		dname <- normalizePath(file.path(.globals[["DIR.PACKAGE"]], "temp", "qsub"), '/', FALSE)
+		txt <- c('suppressPackageStartupMessages(library(RnBeadsAnnotationCreator))',
+			'txt <- rnb.split.snps("', fname, '", "', dname, '")',
+			'cat(txt, sep = "\n", file = "split.snps.log")')
+		fname <- file.path(.globals[["DIR.PACKAGE"]], "temp", "split.snps.R")
+		cat(paste(txt, collapse = "\n"), file = fname)
+		logger.error(paste('dbSNP table(s) are too large. MapReduce implemented in', fname))
+	}
+
 #	chromosomes <- names(snps)
 #	snps <- suppressWarnings(foreach(snp.df = snps) %dopar% rnb.construct.snp.types(snp.df))
 #	names(snps) <- chromosomes
@@ -398,6 +409,13 @@ rnb.split.snps <- function(snps.file, temp.directory, R.executable = paste0(Sys.
 	if (!dir.create(temp.directory, FALSE, TRUE)) {
 		stop("could not create temp.directory")
 	}
+	output.directory <- file.path(dirname(snps.file), "snps")
+	if (!file.exists(output.directory)) {
+		if (!dir.create(output.directory, FALSE)) {
+			unlink(temp.directory)
+			stop(c("could not create", output.directory))
+		}
+	}
 
 	## Split the SNP records into smaller tables
 	batch.chromosomes <- rep(names(snps), as.integer(ceiling(sapply(snps, nrow) / batch.size)))
@@ -415,8 +433,6 @@ rnb.split.snps <- function(snps.file, temp.directory, R.executable = paste0(Sys.
 			close(con)
 		}
 	}
-	fname <- file.path(temp.directory, "chromosomes.RDS")
-	saveRDS(batch.chromosomes, fname)
 	rm(snps, i, chrom, n, n.start, fname, con)
 	invisible(gc())
 
@@ -455,8 +471,8 @@ rnb.split.snps <- function(snps.file, temp.directory, R.executable = paste0(Sys.
 		'fnames <- sprintf("tp.%05d.RDS", ii[1]:ii[2])',
 		'tbl <- do.call(rbind, unname(lapply(fnames, readRDS)))',
 		'tbl <- tbl[order(tbl[, 1], tbl[, 2]), ]',
-		'dname <- dirname(arguments[3])',
-		'if (!file.exists(dname)) { dir.create(dname, FALSE, TRUE) }',
+#		'dname <- dirname(arguments[3])',
+#		'if (!file.exists(dname)) { dir.create(dname, FALSE, TRUE) }',
 		'con <- gzfile(arguments[3], "wb", compression = 9L)',
 		'saveRDS(tbl, con)',
 		'close(con)',
@@ -472,7 +488,7 @@ rnb.split.snps <- function(snps.file, temp.directory, R.executable = paste0(Sys.
 	for (i in 1:length(batch.chromosomes)) {
 		ids1[i] <- sprintf('qsub -N SNPs_%05d -v i=%05d "%s/snp.types.sh"', i, i, temp.directory)
 		ids1[i] <- system(ids1[i], intern = TRUE)
-		Sys.sleep(0.5)
+		Sys.sleep(1)
 	}
 	rm(generate.shell, i)
 
@@ -480,14 +496,14 @@ rnb.split.snps <- function(snps.file, temp.directory, R.executable = paste0(Sys.
 	ids2 <- character()
 	for (chrom in levels(batch.chromosomes)) {
 		i <- range(which(batch.chromosomes == chrom))
-		fname <- paste0(dirname(snps.file), '/snps/snps.', chrom, '.RDS')
-		mem <- ceiling(0.12 * (i[2] - i[1] + 1))
-		txt <- paste0('qsub -N SNPs_combine_', chrom, ' -l mem=', mem, 'g -l walltime=', (mem *2), ':00:00 ',
+		fname <- paste0(output.directory, '/snps.', chrom, '.RDS')
+		mem <- as.integer(ceiling(0.12 * (i[2] - i[1] + 1)))
+		txt <- paste0('qsub -N SNPs_combine_', chrom, ' -l mem=', mem, 'g -l walltime=', mem, ':00:00 ',
 			'-W depend=afterok:', paste0(ids1[i[1]:i[2]], collapse = ':'),
 			' -v chrom=', chrom, ',istart=', i[1], ',iend=', i[2], ',fn="', fname, '" ',
 			'"', temp.directory, '/snp.combine.sh"')
 		ids2 <- c(ids2, system(txt, intern = TRUE))
-		Sys.sleep(0.5)
+		Sys.sleep(1)
 	}
 	invisible(c(ids1, ids2))
 }

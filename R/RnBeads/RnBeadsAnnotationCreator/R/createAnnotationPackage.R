@@ -108,8 +108,13 @@ rnb.export.annotations.to.data.files <- function() {
 #' @param assembly Targeted genome assembly. Must be one of \code{"hg38"}, \code{"hg19"}, \code{"mm10"}, \code{"mm9"},
 #'                 \code{"rn5"}.
 #' @param dest     Destination directory where the package should be generated.
+#' @param maxSNPs  Maximum number of dbSNP records in preprocessed table for a single chromosome, given as a single
+#'                 non-negative \code{integer} value. If a larger table (than this threshold) is found, the annotation
+#'                 creator stops and suggests a solution that utilizes the environment of a computational cluster.
+#'                 Setting this parameter to \code{0} disables such a test. This parameter is used only when SNP data is
+#'                 available for the targeted genome assembly.
 #' @param cleanUp  Flag indicating if the temporary directory in the generated package (containing downloaded and
-#'                 partially processed resource files) be removed after all annotation structures are created.
+#'                 partially processed resource files) is to be removed after all annotation structures are created.
 #' @return None (invisible \code{NULL}).
 #' @author Fabian Mueller
 #' @examples
@@ -117,13 +122,19 @@ rnb.export.annotations.to.data.files <- function() {
 #' createAnnotationPackage("hg38")
 #' }
 #' @export
-createAnnotationPackage <- function(assembly,dest=getwd(),cleanUp=TRUE){
+createAnnotationPackage <- function(assembly,dest=getwd(),maxSNPs=500000L,cleanUp=TRUE){
 	## Validate parameters
 	if (!(is.character(assembly) && length(assembly) == 1 && (isTRUE(assembly != "")))) {
 		stop("invalid value for assembly")
 	}
 	if (!(is.character(dest) && length(dest) == 1 && (isTRUE(dest != "")))) {
 		stop("invalid value for dest")
+	}
+	if (is.double(maxSNPs) && isTRUE(all(maxSNPs == as.integer(maxSNPs)))) {
+		maxSNPs <- as.integer(maxSNPs)
+	}
+	if (!(is.integer(maxSNPs) && length(maxSNPs) == 1 && isTRUE(0 <= maxSNPs))) {
+		stop("invalid value for maxSNPs")
 	}
 	if (!(is.logical(cleanUp) && length(cleanUp) == 1 && (!is.na(cleanUp)))) {
 		stop("invalid value for cleanUp")
@@ -140,6 +151,7 @@ createAnnotationPackage <- function(assembly,dest=getwd(),cleanUp=TRUE){
 	assign('assembly', assembly, .globals)
 	dir.package <- file.path(dest, paste0("RnBeads.", assembly))
 	assign('DIR.PACKAGE', dir.package, .globals)
+	assign('SNP_MAX', maxSNPs, .globals)
 
 	## Initialize package directories
 	if (file.exists(dir.package)) {
