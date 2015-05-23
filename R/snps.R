@@ -473,7 +473,6 @@ rnb.split.snps <- function(snps.file, temp.directory, R.executable = paste0(Sys.
 	ids1 <- rep("", length(batch.chromosomes))
 	for (i in 1:length(batch.chromosomes)) {
 		ids1[i] <- sprintf('qsub -N SNPs_%05d -v i=%05d "%s/snp.types.sh"', i, i, temp.directory)
-#		cat(paste0(ids1[i], "\n")); ids1[i] <- sprintf("%05d", as.integer(round(runif(1, 1, 10000))))
 		ids1[i] <- system(ids1[i], intern = TRUE)
 		Sys.sleep(0.5)
 	}
@@ -483,12 +482,11 @@ rnb.split.snps <- function(snps.file, temp.directory, R.executable = paste0(Sys.
 	ids2 <- character()
 	for (chrom in levels(batch.chromosomes)) {
 		i <- range(which(batch.chromosomes == chrom))
-		fname <- paste0(dirname(snps.file), '/snps2/snps.', chrom, '.RDS')
+		fname <- paste0(dirname(snps.file), '/snps/snps.', chrom, '.RDS')
 		mem <- ceiling(0.12 * (i[2] - i[1] + 1))
 		txt <- paste0('qsub -N SNPs_combine_', chrom, ' -l mem=', mem, 'g -l walltime=', (mem *2), ':00:00 ',
 			'-W depend=afterok:', paste0(ids[i[1]:i[2]], collapse = ':'),
 			' -v chrom=', chrom, ',istart=', i[1], ',iend=', i[2], ',fn="', fname, '" snp.combine.sh')
-#		cat(paste0(txt, "\n"))
 		ids2 <- c(ids2, system(txt, intern = TRUE))
 		Sys.sleep(0.5)
 	}
