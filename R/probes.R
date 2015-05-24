@@ -137,7 +137,7 @@ rnb.update.probe.annotation.cpg.context <- function(probe.infos) {
 	genome.data <- rnb.genome.data()
 	calculate.cg <- function(chrom, loci, l.neighborhood) {
 		starts <- loci - l.neighborhood / 2L + 1L
-		ends <- loci + l.neighborhood / 2L - 1L
+		ends <- loci + l.neighborhood / 2L
 		chrom.sequence <- genome.data[[chrom]]
 		chrom.regions <- suppressWarnings(Views(chrom.sequence, start = starts, end = ends))
 
