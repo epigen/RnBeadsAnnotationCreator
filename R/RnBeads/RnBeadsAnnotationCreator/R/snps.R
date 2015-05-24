@@ -16,7 +16,7 @@
 #' @param ftp.files Full FTP paths of the VCF files in dbSNP.
 #' @param base.dir  Local directory to store the downloaded VCF files.
 #' @return \code{character} vector of length \code{length(ftp.files)}, storing the names of all local copies of the
-#'         downloaded VCF files. 
+#'         downloaded VCF files.
 #'
 #' @author Yassen Assenov
 #' @noRd
@@ -71,7 +71,7 @@ rnb.update.load.vcf <- function(fname) {
 		i <- which(meta.names == m.name)
 		if (length(i) == 0) {
 			if (required) {
-				
+
 			}
 			return(NULL)
 		}
@@ -104,7 +104,7 @@ rnb.update.load.vcf <- function(fname) {
 	}
 
 	## Extract SNP information
-	txt <- strsplit(txt[-(1:length(i.header))], "\t", fixed = TRUE)	
+	txt <- strsplit(txt[-(1:length(i.header))], "\t", fixed = TRUE)
 	i <- which(sapply(txt, length) != length(cnames))
 	if (length(i) != 0) {
 		logger.error(c("unexpected number of columns at line", (i[1] + length(i.header))))
@@ -132,7 +132,7 @@ rnb.update.load.vcf <- function(fname) {
 	logger.info(c("Records with supported chromosome:", sum(is.valid.chromosome), ", with unsupported ones:",
 		sum(!is.valid.chromosome)))
 	ids <- sapply(txt, '[', 3)
-	i <- anyDuplicated(ids) 
+	i <- anyDuplicated(ids)
 	if (i != 0) {
 		logger.error(paste0("duplicated identifier (", ids[i], ") found at line ", (i[1] + length(i.header))))
 	}
@@ -153,7 +153,7 @@ rnb.update.load.vcf <- function(fname) {
 	is.valid.allele <- allele.origin != 2L
 	logger.info(c("Records with supported allele origin:", sum(is.valid.allele), ", with unsupported ones:",
 		sum(!is.valid.allele)))
-	
+
 	## Extract major allele frequencies
 	regex.frequency <- "^.*CAF=\\[([0-9\\.,]+)\\].*$"
 	i <- which(grepl(regex.frequency, infos))
@@ -305,8 +305,8 @@ rnb.update.dbsnp <- function(ftp.files) {
 		fname <- normalizePath(fname, '/')
 		dname <- normalizePath(file.path(.globals[["DIR.PACKAGE"]], "temp", "qsub"), '/', FALSE)
 		txt <- c('suppressPackageStartupMessages(library(RnBeadsAnnotationCreator))',
-			'txt <- rnb.split.snps("', fname, '", "', dname, '")',
-			'cat(txt, sep = "\n", file = "split.snps.log")')
+			paste0('txt <- rnb.split.snps("', fname, '", "', dname, '")'),
+			'cat(txt, sep = "\\n", file = "split.snps.log")')
 		fname <- file.path(.globals[["DIR.PACKAGE"]], "temp", "split.snps.R")
 		cat(paste(txt, collapse = "\n"), file = fname)
 		logger.error(paste('dbSNP table(s) are too large. MapReduce implemented in', fname))
@@ -338,10 +338,10 @@ rnb.update.dbsnp <- function(ftp.files) {
 ########################################################################################################################
 
 #' rnb.split.snps
-#' 
+#'
 #' Performs dbSNP record post-processing using the MapReduce programming model. This function defines and submits jobs
 #' to a computational cluster using the PBS scheduling system.
-#' 
+#'
 #' @param snps.file      Full path of the file (named \code{snps.RData}) that stores the combined and filtered table(s)
 #'                       from dbSNP. The processed tables (one per chromosome) that result from calling this function
 #'                       will be written to dedicated files in a subdirectory named \code{snps} of the directory in
@@ -353,7 +353,7 @@ rnb.update.dbsnp <- function(ftp.files) {
 #' @param batch.size     Maximum size, in number of records, of a table processed in a single job. This must be an
 #'                       \code{integer} value between \code{10^3} and \code{10^6}.
 #' @return Invisibly, the identifiers of all processes submitted to PBS.
-#' 
+#'
 #' @author Yassen Assenov
 #' @export
 rnb.split.snps <- function(snps.file, temp.directory, R.executable = paste0(Sys.getenv("R_HOME"), "/bin/R"),
@@ -404,7 +404,7 @@ rnb.split.snps <- function(snps.file, temp.directory, R.executable = paste0(Sys.
 		stop("Loaded object snps contains invalid names")
 	}
 	rm(validate.path, result, db.version)
-	
+
 	## Attempt to create the temporary directory
 	if (!dir.create(temp.directory, FALSE, TRUE)) {
 		stop("could not create temp.directory")
