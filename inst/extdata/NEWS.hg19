@@ -3,6 +3,7 @@ RnBeads.hg19 1.0.1
 
  * Added information on a genomic sequence package.
  * Added information on targeted chromosomes.
+ * Added information on cross-reactive probes.
  * Updated all anotation tables.
 
 RnBeads.hg19 0.99.2
