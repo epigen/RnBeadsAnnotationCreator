@@ -89,32 +89,13 @@ rnb.update.probe27k.annotation <- function(ftp.table, table.columns) {
 
 	## Add annotation for CpG density, GC content, sequence mismatches and SNPs
 	probe.infos <- rnb.update.probe.annotation.cpg.context(probe.infos)
-	if (!is.null(.globals[['snps']])) {
-		probe.infos <- rnb.update.probe.annotation.msnps(probe.infos, .globals[['snps']])
-		logger.status("Updated probe annotation with SNP information")
-	}
+	probe.infos <- rnb.update.probe.annotation.msnps(probe.infos, .globals[['snps']])
 
 	## Add data on cross-hybridization
 	probe.infos[, "Cross-reactive"] <- rnb.update.probe.annotation.cr(probe.infos[, "ID"], "HumanMethylation27")
 
 	## Convert to GRangesList
-	starts <- probe.infos[, "Location"]
-	starts[is.na(starts)] <- 0L
-	probes.gr <- GRanges(seqnames = probe.infos[, "Chromosome"],
-		ranges = IRanges(start = starts, end = starts + 1L, names = probe.infos[, "ID"]),
-		strand = probe.infos[, "Strand"],
-		"AddressA" = probe.infos[, "AddressA"], "AddressB" = probe.infos[, "AddressB"],
-		"Color" = probe.infos[, "Color"], "Context" = probe.infos[, "Context"],
-		"Mismatches A" = probe.infos[, "Mismatches A"], "Mismatches B" = probe.infos[, "Mismatches B"],
-#		"CGI Relation" = probe.infos[, "CGI Relation"],
-		"CpG" = probe.infos[, "CpG"], "GC" = probe.infos[, "GC"],
-		"SNPs 3" = probe.infos[, "SNPs 3"], "SNPs 5" = probe.infos[, "SNPs 5"],
-		"SNPs Full" = probe.infos[, "SNPs Full"],
-		"Cross-reactive" = probe.infos[, "Cross-reactive"],
-		check.names = FALSE,
-		seqinfo = seqinfo(rnb.genome.data())[names(.globals[['CHROMOSOMES']]), ])
-	probes.gr <- rnb.sort.regions(probes.gr)
-	probes.gr <- GenomicRanges::split(probes.gr, seqnames(probes.gr))[levels(probe.infos[, "Chromosome"])]
+	probes.gr <- rnb.probe.infos.to.GRanges(probe.infos)
 
 	## Validate and combine control probe annotations
 	logger.start("Control Probes")

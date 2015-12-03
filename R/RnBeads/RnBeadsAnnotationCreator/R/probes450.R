@@ -65,7 +65,7 @@ rnb.update.probe.annotation.geo <- function(ftp.table, table.columns) {
 	if (!setequal(RnBeads:::HM450.CONTROL.TARGETS, levels(control.probe.infos[[2]]))) {
 		logger.error("Unexpected values for Target")
 	}
-	colnames(control.probe.infos) <- GEO.CONTROL.PROBE.TABLE.COLUMNS
+	colnames(control.probe.infos) <- INF.CONTROL.PROBE.TABLE.COLUMNS
 	rownames(control.probe.infos) <- control.probe.infos[, 1]
 	control.probe.infos[, "Description"] <- as.character(control.probe.infos[, "Description"])
 	control.probe.infos[, "AVG"] <- (control.probe.infos[, "AVG"] == "AVG")
@@ -218,7 +218,7 @@ rnb.update.controls450.enrich <- function(control.probe.infos) {
 	control.probe.infos[["Expected Intensity"]] <- factor(control.probe.infos[["Expected Intensity"]])
 
 	## Add column Sample-dependent
-	control.probe.infos[["Sample-dependent"]] <- 
+	control.probe.infos[["Sample-dependent"]] <-
 		!(control.probe.infos[["Target"]] %in% RnBeads:::CONTROL.TARGETS.SAMPLE.INDEPENDENT)
 
 	return(control.probe.infos)
@@ -351,8 +351,8 @@ rnb.update.probes450.combine <- function(methylumi, geo) {
 		geo[["Context"]] <- as.character(NA)
 	}
 	geo <- geo[, c("ID", "Design", "Color", "Context", "Random", "HumanMethylation27",
-			"Mismatches A", "Mismatches B", "Genome Build", "Chromosome", "Location", "Strand", "CGI Relation",
-			"AlleleA Probe Sequence", "AlleleB Probe Sequence", "AddressA", "AddressB")]
+		"Mismatches A", "Mismatches B", "Genome Build", "Chromosome", "Location", "Strand", "CGI Relation",
+		"AlleleA Probe Sequence", "AlleleB Probe Sequence", "AddressA", "AddressB")]
 	i <- which(is.na(geo[, "AddressB"]))
 	if (length(i) != 0) {
 		geo[i, "AddressB"] <- geo[i, "AddressA"]
@@ -362,31 +362,11 @@ rnb.update.probes450.combine <- function(methylumi, geo) {
 	geo <- rnb.update.probe.annotation.cpg.context(geo)
 	geo <- rnb.update.probe.annotation.msnps(geo)
 
-	## Add data on cross-hybridization	
+	## Add data on cross-hybridization
 	geo[, "Cross-reactive"] <- rnb.update.probe.annotation.cr(geo[, "ID"], "HumanMethylation450")
 
 	## Convert to GRangesList
-	chromosomes <- names(.globals[['CHROMOSOMES']])
-	strands <- rnb.fix.strand(geo[, "Strand"])
-	starts <- geo[, "Location"]
-	starts[is.na(starts)] <- 0L
-	probes.gr <- GRanges(seqnames = as.character(geo[["Chromosome"]]),
-		ranges = IRanges(start = starts, end = starts + 1L, names = geo[, "ID"]), strand = strands,
-		"AddressA" = geo[, "AddressA"], "AddressB" = geo[, "AddressB"],
-		"Design" = geo[, "Design"], "Color" = geo[, "Color"],
-		"Context" = geo[, "Context"], "Random" = geo[, "Random"],
-		"HumanMethylation27" = geo[, "HumanMethylation27"],
-		"HumanMethylation450" = rep(TRUE, nrow(geo)),
-		"Mismatches A" = geo[, "Mismatches A"], "Mismatches B" = geo[, "Mismatches B"],
-		"CGI Relation" = geo[, "CGI Relation"], "CpG" = geo[, "CpG"], "GC" = geo[, "GC"],
-		"SNPs 3" = geo[, "SNPs 3"], "SNPs 5" = geo[, "SNPs 5"], "SNPs Full" = geo[, "SNPs Full"],
-		"Cross-reactive" = geo[, "Cross-reactive"],
-		check.names = FALSE)
-	seqlevels(probes.gr) <- chromosomes
-	seqlengths(probes.gr) <- as.integer(seqlengths(rnb.genome.data())[chromosomes])
-	probes.gr <- rnb.sort.regions(probes.gr)
-	probes.gr <- GenomicRanges::split(probes.gr, seqnames(probes.gr))[chromosomes]
+	probes.gr <- rnb.probe.infos.to.GRanges(geo)
 
-	seqinfo(probes.gr) <- seqinfo(rnb.genome.data())[names(.globals[['CHROMOSOMES']]), ]
 	return(probes.gr)
 }

@@ -357,7 +357,7 @@ Adjusting the biomaRt parameters for downloading gene definition tables might no
 
 First, we need to find the dataset name that corresponds to the assembly of interest. The following code snippet extracts a table with all datasets available from the biomaRt service.
 
-<<>>=
+<<eval=FALSE>>=
 suppressPackageStartupMessages(library(biomaRt))
 database.name <- "ensembl"
 mart <- useMart(database.name)
@@ -367,7 +367,7 @@ head(datasets)
 
 The variable \cs{datasets} is a \cs{data.frame} with three columns: \cs{"dataset"}, \cs{"description"} and \cs{"version"}. The first column contains the dataset name we should use. After manual inspection of the table, we find that the dataset for Zebrafish is \cs{"drerio\_gene\_ensembl"}. Carefully also verify that the gene annotation fits the genome assembly you used. The next step is to extract all possible attributes (table columns) and select the ones related to gene body definitions.
 
-<<>>=
+<<eval=FALSE>>=
 dataset.name <- "drerio_gene_ensembl"
 mart <- useMart(database.name, dataset.name)
 data.attributes <- unique(listAttributes(mart))
@@ -376,7 +376,7 @@ head(data.attributes)
 
 The variable \cs{data.attributes} is a large \cs{data.frame} with two columns: \cs{"name"} and \cs{"description"}. One way to pinpoint relevant attribute names is by searching for keywords. For example, the following code shows the attributes related to gene symbols.
 
-<<>>=
+<<eval=FALSE>>=
 data.attributes[grep("symbol", data.attributes[, 1]), ]
 @
 
