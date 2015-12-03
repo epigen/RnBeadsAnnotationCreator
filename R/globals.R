@@ -64,7 +64,7 @@ REFERENCE2ASSEMBLY <- c(
 
 ## Maximum value for a major allele frequency to consider
 MAJOR.ALLELE.FREQUENCY <- 0.95
-	
+
 ########################################################################################################################
 ## UCSC Genome Browser
 
@@ -78,10 +78,10 @@ UCSC.FTP.BASE <- "ftp://hgdownload.cse.ucsc.edu/goldenPath/"
 GEO.FTP.BASE <- "ftp://ftp.ncbi.nlm.nih.gov/pub/geo/DATA/supplementary/platforms/"
 
 ########################################################################################################################
-## Infinium 27k and 450k
+## Infinium 27k, 450k, and EPIC
 
-## Column names (assigned by this script) of the table on control probes downloaded from GEO
-GEO.CONTROL.PROBE.TABLE.COLUMNS <- c("ID", "Target", "Color", "Description", "AVG")
+## Column names (assigned by this script) of the table on control probes downloaded from GEO and Illumina's site
+INF.CONTROL.PROBE.TABLE.COLUMNS <- c("ID", "Target", "Color", "Description", "AVG")
 
 ## Control probe colors associated with the evaluation of the Red channel
 CONTROL.COLORS.GREEN <- c("Black", "Blue", "Cyan", "Green", "Lime", "LimeGreen", "SkyBlue")

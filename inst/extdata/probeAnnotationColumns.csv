@@ -16,11 +16,11 @@
 ,12,12,CHR,Chromosome
 10,,,MapInfo,Location
 ,13,13,MAPINFO,Location
-11,,,Ploidity,Ploidity
+11,,,Ploidy,Ploidy
 12,,,Species,Species
 13,,,Source,Source
 14,,,SourceVersion,Source Version
-15,,,SourceStrand,Source Strand
+15,,,SourceStrand,Strand
 16,14,14,SourceSeq,Source Sequence
 17,,,TopGenomicSeq,Top Genomic Sequence
 20,,,TSS_Coordinate,TSS Coordinate

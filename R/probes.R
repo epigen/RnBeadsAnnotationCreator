@@ -8,6 +8,26 @@
 
 ## F U N C T I O N S ###################################################################################################
 
+#' rnb.get.illumina.annotation.columns
+#'
+#' Gets the expected column names from an Illumina's probe annotation table.
+#'
+#' @param assay The methylation assay: one of \code{"27k"}, \code{"450k"} or \code{"EPIC"}.
+#' @return Columns to expect in the probe annotation table in the form of a \code{character} \code{vector}.
+#' @author Yassen Assenov
+#' @noRd
+rnb.get.illumina.annotation.columns <- function(assay) {
+	tbl <- read.csv(system.file("extdata/probeAnnotationColumns.csv", package = "RnBeadsAnnotationCreator"),
+		check.names = FALSE, stringsAsFactors = FALSE)
+	tbl <- tbl[!is.na(tbl[, assay]), c(assay, "Name", "RnBeads")]
+	tbl <- tbl[order(tbl[, 1]), ]
+	result <- tbl[, "RnBeads"]
+	names(result) <- tbl[, "Name"]
+	result
+}
+
+########################################################################################################################
+
 #' rnb.load.probe.annotation.geo
 #'
 #' Loads the specified probe annotation table from GEO.
@@ -284,16 +304,18 @@ rnb.update.probe.annotation.msnps <- function(probe.infos, snps = .globals[['snp
 	suppressWarnings(rm(dna.seq, alleles.exp))
 	logger.status("Counted mismatches between expected and defined allele sequence")
 
-	snp.stats <- suppressWarnings(
-		foreach(pr.regs = probe.regs, snp.regs = snps[names(probe.regs)], .combine = rbind,
-			.export = "rnb.update.probe.annotation.snps") %dopar%
+	if (!is.null(snps)) {
+		snp.stats <- suppressWarnings(
+			foreach(pr.regs = probe.regs, snp.regs = snps[names(probe.regs)], .combine = rbind,
+					.export = "rnb.update.probe.annotation.snps") %dopar%
 				rnb.update.probe.annotation.snps(pr.regs, snp.regs))
-	i <- as.integer(rownames(snp.stats))
-	for (cname in colnames(snp.stats)) {
-		probe.infos[[cname]] <- as.integer(NA)
-		probe.infos[i, cname] <- snp.stats[, cname]
+		i <- as.integer(rownames(snp.stats))
+		for (cname in colnames(snp.stats)) {
+			probe.infos[[cname]] <- as.integer(NA)
+			probe.infos[i, cname] <- snp.stats[, cname]
+		}
+		logger.status("Marked overlaps of probes with dbSNP records")
 	}
-	logger.status("Marked overlaps of probes with dbSNP records")
 
 	probe.infos
 }
@@ -394,5 +416,33 @@ rnb.update.probe.annotation.cr <- function(probe.ids, platform) {
 		result <- rep(as.integer(NA), length(probe.ids))
 		logger.warning("No list of cross-reactive probes available; creating a column with NAs")
 	}
+	result
+}
+
+########################################################################################################################
+
+#' rnb.probe.infos.to.GRanges
+#'
+#' Converts a data frame with probe annotation to a \code{GRangesList} instance.
+#'
+#' @param probe.infos Probe annotation as a \code{data.frame} containing at least the following columns:
+#'                    \code{"Chromosome"}, \code{"Location"}, \code{"ID"}.
+#' @return Converted annotation in the form of a \code{GRangesList} object, one \code{GRanges} instance per chromosome.
+#' @author Yassen Assenov
+#' @noRd
+rnb.probe.infos.to.GRanges <- function(probe.infos) {
+	starts <- probe.infos[, "Location"]
+	starts[is.na(starts)] <- 0L
+	cnames <- c("Strand", "AddressA", "AddressB", "Design", "Color", "Context", "Random", "HumanMethylation27",
+		"HumanMethylation450", "Mismatches A", "Mismatches B", "CGI Relation", "CpG", "GC", "SNPs 3", "SNPs 5",
+		"SNPs Full", "Cross-reactive")
+	cnames <- as.list(probe.infos[, intersect(cnames, colnames(probe.infos))])
+	result <- c(list(seqnames = probe.infos[, "Chromosome"],
+			ranges = IRanges(start = starts, end = starts + 1L, names = probe.infos[, "ID"]),
+			strands <- rnb.fix.strand(probe.infos[, "Strand"])),
+		cnames, list(seqinfo = seqinfo(rnb.genome.data())[names(.globals[['CHROMOSOMES']]), ]))
+	result <- rnb.sort.regions(do.call(GRanges, result))
+	result <- GenomicRanges::split(result, seqnames(result))[names(.globals[['CHROMOSOMES']])]
+	seqinfo(result) <- seqinfo(rnb.genome.data())[names(.globals[['CHROMOSOMES']]), ]
 	result
 }

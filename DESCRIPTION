@@ -18,3 +18,4 @@ Depends:
 License: GPL-3
 Version: 0.99.0
 VignetteBuilder: knitr
+RoxygenNote: 5.0.1

@@ -9,7 +9,7 @@
 ## F U N C T I O N S ###################################################################################################
 
 #' createAnnotationPackage.hg19
-#' 
+#'
 #' Helper function to create RnBeads annotation package for genome assembly hg19.
 #'
 #' @return None (invisible \code{NULL}).
@@ -63,92 +63,35 @@ createAnnotationPackage.hg19 <- function() {
 	## Define Infinium 27k probe annotations
 	logger.start("Infinium 27k")
 	ftp.table <- paste0(GEO.FTP.BASE, "GPL8490/GPL8490_HumanMethylation27_270596_v.1.2.csv.gz")
-	table.columns <- c(
-		"IlmnID" = "ID",
-		"Name" = "Name",
-		"IlmnStrand" = "IlmnStrand",
-		"AddressA_ID" = "AddressA",
-		"AlleleA_ProbeSeq" = "AlleleA Probe Sequence",
-		"AddressB_ID" = "AddressB",
-		"AlleleB_ProbeSeq" = "AlleleB Probe Sequence",
-		"GenomeBuild" = "Genome Build",
-		"Chr" = "Chromosome",
-		"MapInfo" = "Location",
-		"Ploidy" = "Ploidy",
-		"Species" = "Species",
-		"Source" = "Source",
-		"SourceVersion" = "Source Version",
-		"SourceStrand" = "Strand",
-		"SourceSeq" = "Source Sequence",
-		"TopGenomicSeq" = "Top Genomic Sequence",
-		"Next_Base" = "Next Base",
-		"Color_Channel" = "Color",
-		"TSS_Coordinate" = "TSS Coordinate",
-		"Gene_Strand" = "Gene Strand",
-		"Gene_ID" = "Gene ID",
-		"Symbol" = "Symbol",
-		"Synonym" = "Synonym",
-		"Accession" = "Accession",
-		"GID" = "GID",
-		"Annotation" = "Annotation",
-		"Product" = "Product",
-		"Distance_to_TSS" = "Distance to TSS",
-		"CPG_ISLAND" = "CpG Island",
-		"CPG_ISLAND_LOCATIONS" = "CpG Island Locations",
-		"MIR_CPG_ISLAND" = "MIR CpG Island",
-		"MIR_NAMES" = "MIR Names")
+	table.columns <- rnb.get.illumina.annotation.columns("27k")
 	update.annot("probes27", "Infinium 27K annotation", rnb.update.probe27k.annotation,
 		ftp.table = ftp.table, table.columns = table.columns)
-	.globals[['sites']][['probes27']] <- .globals[['probes27']][["probes"]]
+	.globals[['sites']][['probes27']] <- .globals[['probes27']][['probes']]
 	logger.completed()
 
 	## Define Infinium 450k probe annotations
 	logger.start("Infinium 450k")
 	ftp.table <- paste0(GEO.FTP.BASE, "GPL13534/GPL13534_HumanMethylation450_15017482_v.1.1.csv.gz")
-	table.columns <- c(
-		"IlmnID" = "ID",
-		"Name" = "Name",
-		"AddressA_ID" = "AddressA",
-		"AlleleA_ProbeSeq" = "AlleleA Probe Sequence",
-		"AddressB_ID" = "AddressB",
-		"AlleleB_ProbeSeq" = "AlleleB Probe Sequence",
-		"Infinium_Design_Type" = "Design",
-		"Next_Base" = "Next Base",
-		"Color_Channel" = "Color",
-		"Forward_Sequence" = "Forward Sequence",
-		"Genome_Build" = "Genome Build",
-		"CHR" = "Chromosome",
-		"MAPINFO" = "Location",
-		"SourceSeq" = "Source Sequence",
-		"Chromosome_36" = "Chromosome.36",
-		"Coordinate_36" = "Location.36",
-		"Strand" = "Strand",
-		"Probe_SNPs" = "Probe SNPs",
-		"Probe_SNPs_10" = "Probe SNPs 10",
-		"Random_Loci" = "Random",
-		"Methyl27_Loci" = "HumanMethylation27",
-		"UCSC_RefGene_Name" = "UCSC RefGene Name",
-		"UCSC_RefGene_Accession" = "UCSC RefGene Accession",
-		"UCSC_RefGene_Group" = "UCSC RefGene Group",
-		"UCSC_CpG_Islands_Name" = "UCSC CpG Islands Name",
-		"Relation_to_UCSC_CpG_Island" = "CGI Relation",
-		"Phantom" = "Phantom",
-		"DMR" = "DMR",
-		"Enhancer" = "Enancer",
-		"HMM_Island" = "HMM Island",
-		"Regulatory_Feature_Name" = "Regulatory Feature Name",
-		"Regulatory_Feature_Group" = "Regulatory Feature Group",
-		"DHS" = "DHS")
+	table.columns <- rnb.get.illumina.annotation.columns("450k")
 	update.annot("probes450", "Infinium 450K annotation", rnb.update.probe450k.annotation,
 		ftp.table = ftp.table, table.columns = table.columns)
 	.globals[['sites']][["probes450"]] <- .globals[['probes450']][["probes"]]
 	rm(ftp.table, table.columns)
 	logger.completed()
 
+	## Define MethylationEPIC probe annotations
+	logger.start("MethylationEPIC")
+	table.columns <- rnb.get.illumina.annotation.columns("EPIC")
+	update.annot("probesEIC", "MethzlationEPIC annotation", rnb.update.probeEPIC.annotation,
+		table.columns = table.columns)
+	.globals[['sites']][["probesEPIC"]] <- .globals[['probesEPIC']][["probes"]]
+	logger.completed()
+
 	## Add annotation columns to the context probes, showing if they are covered by an assay
 	logger.start("Updating Site Annotation with Probes")
-	.globals[['sites']] <- rnb.update.site.annotation.with.probes(sites = .globals[['sites']], query.probes = c("probes27", "probes450"),
-		platform.names = c("HumanMethylation27", "HumanMethylation450"))
+	.globals[['sites']] <- rnb.update.site.annotation.with.probes(sites = .globals[['sites']],
+		query.probes = c("probes27", "probes450", "probesEPIC"),
+		platform.names = c("HumanMethylation27", "HumanMethylation450", "MethylationEPIC"))
 	logger.completed()
 
 	## Create all possible mappings from regions to sites
