@@ -9,7 +9,7 @@
 ## F U N C T I O N S ###################################################################################################
 
 #' createAnnotationPackage.rn5
-#' 
+#'
 #' Helper function to create RnBeads annotation package for genome assembly rn5.
 #'
 #' @return None (invisible \code{NULL}).
@@ -46,8 +46,9 @@ createAnnotationPackage.rn5 <- function() {
 			"start" = "start_position",
 			"end" = "end_position",
 			"strand" = "strand",
-			"symbol" = "mgi_symbol",
-			"entrezID" = "entrezgene"))
+			"symbol" = "rgd_symbol",
+			"entrezID" = "entrezgene"),
+		host = "mar2015.archive.ensembl.org")
 	logger.start("Region Annotation")
 	update.annot("regions", "region annotation", rnb.update.region.annotation,
 		biomart.parameters = biomart.parameters)
