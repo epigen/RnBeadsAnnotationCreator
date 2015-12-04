@@ -30,7 +30,7 @@ createAnnotationPackage.hg19 <- function() {
 
 	## Download SNP annotation
 	logger.start("SNP Annotation")
-	vcf.files <- paste0(DBSNP.FTP.BASE, "human_9606_b141_GRCh37p13/VCF/00-All.vcf.gz")
+	vcf.files <- paste0(DBSNP.FTP.BASE, "human_9606_b146_GRCh37p13/VCF/00-All.vcf.gz")
 	update.annot("snps", "polymorphism information", rnb.update.dbsnp, ftp.files = vcf.files)
 	logger.info(paste("Using:", attr(.globals[['snps']], "version")))
 	rm(vcf.files)
