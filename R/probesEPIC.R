@@ -64,6 +64,10 @@ rnb.update.probeEPIC.annotation <- function(table.columns) {
 	## Load the methylation and control probe annotation tables
 	probe.infos <- read.csv(result, skip = assay.start, nrows = controls.start - assay.start - 2, check.names = FALSE)
 	probe.infos <- probe.infos[, sapply(probe.infos, function(x) { !all(is.na(x)) })]
+	if (!identical(colnames(probe.infos), names(table.columns))) {
+		logger.error("Unexpected columns in the probe definition table")
+	}
+	colnames(probe.infos) <- table.columns[colnames(probe.infos)]
 	control.probe.infos <- read.csv(result, header = FALSE, skip = controls.start, stringsAsFactors = FALSE)
 	control.probe.infos <- control.probe.infos[, sapply(control.probe.infos, function(x) { !all(is.na(x)) })]
 	logger.status("Loaded the probe definition tables from Illumina's web site")
