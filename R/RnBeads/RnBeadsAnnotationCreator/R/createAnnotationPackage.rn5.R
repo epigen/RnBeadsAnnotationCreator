@@ -38,7 +38,7 @@ createAnnotationPackage.rn5 <- function() {
 
 	## Define genomic regions
 	biomart.parameters <- list(
-		database.name = "ensembl",
+		database.name = "ENSEMBL_MART_ENSEMBL",
 		dataset.name = "rnorvegicus_gene_ensembl",
 		required.columns = c(
 			"id" = "ensembl_gene_id",
