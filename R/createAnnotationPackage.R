@@ -17,7 +17,7 @@
 #' @param unpdate.fun Function to be called for creating the annotation object.
 #' @param ...         Parameters passed to the updating function.
 #' @return The loaded or initialized annotation object, invisibly.
-#' 
+#'
 #' @author Yassen Assenov
 #' @noRd
 update.annot <- function(object.name, info, update.fun, ...) {

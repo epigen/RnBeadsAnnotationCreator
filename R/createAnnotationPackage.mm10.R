@@ -9,7 +9,7 @@
 ## F U N C T I O N S ###################################################################################################
 
 #' createAnnotationPackage.mm10
-#' 
+#'
 #' Helper function to create RnBeads annotation package for genome assembly mm10.
 #'
 #' @return None (invisible \code{NULL}).

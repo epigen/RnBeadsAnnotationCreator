@@ -139,6 +139,68 @@ rnb.update.probe.annotation.methylumi <- function(platform = "HumanMethylation27
 
 ########################################################################################################################
 
+#' rnb.probes.fix.infinium.columns
+#' 
+#' Validates the column values in an Inifinium probe annotation table.
+#' @param probe.infos Probe annotation table to be validated.
+#' @return The modified and sorted annotation table.
+#' 
+#' @author Yassen Assenov
+#' @noRd
+rnb.probes.fix.infinium.columns <- function(probe.infos) {
+	probe.infos[, "Chromosome"] <- as.character(probe.infos[, "Chromosome"])
+	i <- which(probe.infos[, "Chromosome"] == "")
+	if (length(i) != 0) { probe.infos[i, "Chromosome"] <- NA }
+	i <- is.na(probe.infos[, "Chromosome"])
+	if (!identical(i, is.na(probe.infos[["Location"]]))) {
+		logger.error("Inconsistent values in columns Chromosome and Location")
+	}
+	if ("Design" %in% colnames(probe.infos)) {
+		if (any(probe.infos[!i, "Strand"] == "" | probe.infos[!i, "Design"] == "")) {
+			logger.error("Missing design and/or strand information for some probes with specified location")
+		}
+	}
+	i <- which(!(i | grepl("^chr", probe.infos[, "Chromosome"])))
+	if (length(i) != 0) {
+		probe.infos[i, "Chromosome"] <- paste0("chr", probe.infos[i, "Chromosome"])
+	}
+	if (!setequal(names(.globals[['CHROMOSOMES']]), unique(na.omit(probe.infos[, "Chromosome"])))) {
+		logger.error("Unexpected chromosome names in the probe definition table")
+	}
+	probe.infos[, "Chromosome"] <- factor(as.character(probe.infos[, "Chromosome"]),
+			levels = names(.globals[['CHROMOSOMES']]))
+	if ("Color" %in% colnames(probe.infos)) {
+		if (!identical(levels(probe.infos[, "Color"]), c("", "Grn", "Red"))) {
+			logger.error("Unexpected color channel values in the probe definition table")
+		}
+		levels(probe.infos[, "Color"]) <- c("Both", "Grn", "Red")
+	}
+	probe.infos[["ID"]] <- as.character(probe.infos[["ID"]])
+	rownames(probe.infos) <- probe.infos[["ID"]]
+	if ("Random" %in% colnames(probe.infos)) {
+		probe.infos[is.na(probe.infos[["Random"]]), "Random"] <- FALSE
+	}
+	if ("HumanMethylation27" %in% colnames(probe.infos)) {
+		probe.infos[is.na(probe.infos[["HumanMethylation27"]]), "HumanMethylation27"] <- FALSE
+	}
+	if ("Strand" %in% colnames(probe.infos)) {
+		probe.infos[, "Strand"] <- rnb.fix.strand(probe.infos[, "Strand"])
+	}
+
+	## Improve the notation of CGI relation
+	cgi.relations <- c("Open Sea", "Island", "North Shelf", "North Shore", "South Shelf", "South Shore")
+	names(cgi.relations) <- c("", "Island", "N_Shelf", "N_Shore", "S_Shelf", "S_Shore")
+	if (!identical(levels(probe.infos[, "CGI Relation"]), names(cgi.relations))) {
+		logger.error("Unexpected values in column for relation to CpG island")
+	}
+	levels(probe.infos[, "CGI Relation"]) <- cgi.relations
+
+	## Sort based on chromosome and position
+	probe.infos[with(probe.infos, order(Chromosome, Location)), ]
+}
+
+########################################################################################################################
+
 #' rnb.update.probe.annotation.cpg.context
 #'
 #' Enriches the given probe annotation with CpG density, GC content and probe context.

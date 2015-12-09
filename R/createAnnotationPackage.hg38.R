@@ -9,7 +9,7 @@
 ## F U N C T I O N S ###################################################################################################
 
 #' createAnnotationPackage.hg38
-#' 
+#'
 #' Helper function to create annotation package for genome assembly hg38
 #' RnBeads annotation for that assembly
 #' @return None (invisible \code{NULL}).
