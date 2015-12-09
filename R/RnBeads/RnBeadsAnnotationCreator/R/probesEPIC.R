@@ -62,7 +62,8 @@ rnb.update.probeEPIC.annotation <- function(table.columns) {
 	rm(txt); invisible(gc())
 
 	## Load the methylation and control probe annotation tables
-	probe.infos <- read.csv(result, skip = assay.start, nrows = controls.start - assay.start - 2, check.names = FALSE)
+	probe.infos <- read.csv(result, skip = assay.start, nrows = controls.start - assay.start - 2, check.names = FALSE,
+		stringsAsFactors = FALSE)
 	probe.infos <- probe.infos[, sapply(probe.infos, function(x) { !all(is.na(x)) })]
 	if (!identical(colnames(probe.infos), names(table.columns))) {
 		logger.error("Unexpected columns in the probe definition table")
@@ -71,6 +72,16 @@ rnb.update.probeEPIC.annotation <- function(table.columns) {
 	control.probe.infos <- read.csv(result, header = FALSE, skip = controls.start, stringsAsFactors = FALSE)
 	control.probe.infos <- control.probe.infos[, sapply(control.probe.infos, function(x) { !all(is.na(x)) })]
 	logger.status("Loaded the probe definition tables from Illumina's web site")
+
+	## Validate probe.infos columns and some of the values
+	probe.infos[, "Design"] <- as.factor(probe.infos[, "Design"])
+	probe.infos[, "Color"] <- as.factor(probe.infos[, "Color"])
+	probe.infos[, "Next Base"] <- as.factor(probe.infos[, "Next Base"])
+	probe.infos[, "CGI Relation"] <- as.factor(probe.infos[, "CGI Relation"])
+	probe.infos[, "DMR"] <- as.factor(probe.infos[, "DMR"])
+	probe.infos[, "Enhancer"] <- as.factor(probe.infos[, "Enhancer"])
+	probe.infos[, "Regulatory Feature Group"] <- as.factor(probe.infos[, "Regulatory Feature Group"])
+	probe.infos <- rnb.probes.fix.infinium.columns(probe.infos)
 
 	## Validate the control probes
 	if (ncol(control.probe.infos) != 5) {

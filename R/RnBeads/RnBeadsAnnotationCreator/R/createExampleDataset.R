@@ -1,5 +1,5 @@
 #' createAnnotationPackage
-#' 
+#'
 #' Generates an R package containing the RnBeads annotation for the specified genome assembly.
 #'
 #' @param example Name of the example dataset to be created. currently supported datasets: "ziller2011_450K"

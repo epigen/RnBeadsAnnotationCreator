@@ -71,50 +71,13 @@ rnb.update.probe.annotation.geo <- function(ftp.table, table.columns) {
 	control.probe.infos[, "AVG"] <- (control.probe.infos[, "AVG"] == "AVG")
 
 	## Validate probe.infos columns and some of the values
-	probe.infos[, "Chromosome"] <- as.character(probe.infos[, "Chromosome"])
-	i <- which(probe.infos[, "Chromosome"] == "")
-	if (length(i) != 0) { probe.infos[i, "Chromosome"] <- NA }
-	i <- is.na(probe.infos[, "Chromosome"])
-	if (!identical(i, is.na(probe.infos[["Location"]]))) {
-		logger.error("Inconsistent values in columns CHR and MAPINFO")
-	}
-	if (any(probe.infos[!i, "Strand"] == "" | probe.infos[!i, "Design"] == "")) {
-		logger.error("Missing design and/or strand information for some probes with specified location")
-	}
-	i <- which(!(i | grepl("^chr", probe.infos[, "Chromosome"])))
-	if (length(i) != 0) {
-		probe.infos[i, "Chromosome"] <- paste0("chr", probe.infos[i, "Chromosome"])
-	}
-	if (!setequal(names(.globals[['CHROMOSOMES']]), unique(na.omit(probe.infos[, "Chromosome"])))) {
-		logger.error("Unexpected chromosome names in the probe definition table")
-	}
-	probe.infos[, "Chromosome"] <- factor(as.character(probe.infos[, "Chromosome"]), levels = names(.globals[['CHROMOSOMES']]))
-	if (!identical(levels(probe.infos[["Color"]]), c("", "Grn", "Red"))) {
-		logger.error("Unexpected color channel values in the probe definition table")
-	}
-	levels(probe.infos[, "Color"]) <- c("Both", "Grn", "Red")
-
-	## Sort based on chromosome and position
-	probe.infos <- probe.infos[with(probe.infos, order(Chromosome, Location)), ]
+	probe.infos <- rnb.probes.fix.infinium.columns(probe.infos)
 
 	## Drop columns that are not used by RnBeads
-	probe.infos[["ID"]] <- as.character(probe.infos[["ID"]])
-	rownames(probe.infos) <- probe.infos[["ID"]]
 	probe.infos <- probe.infos[, c("ID", "Design", "Color", "Random", "HumanMethylation27",
 			"Genome Build", "Chromosome", "Location", "Strand", "CGI Relation",
 			"AlleleA Probe Sequence", "AlleleB Probe Sequence", "AddressA", "AddressB")]
-	probe.infos[is.na(probe.infos[["Random"]]), "Random"] <- FALSE
-	probe.infos[is.na(probe.infos[["HumanMethylation27"]]), "HumanMethylation27"] <- FALSE
-	probe.infos[, "Strand"] <- rnb.fix.strand(probe.infos[, "Strand"])
 	logger.info("Dropped unused columns")
-
-	## Improve the notation of CGI relation
-	cgi.relations <- c("Open Sea", "Island", "North Shelf", "North Shore", "South Shelf", "South Shore")
-	names(cgi.relations) <- c("", "Island", "N_Shelf", "N_Shore", "S_Shelf", "S_Shore")
-	if (!identical(levels(probe.infos[, "CGI Relation"]), names(cgi.relations))) {
-		logger.error("Unexpected values in column for relation to CpG island")
-	}
-	levels(probe.infos[, "CGI Relation"]) <- cgi.relations
 
 	return(list("probes" = probe.infos, "controls" = control.probe.infos))
 }
