@@ -91,18 +91,45 @@ rnb.update.probeEPIC.annotation <- function(table.columns) {
 	if (anyDuplicated(control.probe.infos$ID) != 0) {
 		logger.error("Duplicated IDs in the control probe definition table")
 	}
-	if (!identical(sort(unique(control.probe.infos[, 2])), unname(RnBeads:::EPIC.CONTROL.TARGETS))) {
+	EPIC.CONTROL.TARGETS <- c(
+		"bisulfite conversion I" = "BISULFITE CONVERSION I",
+		"bisulfite conversion II" = "BISULFITE CONVERSION II",
+		"extension" = "EXTENSION",
+		"hybridization" = "HYBRIDIZATION",
+		"negative control" = "NEGATIVE",
+		"non-polymorphic" = "NON-POLYMORPHIC",
+		"norm A" = "NORM_A",
+		"norm C" = "NORM_C",
+		"norm G" = "NORM_G",
+		"norm T" = "NORM_T",
+		"restoration" = "RESTORATION",
+		"specificity I" = "SPECIFICITY I",
+		"specificity II" = "SPECIFICITY II",
+		"staining" = "STAINING",
+		"target removal" = "TARGET REMOVAL")
+#	if (!identical(sort(unique(control.probe.infos[, 2])), unname(RnBeads:::EPIC.CONTROL.TARGETS))) {
+#		logger.error("Unexpected values for Target in the control probe definition table")
+#	}
+#	control.probe.infos[, 2] <- factor(control.probe.infos[, 2], levels = unname(RnBeads:::EPIC.CONTROL.TARGETS))
+	if (!identical(sort(unique(control.probe.infos[, 2])), unname(EPIC.CONTROL.TARGETS))) {
 		logger.error("Unexpected values for Target in the control probe definition table")
 	}
-	control.probe.infos[, 2] <- factor(control.probe.infos[, 2], levels = unname(RnBeads:::EPIC.CONTROL.TARGETS))
+	control.probe.infos[, 2] <- factor(control.probe.infos[, 2], levels = unname(EPIC.CONTROL.TARGETS))
 	control.probe.infos[, 3] <- factor(RnBeads:::capitalize(tolower(control.probe.infos[, 3])))
 	control.probe.infos[, 5] <- control.probe.infos[, 5] == "AVG"
 	logger.status("Processed control probe annotation table")
 
 	## Add information about CpG counts and GC content in the neighborhood, context, overlaps with SNPs
+	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-1.RDS"))
+	probe.infos <- rnb.update.probe.annotation.guess.strand(probe.infos)
+	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-2.RDS"))
+	probe.infos <- rnb.update.probesEPIC.snps(probe.infos)
+	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-3.RDS"))
 	probe.infos <- rnb.update.probe.annotation.cpg.context(probe.infos)
-	probe.infos <- rnb.update.probe.annotation.msnps(probe.infos)
-
+	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-4.RDS"))
+	probe.infos <- rnb.update.probe.annotation.snps(probe.infos)
+	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-5.RDS"))
+	
 	## Add data on cross-hybridization
 #	probe.infos[, "Cross-reactive"] <- rnb.update.probe.annotation.cr(probe.infos[, "ID"], "HumanMethylation450")
 
@@ -110,4 +137,80 @@ rnb.update.probeEPIC.annotation <- function(table.columns) {
 	probes.gr <- rnb.probe.infos.to.GRanges(probe.infos)
 
 	return(list(probes = probes.gr, controls = control.probe.infos))
+}
+
+########################################################################################################################
+
+#' rnb.update.probe.annotation.guess.strand
+#' 
+#' Updates the MethylationEPIC probe annotation table by adding a Strand column and setting it to the best guess based
+#' on the probe sequence and design type.
+#' 
+#' @param probe.infos Probe annotation table for MethylationEPIC in the form of a \code{data.frame}.
+#' @return The updated probe annotation table.
+#' @author Yassen Assenov
+#' @noRd
+rnb.update.probe.annotation.guess.strand <- function(probe.infos) {
+	genome.data <- rnb.genome.data()
+	guessed <- data.frame(
+		Strand = factor(rep("*", nrow(probe.infos)), levels = c("+", "-", "*")),
+		"Mismatches A" = 0L, "Mismatches B" = 0L, check.names = FALSE)
+
+	for (chromosome in names(.globals[['CHROMOSOMES']])) {
+		chrom.sequence <- genome.data[[chromosome]]
+		for (pr.design in c("I", "II")) {
+			i <- which(probe.infos[["Chromosome"]] == chromosome & probe.infos[["Design"]] == pr.design)
+			if (length(i) != 0) {
+				alleles.A <- as.character(probe.infos[i, "AlleleA Probe Sequence"])
+				if (pr.design == "I") {
+					alleles.B <- as.character(probe.infos[i, "AlleleB Probe Sequence"])
+				} else {
+					alleles.B <- NULL
+				}
+				loci <- probe.infos[i, "Location"]
+				guessed[i, ] <- rnb.seq.guess.strands(chrom.sequence, loci, pr.design, alleles.A, alleles.B)
+				rm(alleles.A, alleles.B, loci)
+			}
+		}
+	}
+	rm(chromosome, chrom.sequence, pr.design, i)
+
+	i <- which(probe.infos$Context == "Other")
+	guessed[i, "Strand"] <- "*"
+	guessed[i, "Mismatches A"] <- NA
+	guessed[i, "Mismatches B"] <- NA
+	cbind(probe.infos, guessed)
+}
+
+########################################################################################################################
+
+#' rnb.update.probesEPIC.snps
+#' 
+#' Sets chromosome and location information for the SNP probes in MethylationEPIC array, copying it from Infinium 450k.
+#' 
+#' @param probe.infos Probe annotation table for MethylationEPIC in the form of a \code{data.frame}.
+#' @return The updated probe annotation table.
+#' @author Yassen Assenov
+#' @noRd
+rnb.update.probesEPIC.snps <- function(probe.infos) {
+	## Identify the SNP probes in Infinium 450k
+	probes450.rs <- rnb.annotation2data.frame(.globals$sites$probes450)
+	probes450.rs <- probes450.rs[grep("^rs", rownames(probes450.rs)), ]
+	extended.ids.450k <- paste(probes450.rs$ID, probes450.rs$Design, probes450.rs$Color, sep = ".")
+	
+	## Map the SNP probes in EPIC to the corresponding SNP probes in Infinium 450k
+	i <- grep("^rs", probe.infos$ID)
+	extended.ids.epic <- paste(probe.infos$ID[i], probe.infos$Design[i], probe.infos$Color[i], sep = ".")
+	if (!all(extended.ids.epic %in% extended.ids.450k)) {
+		logger.error("Not all SNP probes in EPIC found in 450k")
+	}
+	i450k <- unname(sapply(extended.ids.epic, function(x) { which(extended.ids.450k == x) }))
+	
+	## Transfer the information about the SNP probes to EPIC
+	probe.infos[i, "Genome Build"] <- 37L
+	probe.infos[i, "Chromosome"] <- probes450.rs[i450k, "Chromosome"]
+	probe.infos[i, "Location"] <- probes450.rs[i450k, "Start"]
+	probe.infos[i, "Strand"] <- probes450.rs[i450k, "Strand"]
+	probe.infos[i, "HumanMethylation450"] <- TRUE
+	probe.infos
 }
