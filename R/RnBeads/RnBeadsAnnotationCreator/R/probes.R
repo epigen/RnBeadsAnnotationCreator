@@ -369,8 +369,8 @@ rnb.update.probe.annotation.msnps <- function(probe.infos, snps = .globals[['snp
 	if (!is.null(snps)) {
 		snp.stats <- suppressWarnings(
 			foreach(pr.regs = probe.regs, snp.regs = snps[names(probe.regs)], .combine = rbind,
-					.export = "rnb.update.probe.annotation.snps") %dopar%
-				rnb.update.probe.annotation.snps(pr.regs, snp.regs))
+					.export = "rnb.update.probe.annotation.snps.chrom") %dopar%
+				rnb.update.probe.annotation.snps.chrom(pr.regs, snp.regs))
 		i <- as.integer(rownames(snp.stats))
 		for (cname in colnames(snp.stats)) {
 			probe.infos[[cname]] <- as.integer(NA)
@@ -386,6 +386,59 @@ rnb.update.probe.annotation.msnps <- function(probe.infos, snps = .globals[['snp
 
 #' rnb.update.probe.annotation.snps
 #'
+#' Computes the overlaps between Infinium probe target locations and sequences with SNPs.
+#'
+#' @param probe.infos Infinium probe annotation table as a \code{data.frame} containig at least the following columns:
+#'                    \code{"Chromosome"}, \code{"Location"}, \code{"Design"}, \code{"Strand"}.
+#' @param snps        Information about SNPs in the form of a \code{list} of \code{data.frame}s, each containing at
+#'                    least the following columns: \code{"start"}, \code{"end"}, \code{"C2T"}, \code{"G2A"}.
+#' @return The updated probe annotation table.
+#' @author Yassen Assenov
+#' @noRd
+rnb.update.probe.annotation.snps <- function(probe.infos, snps = .globals[['snps']]) {
+	if (is.null(snps)) {
+		return(probe.infos)
+	}
+
+	probe.regs <- data.frame(
+		"start" = as.integer(NA), "end" = as.integer(NA),
+		"strand" = probe.infos[, "Strand"], "target" = probe.infos[, "Location"])
+	genome.data <- rnb.genome.data()
+	for (chromosome in names(.globals[['CHROMOSOMES']])) {
+		chrom.sequence <- genome.data[[chromosome]]
+		for (pr.design in c("I", "II")) {
+			for (pr.strand in c("+", "-")) {
+				i <- which(probe.infos[["Chromosome"]] == chromosome & probe.infos[["Design"]] == pr.design &
+						 probe.infos[["Strand"]] == pr.strand)
+				if (length(i) != 0) {
+					p.coords <- rnb.infinium.probe.coords(probe.infos[i, "Location"], pr.design, pr.strand)
+					probe.regs[i, "start"] <- p.coords[, 1]
+					probe.regs[i, "end"] <- p.coords[, 2]
+					rm(p.coords)
+				}
+			}
+		}
+	}
+	rm(genome.data, chromosome, chrom.sequence, pr.design, pr.strand, i)
+
+	probe.regs <- tapply(1:nrow(probe.regs), probe.infos$Chromosome, function(i) { probe.regs[i, ] })
+	snp.stats <- suppressWarnings(
+		foreach(pr.regs = probe.regs, snp.regs = snps[names(probe.regs)], .combine = rbind,
+				.export = "rnb.update.probe.annotation.snps.chrom") %dopar%
+			rnb.update.probe.annotation.snps.chrom(pr.regs, snp.regs))
+	i <- as.integer(rownames(snp.stats))
+	for (cname in colnames(snp.stats)) {
+		probe.infos[[cname]] <- as.integer(NA)
+		probe.infos[i, cname] <- snp.stats[, cname]
+	}
+	logger.status("Marked overlaps of probes with dbSNP records")
+	probe.infos
+}
+
+########################################################################################################################
+
+#' rnb.update.probe.annotation.snps.chrom
+#'
 #' Computes, for one chromosome, overlap between Infinium probe target locations and sequences with SNPs.
 #'
 #' @param probe.regs Infinium probe locations in a \code{data.frame}.
@@ -395,7 +448,7 @@ rnb.update.probe.annotation.msnps <- function(probe.infos, snps = .globals[['snp
 #'         overlap of target dinucleotides and probe sequences with SNPs.
 #' @author Yassen Assenov
 #' @noRd
-rnb.update.probe.annotation.snps <- function(probe.regs, snps) {
+rnb.update.probe.annotation.snps.chrom <- function(probe.regs, snps) {
 	snp.stats <- matrix(0L, nrow = nrow(probe.regs), ncol = 3,
 		dimnames = list(rownames(probe.regs), c("SNPs 3", "SNPs 5", "SNPs Full")))
 

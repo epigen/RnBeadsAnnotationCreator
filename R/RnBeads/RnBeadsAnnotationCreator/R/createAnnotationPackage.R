@@ -73,12 +73,10 @@ rnb.export.annotations.to.data.files <- function() {
 		"mappings" = list())
 	for (sname in names(sites.full)) {
 		sites <- list("sites" = sites.full[[sname]], "mappings" = lapply(.globals[['mappings']], "[[", sname))
-		if (sname == "probes450") {
-			sites[["controls450"]] <- .globals[['probes450']][["controls"]]
-			framework[["controls"]]["controls450"] <- list(NULL)
-		} else if (sname == "probes27") {
-			sites[["controls27"]] <- .globals[['probes27']][["controls"]]
-			framework[["controls"]]["controls27"] <- list(NULL)
+		if (grepl("^probes", sname)) {
+			platform.id <- gsub("^probes", "", sname)
+			sites[[paste0("controls", platform.id)]] <- get(sname, .globals)[["controls"]]
+			framework[["controls"]][paste0("controls", platform.id)] <- list(NULL)
 		}
 		save(sites, file = rnb.get.package.data.file(sname), compression_level = 9L)
 		logger.status(c("Saved", sname, "annotation table and mappings to the package data"))
