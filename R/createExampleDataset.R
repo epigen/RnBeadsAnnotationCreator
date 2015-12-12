@@ -29,7 +29,7 @@ createExampleDataset <- function(example="ziller2011_450K", dest=getwd()){
 			U=rnbs.orig@U,
 			M0=rnbs.orig@M0,
 			U0=rnbs.orig@U0,
-			bead.counts.M=rnbs.orig@bead.counts.M, 
+			bead.counts.M=rnbs.orig@bead.counts.M,
 			bead.counts.U=rnbs.orig@bead.counts.U,
 			p.values=rnbs.orig@pval.sites,
 			qc = rnbs.orig@qc,
@@ -46,6 +46,8 @@ createExampleDataset <- function(example="ziller2011_450K", dest=getwd()){
 		stop("Unknown example dataset identifier")
 	}
 	rnb.set.example <- rnbs
-	if (!is.null(rnb.set.example)) save(rnb.set.example, file=file.path(dest,paste0(example,".RData")))
+	if (!is.null(rnb.set.example)) {
+		save(rnb.set.example, file=file.path(dest,paste0(example,".RData")), compression_level = 9L)
+	}
 	return(rnb.set.example)
 }
