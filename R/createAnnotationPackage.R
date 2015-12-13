@@ -84,8 +84,8 @@ rnb.export.annotations.to.data.files <- function() {
 	if (length(framework[["controls"]]) == 0) {
 		framework[["controls"]] <- NULL
 	} else {
-		cinfo <- names(framework[["controls"]])
-		names(cinfo) <- sub("^controls", "probes", cinfo)
+		cinfo <- sub("^controls", "probes", names(framework[["controls"]]))
+		names(cinfo) <- names(framework[["controls"]])
 		attr(framework[["controls"]], "sites") <- cinfo
 		rm(cinfo)
 	}
@@ -100,7 +100,7 @@ rnb.export.annotations.to.data.files <- function() {
 ########################################################################################################################
 
 #' createAnnotationPackage
-#' 
+#'
 #' Generates an R package containing the RnBeads annotation for the specified genome assembly.
 #'
 #' @param assembly Targeted genome assembly. Must be one of \code{"hg38"}, \code{"hg19"}, \code{"mm10"}, \code{"mm9"},
