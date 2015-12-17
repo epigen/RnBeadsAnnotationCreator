@@ -223,7 +223,7 @@ rnb.update.controlsEPIC.enrich <- function(control.probe.infos) {
 	CONTROL.COLORS.GREEN <- c("Black", "Blue", "Cyan", "Green", "Lime", "Limegreen", "Skyblue")
 	
 	## Control probe colors associated with the evaluation of the Red channel
-	CONTROL.COLORS.RED <- c("Gold", "Orange", "Purple", "Red", "Tomato", "Yellow")§
+	CONTROL.COLORS.RED <- c("Gold", "Orange", "Purple", "Red", "Tomato", "Yellow")
 	
 	## Add columns Evaluate Green and Evaluate Red
 	control.probe.infos[["Evaluate Green"]] <- "-"
