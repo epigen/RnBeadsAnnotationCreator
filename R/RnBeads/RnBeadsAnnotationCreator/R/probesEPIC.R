@@ -214,3 +214,72 @@ rnb.update.probesEPIC.snps <- function(probe.infos) {
 	probe.infos[i, "HumanMethylation450"] <- TRUE
 	probe.infos
 }
+
+########################################################################################################################
+
+rnb.update.controlsEPIC.enrich <- function(control.probe.infos) {
+	
+	## Control probe colors associated with the evaluation of the Red channel
+	CONTROL.COLORS.GREEN <- c("Black", "Blue", "Cyan", "Green", "Lime", "Limegreen", "Skyblue")
+	
+	## Control probe colors associated with the evaluation of the Red channel
+	CONTROL.COLORS.RED <- c("Gold", "Orange", "Purple", "Red", "Tomato", "Yellow")§
+	
+	## Add columns Evaluate Green and Evaluate Red
+	control.probe.infos[["Evaluate Green"]] <- "-"
+	control.probe.infos[["Evaluate Red"]] <- "-"
+	i <- grep("^DNP", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Evaluate Green"] <- "-"
+	control.probe.infos[i, "Evaluate Red"] <- "+"
+	i <- grep("^Biotin", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Evaluate Green"] <- "+"
+	control.probe.infos[i, "Evaluate Red"] <- "-"
+	i <- (control.probe.infos[["Color"]] %in% CONTROL.COLORS.GREEN)
+	control.probe.infos[i, "Evaluate Green"] <- "+"
+	control.probe.infos[i, "Evaluate Red"] <- "-"
+	i <- (control.probe.infos[["Color"]] %in% CONTROL.COLORS.RED)
+	control.probe.infos[i, "Evaluate Green"] <- "-"
+	control.probe.infos[i, "Evaluate Red"] <- "+"
+	i <- grep("^NEGATIVE", control.probe.infos[, "Target"])
+	control.probe.infos[i, "Evaluate Green"] <- "+"
+	control.probe.infos[i, "Evaluate Red"] <- "+"
+	control.probe.infos[["Evaluate Green"]] <- factor(control.probe.infos[["Evaluate Green"]], levels = c("-", "+"))
+	control.probe.infos[["Evaluate Red"]] <- factor(control.probe.infos[["Evaluate Red"]], levels = c("-", "+"))
+	
+	## Add column Expected Intensity
+	control.probe.infos[["Expected Intensity"]] <- as.character(NA)
+	i <- control.probe.infos[, "Target"] %in% c("NEGATIVE", "TARGET REMOVAL", "RESTORATION")
+	control.probe.infos[i, "Expected Intensity"] <- "Background"
+	i <- c("BISULFITE CONVERSION II", "SPECIFICITY II", "EXTENSION", "NON-POLYMORPHIC")
+	i <- control.probe.infos[, "Target"] %in% i
+	control.probe.infos[i, "Expected Intensity"] <- "High"
+	i <- control.probe.infos[, "Target"] %in% paste("NORM", c("A", "C", "G", "T"), sep = "_")
+	control.probe.infos[i, "Expected Intensity"] <- "High"
+	i <- grep("\\((High)|(20K)\\)$", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Expected Intensity"] <- "High"
+	i <- grep("\\((Medium)|(5K)\\)$", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Expected Intensity"] <- "Medium"
+	i <- grep("\\(Low\\)$", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Expected Intensity"] <- "Low"
+	
+	#i <- grep("\\((Bkg)|(5K)\\)$", control.probe.infos[, "Description"])
+	i <- grep("\\(Bkg\\)$", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Expected Intensity"] <- "Background"
+	i <- grep("^BS Conversion I[- ]C", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Expected Intensity"] <- "High"
+	i <- grep("^BS Conversion I[- ]U", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Expected Intensity"] <- "Background"
+	i <- grep("^GT Mismatch.+\\(PM\\)$", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Expected Intensity"] <- "High"
+	i <- grep("^GT Mismatch.+\\(MM\\)$", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Expected Intensity"] <- "Background"
+	control.probe.infos[["Expected Intensity"]] <- factor(control.probe.infos[["Expected Intensity"]])
+	
+	## Add column Sample-dependent
+	control.probe.infos[["Sample-dependent"]] <-
+			!(control.probe.infos[["Target"]] %in% RnBeads:::CONTROL.TARGETS.SAMPLE.INDEPENDENT)
+	
+	control.probe.infos[["Index"]][order(control.probe.infos$Target)]<-unlist(sapply(sort(unique(control.probe.infos$Target)), function(target) 1:length(which(control.probe.infos$Target==target))))
+	
+	return(control.probe.infos)
+}
