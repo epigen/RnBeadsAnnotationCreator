@@ -91,45 +91,26 @@ rnb.update.probeEPIC.annotation <- function(table.columns) {
 	if (anyDuplicated(control.probe.infos$ID) != 0) {
 		logger.error("Duplicated IDs in the control probe definition table")
 	}
-	EPIC.CONTROL.TARGETS <- c(
-		"bisulfite conversion I" = "BISULFITE CONVERSION I",
-		"bisulfite conversion II" = "BISULFITE CONVERSION II",
-		"extension" = "EXTENSION",
-		"hybridization" = "HYBRIDIZATION",
-		"negative control" = "NEGATIVE",
-		"non-polymorphic" = "NON-POLYMORPHIC",
-		"norm A" = "NORM_A",
-		"norm C" = "NORM_C",
-		"norm G" = "NORM_G",
-		"norm T" = "NORM_T",
-		"restoration" = "RESTORATION",
-		"specificity I" = "SPECIFICITY I",
-		"specificity II" = "SPECIFICITY II",
-		"staining" = "STAINING",
-		"target removal" = "TARGET REMOVAL")
-#	if (!identical(sort(unique(control.probe.infos[, 2])), unname(RnBeads:::EPIC.CONTROL.TARGETS))) {
-#		logger.error("Unexpected values for Target in the control probe definition table")
-#	}
-#	control.probe.infos[, 2] <- factor(control.probe.infos[, 2], levels = unname(RnBeads:::EPIC.CONTROL.TARGETS))
-	if (!identical(sort(unique(control.probe.infos[, 2])), unname(EPIC.CONTROL.TARGETS))) {
+	if (!identical(sort(unique(control.probe.infos[, 2])), unname(RnBeads:::EPIC.CONTROL.TARGETS))) {
 		logger.error("Unexpected values for Target in the control probe definition table")
 	}
-	control.probe.infos[, 2] <- factor(control.probe.infos[, 2], levels = unname(EPIC.CONTROL.TARGETS))
+	control.probe.infos[, 2] <- factor(control.probe.infos[, 2], levels = unname(RnBeads:::EPIC.CONTROL.TARGETS))
 	control.probe.infos[, 3] <- factor(RnBeads:::capitalize(tolower(control.probe.infos[, 3])))
 	control.probe.infos[, 5] <- control.probe.infos[, 5] == "AVG"
+	control.probe.infos <- rnb.update.controlsEPIC.enrich(control.probe.infos)
 	logger.status("Processed control probe annotation table")
 
 	## Add information about CpG counts and GC content in the neighborhood, context, overlaps with SNPs
-	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-1.RDS"))
+#	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-1.RDS"))
 	probe.infos <- rnb.update.probe.annotation.guess.strand(probe.infos)
-	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-2.RDS"))
+#	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-2.RDS"))
 	probe.infos <- rnb.update.probesEPIC.snps(probe.infos)
-	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-3.RDS"))
+#	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-3.RDS"))
 	probe.infos <- rnb.update.probe.annotation.cpg.context(probe.infos)
-	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-4.RDS"))
+#	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-4.RDS"))
 	probe.infos <- rnb.update.probe.annotation.snps(probe.infos)
-	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-5.RDS"))
-	
+#	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-5.RDS"))
+
 	## Add data on cross-hybridization
 #	probe.infos[, "Cross-reactive"] <- rnb.update.probe.annotation.cr(probe.infos[, "ID"], "HumanMethylation450")
 
@@ -137,6 +118,91 @@ rnb.update.probeEPIC.annotation <- function(table.columns) {
 	probes.gr <- rnb.probe.infos.to.GRanges(probe.infos)
 
 	return(list(probes = probes.gr, controls = control.probe.infos))
+}
+
+########################################################################################################################
+
+#' rnb.update.controlsEPIC.enrich
+#'
+#' Extends the given table of control probe annotations by adding (or replacing) four columns and filling them with
+#' values depending on the values of some of the original columns.
+#'
+#' @param control.probe.infos Table of control probe annotation in the form of a \code{data.frame} containing at least
+#'                            the following columns: \code{"Target"}, \code{"Color"} and \code{"Description"}.
+#' @return Enriched probe annotation; the given \code{data.frame} with four added or replaced columns:
+#'         \code{"Evaluate Green"}, \code{"Evaluate Red"}, \code{"Expected Intensity"} and \code{"Sample-dependent"}.
+#' @author Pavlo Lutsik
+#' @noRd
+rnb.update.controlsEPIC.enrich <- function(control.probe.infos) {
+
+	## Control probe colors associated with the evaluation of the Red channel
+	CONTROL.COLORS.GREEN <- c("Black", "Blue", "Cyan", "Green", "Lime", "Limegreen", "Skyblue")
+
+	## Control probe colors associated with the evaluation of the Red channel
+	CONTROL.COLORS.RED <- c("Gold", "Orange", "Purple", "Red", "Tomato", "Yellow")
+
+	## Add columns Evaluate Green and Evaluate Red
+	control.probe.infos[["Evaluate Green"]] <- "-"
+	control.probe.infos[["Evaluate Red"]] <- "-"
+	i <- grep("^DNP", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Evaluate Green"] <- "-"
+	control.probe.infos[i, "Evaluate Red"] <- "+"
+	i <- grep("^Biotin", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Evaluate Green"] <- "+"
+	control.probe.infos[i, "Evaluate Red"] <- "-"
+	i <- (control.probe.infos[["Color"]] %in% CONTROL.COLORS.GREEN)
+	control.probe.infos[i, "Evaluate Green"] <- "+"
+	control.probe.infos[i, "Evaluate Red"] <- "-"
+	i <- (control.probe.infos[["Color"]] %in% CONTROL.COLORS.RED)
+	control.probe.infos[i, "Evaluate Green"] <- "-"
+	control.probe.infos[i, "Evaluate Red"] <- "+"
+	i <- grep("^NEGATIVE", control.probe.infos[, "Target"])
+	control.probe.infos[i, "Evaluate Green"] <- "+"
+	control.probe.infos[i, "Evaluate Red"] <- "+"
+	control.probe.infos[["Evaluate Green"]] <- factor(control.probe.infos[["Evaluate Green"]], levels = c("-", "+"))
+	control.probe.infos[["Evaluate Red"]] <- factor(control.probe.infos[["Evaluate Red"]], levels = c("-", "+"))
+
+	## Add column Expected Intensity
+	control.probe.infos[["Expected Intensity"]] <- as.character(NA)
+	i <- control.probe.infos[, "Target"] %in% c("NEGATIVE", "TARGET REMOVAL", "RESTORATION")
+	control.probe.infos[i, "Expected Intensity"] <- "Background"
+	i <- c("BISULFITE CONVERSION II", "SPECIFICITY II", "EXTENSION", "NON-POLYMORPHIC")
+	i <- control.probe.infos[, "Target"] %in% i
+	control.probe.infos[i, "Expected Intensity"] <- "High"
+	i <- control.probe.infos[, "Target"] %in% paste("NORM", c("A", "C", "G", "T"), sep = "_")
+	control.probe.infos[i, "Expected Intensity"] <- "High"
+	i <- grep("\\((High)|(20K)\\)$", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Expected Intensity"] <- "High"
+	i <- grep("\\((Medium)|(5K)\\)$", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Expected Intensity"] <- "Medium"
+	i <- grep("\\(Low\\)$", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Expected Intensity"] <- "Low"
+
+	#i <- grep("\\((Bkg)|(5K)\\)$", control.probe.infos[, "Description"])
+	i <- grep("\\(Bkg\\)$", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Expected Intensity"] <- "Background"
+	i <- grep("^BS Conversion I[- ]C", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Expected Intensity"] <- "High"
+	i <- grep("^BS Conversion I[- ]U", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Expected Intensity"] <- "Background"
+	i <- grep("^GT Mismatch.+\\(PM\\)$", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Expected Intensity"] <- "High"
+	i <- grep("^GT Mismatch.+\\(MM\\)$", control.probe.infos[, "Description"])
+	control.probe.infos[i, "Expected Intensity"] <- "Background"
+	control.probe.infos[["Expected Intensity"]] <- factor(control.probe.infos[["Expected Intensity"]])
+
+	## Add column Sample-dependent
+	control.probe.infos[["Sample-dependent"]] <-
+		!(control.probe.infos[["Target"]] %in% RnBeads:::CONTROL.TARGETS.SAMPLE.INDEPENDENT)
+
+	## Add column Index
+	control.probe.infos[["Index"]][order(control.probe.infos$Target)] <-
+		unlist(sapply(sort(unique(control.probe.infos$Target)), function(target) {
+				1:length(which(control.probe.infos$Target==target))
+			}
+		))
+
+	return(control.probe.infos)
 }
 
 ########################################################################################################################
@@ -213,73 +279,4 @@ rnb.update.probesEPIC.snps <- function(probe.infos) {
 	probe.infos[i, "Strand"] <- probes450.rs[i450k, "Strand"]
 	probe.infos[i, "HumanMethylation450"] <- TRUE
 	probe.infos
-}
-
-########################################################################################################################
-
-rnb.update.controlsEPIC.enrich <- function(control.probe.infos) {
-	
-	## Control probe colors associated with the evaluation of the Red channel
-	CONTROL.COLORS.GREEN <- c("Black", "Blue", "Cyan", "Green", "Lime", "Limegreen", "Skyblue")
-	
-	## Control probe colors associated with the evaluation of the Red channel
-	CONTROL.COLORS.RED <- c("Gold", "Orange", "Purple", "Red", "Tomato", "Yellow")
-	
-	## Add columns Evaluate Green and Evaluate Red
-	control.probe.infos[["Evaluate Green"]] <- "-"
-	control.probe.infos[["Evaluate Red"]] <- "-"
-	i <- grep("^DNP", control.probe.infos[, "Description"])
-	control.probe.infos[i, "Evaluate Green"] <- "-"
-	control.probe.infos[i, "Evaluate Red"] <- "+"
-	i <- grep("^Biotin", control.probe.infos[, "Description"])
-	control.probe.infos[i, "Evaluate Green"] <- "+"
-	control.probe.infos[i, "Evaluate Red"] <- "-"
-	i <- (control.probe.infos[["Color"]] %in% CONTROL.COLORS.GREEN)
-	control.probe.infos[i, "Evaluate Green"] <- "+"
-	control.probe.infos[i, "Evaluate Red"] <- "-"
-	i <- (control.probe.infos[["Color"]] %in% CONTROL.COLORS.RED)
-	control.probe.infos[i, "Evaluate Green"] <- "-"
-	control.probe.infos[i, "Evaluate Red"] <- "+"
-	i <- grep("^NEGATIVE", control.probe.infos[, "Target"])
-	control.probe.infos[i, "Evaluate Green"] <- "+"
-	control.probe.infos[i, "Evaluate Red"] <- "+"
-	control.probe.infos[["Evaluate Green"]] <- factor(control.probe.infos[["Evaluate Green"]], levels = c("-", "+"))
-	control.probe.infos[["Evaluate Red"]] <- factor(control.probe.infos[["Evaluate Red"]], levels = c("-", "+"))
-	
-	## Add column Expected Intensity
-	control.probe.infos[["Expected Intensity"]] <- as.character(NA)
-	i <- control.probe.infos[, "Target"] %in% c("NEGATIVE", "TARGET REMOVAL", "RESTORATION")
-	control.probe.infos[i, "Expected Intensity"] <- "Background"
-	i <- c("BISULFITE CONVERSION II", "SPECIFICITY II", "EXTENSION", "NON-POLYMORPHIC")
-	i <- control.probe.infos[, "Target"] %in% i
-	control.probe.infos[i, "Expected Intensity"] <- "High"
-	i <- control.probe.infos[, "Target"] %in% paste("NORM", c("A", "C", "G", "T"), sep = "_")
-	control.probe.infos[i, "Expected Intensity"] <- "High"
-	i <- grep("\\((High)|(20K)\\)$", control.probe.infos[, "Description"])
-	control.probe.infos[i, "Expected Intensity"] <- "High"
-	i <- grep("\\((Medium)|(5K)\\)$", control.probe.infos[, "Description"])
-	control.probe.infos[i, "Expected Intensity"] <- "Medium"
-	i <- grep("\\(Low\\)$", control.probe.infos[, "Description"])
-	control.probe.infos[i, "Expected Intensity"] <- "Low"
-	
-	#i <- grep("\\((Bkg)|(5K)\\)$", control.probe.infos[, "Description"])
-	i <- grep("\\(Bkg\\)$", control.probe.infos[, "Description"])
-	control.probe.infos[i, "Expected Intensity"] <- "Background"
-	i <- grep("^BS Conversion I[- ]C", control.probe.infos[, "Description"])
-	control.probe.infos[i, "Expected Intensity"] <- "High"
-	i <- grep("^BS Conversion I[- ]U", control.probe.infos[, "Description"])
-	control.probe.infos[i, "Expected Intensity"] <- "Background"
-	i <- grep("^GT Mismatch.+\\(PM\\)$", control.probe.infos[, "Description"])
-	control.probe.infos[i, "Expected Intensity"] <- "High"
-	i <- grep("^GT Mismatch.+\\(MM\\)$", control.probe.infos[, "Description"])
-	control.probe.infos[i, "Expected Intensity"] <- "Background"
-	control.probe.infos[["Expected Intensity"]] <- factor(control.probe.infos[["Expected Intensity"]])
-	
-	## Add column Sample-dependent
-	control.probe.infos[["Sample-dependent"]] <-
-			!(control.probe.infos[["Target"]] %in% RnBeads:::CONTROL.TARGETS.SAMPLE.INDEPENDENT)
-	
-	control.probe.infos[["Index"]][order(control.probe.infos$Target)]<-unlist(sapply(sort(unique(control.probe.infos$Target)), function(target) 1:length(which(control.probe.infos$Target==target))))
-	
-	return(control.probe.infos)
 }
