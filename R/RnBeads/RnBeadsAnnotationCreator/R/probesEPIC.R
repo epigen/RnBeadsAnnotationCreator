@@ -23,7 +23,7 @@
 #' @noRd
 rnb.update.probeEPIC.annotation <- function(table.columns) {
 
-	ftp.table <- "ftp://webdata2:webdata2@ussd-ftp.illumina.com/downloads/productfiles/methylationEPIC/infinium-methylationepic-manifest-file-csv.zip"
+	ftp.table <- "ftp://webdata2:webdata2@ussd-ftp.illumina.com/downloads/productfiles/methylationEPIC/infinium-methylationepic-v1-0-b2-manifest-file-csv.zip"
 
 	## Download probe definition table from Illumina's web site
 	destfile <- file.path(.globals[['DIR.PACKAGE']], "temp", "probeEPIC.zip")
