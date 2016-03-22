@@ -121,13 +121,13 @@ rnb.seq.guess.strands <- function(chrom.sequence, loci, pr.design, alleles.A, al
 		i <- which(result$Strand != resultB$Strand)
 		result[i, "Strand"] <- "*"
 		result <- data.frame(
-			"Strand" = result$Strand,
+			"Guessed Strand" = result$Strand,
 			"Mismatches A" = result$Mismatches,
 			"Mismatches B" = resultB$Mismatches, check.names = FALSE)
 	} else { # pr.design == "II"
 		result <- rnb.seq.guess.strand.allele(alleles.exp.pos, alleles.exp.neg, alleles.char)
 		result <- data.frame(
-			"Strand" = result$Strand,
+			"Guessed Strand" = result$Strand,
 			"Mismatches A" = result$Mismatches,
 			"Mismatches B" = 0L, check.names = FALSE)
 	}
