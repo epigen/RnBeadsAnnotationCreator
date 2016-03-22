@@ -103,6 +103,13 @@ rnb.update.probeEPIC.annotation <- function(table.columns) {
 	## Add information about CpG counts and GC content in the neighborhood, context, overlaps with SNPs
 #	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-1.RDS"))
 	probe.infos <- rnb.update.probe.annotation.guess.strand(probe.infos)
+	i <- which(probe.infos[, "Strand"] != probe.infos[, "Guessed Strand"])
+	if (length(i) != 0) {
+		i <- table(substr(rownames(probe.infos)[i], 1, 2))
+		i <- paste0(names(i), " (", i, " probes)")
+		logger.warning(paste("The Strand info for the following probe types might be wrong:", i))
+	}
+	rm(i)
 #	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-2.RDS"))
 	probe.infos <- rnb.update.probesEPIC.snps(probe.infos)
 #	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-3.RDS"))
@@ -209,8 +216,8 @@ rnb.update.controlsEPIC.enrich <- function(control.probe.infos) {
 
 #' rnb.update.probe.annotation.guess.strand
 #' 
-#' Updates the MethylationEPIC probe annotation table by adding a Strand column and setting it to the best guess based
-#' on the probe sequence and design type.
+#' Updates the MethylationEPIC probe annotation table by adding a column named \code{Guessed Strand} and setting it to
+#' the best guess based on the probe sequence and design type.
 #' 
 #' @param probe.infos Probe annotation table for MethylationEPIC in the form of a \code{data.frame}.
 #' @return The updated probe annotation table.
@@ -219,7 +226,7 @@ rnb.update.controlsEPIC.enrich <- function(control.probe.infos) {
 rnb.update.probe.annotation.guess.strand <- function(probe.infos) {
 	genome.data <- rnb.genome.data()
 	guessed <- data.frame(
-		Strand = factor(rep("*", nrow(probe.infos)), levels = c("+", "-", "*")),
+		"Guessed Strand" = factor(rep("*", nrow(probe.infos)), levels = c("+", "-", "*")),
 		"Mismatches A" = 0L, "Mismatches B" = 0L, check.names = FALSE)
 
 	for (chromosome in names(.globals[['CHROMOSOMES']])) {
@@ -242,7 +249,7 @@ rnb.update.probe.annotation.guess.strand <- function(probe.infos) {
 	rm(chromosome, chrom.sequence, pr.design, i)
 
 	i <- which(probe.infos$Context == "Other")
-	guessed[i, "Strand"] <- "*"
+	guessed[i, "Guessed Strand"] <- "*"
 	guessed[i, "Mismatches A"] <- NA
 	guessed[i, "Mismatches B"] <- NA
 	cbind(probe.infos, guessed)

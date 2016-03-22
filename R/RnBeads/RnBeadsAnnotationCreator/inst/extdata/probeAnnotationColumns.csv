@@ -33,45 +33,45 @@
 27,,,Annotation,Annotation
 28,,,Product,Product
 29,,,Distance_to_TSS,Distance to TSS
-,22,15,UCSC_RefGene_Name,UCSC RefGene Name
-,23,16,UCSC_RefGene_Accession,UCSC RefGene Accession
-,24,17,UCSC_RefGene_Group,UCSC RefGene Group
+,22,16,UCSC_RefGene_Name,UCSC RefGene Name
+,23,17,UCSC_RefGene_Accession,UCSC RefGene Accession
+,24,18,UCSC_RefGene_Group,UCSC RefGene Group
 30,,,CPG_ISLAND,CpG Island
 31,,,CPG_ISLAND_LOCATIONS,CpG Island Locations
 32,,,MIR_CPG_ISLAND,MIR CpG Island
 33,,,MIR_NAMES,MIR Names
-,25,18,UCSC_CpG_Islands_Name,UCSC CpG Islands Name
-,26,19,Relation_to_UCSC_CpG_Island,CGI Relation
+,25,19,UCSC_CpG_Islands_Name,UCSC CpG Islands Name
+,26,20,Relation_to_UCSC_CpG_Island,CGI Relation
 ,27,,Phantom,Phantom
-,,20,Phantom4_Enhancers,Phantom4 Enhancers
-,,21,Phantom5_Enhancers,Phantom5 Enhancers
-,28,22,DMR,DMR
+,,21,Phantom4_Enhancers,Phantom4 Enhancers
+,,22,Phantom5_Enhancers,Phantom5 Enhancers
+,28,23,DMR,DMR
 ,29,,Enhancer,Enhancer
-,,23,450k_Enhancer,Enhancer
-,30,24,HMM_Island,HMM Island
-,31,25,Regulatory_Feature_Name,Regulatory Feature Name
-,32,26,Regulatory_Feature_Group,Regulatory Feature Group
-,,27,GencodeBasicV12_NAME,Gencode12 Basic Name
-,,28,GencodeBasicV12_Accession,Gencode12 Basic Accession
-,,29,GencodeBasicV12_Group,Gencode12 Basic Group
-,,30,GencodeCompV12_NAME,Gencode12 Comp Name
-,,31,GencodeCompV12_Accession,Gencode12 Comp Accession
-,,32,GencodeCompV12_Group,Gencode12 Comp Group
-,,33,DNase_Hypersensitivity_NAME,DNase Hypersensitivity Name
-,,34,DNase_Hypersensitivity_Evidence_Count,DNase Hypersensitivity Evidence
-,,35,OpenChromatin_NAME,Open Chromatin Name
-,,36,OpenChromatin_Evidence_Count,Open Chromatin Evidence
-,,37,TFBS_NAME,TFBS Name
-,,38,TFBS_Evidence_Count,TFBS Evidence
-,21,39,Methyl27_Loci,HumanMethylation27
-,,40,Methyl450_Loci,HumanMethylation450
-,15,41,Chromosome_36,Chromosome.36
-,16,42,Coordinate_36,Location.36
-,,43,SNP_ID,SNP ID
-,,44,SNP_DISTANCE,SNP Distance
-,,45,SNP_MinorAlleleFrequency,SNP Minor Allele Frequency
-,20,46,Random_Loci,Random
-,17,,Strand,Strand
+,,24,450k_Enhancer,Enhancer
+,30,25,HMM_Island,HMM Island
+,31,26,Regulatory_Feature_Name,Regulatory Feature Name
+,32,27,Regulatory_Feature_Group,Regulatory Feature Group
+,,28,GencodeBasicV12_NAME,Gencode12 Basic Name
+,,29,GencodeBasicV12_Accession,Gencode12 Basic Accession
+,,30,GencodeBasicV12_Group,Gencode12 Basic Group
+,,31,GencodeCompV12_NAME,Gencode12 Comp Name
+,,32,GencodeCompV12_Accession,Gencode12 Comp Accession
+,,33,GencodeCompV12_Group,Gencode12 Comp Group
+,,34,DNase_Hypersensitivity_NAME,DNase Hypersensitivity Name
+,,35,DNase_Hypersensitivity_Evidence_Count,DNase Hypersensitivity Evidence
+,,36,OpenChromatin_NAME,Open Chromatin Name
+,,37,OpenChromatin_Evidence_Count,Open Chromatin Evidence
+,,38,TFBS_NAME,TFBS Name
+,,39,TFBS_Evidence_Count,TFBS Evidence
+,21,40,Methyl27_Loci,HumanMethylation27
+,,41,Methyl450_Loci,HumanMethylation450
+,15,42,Chromosome_36,Chromosome.36
+,16,43,Coordinate_36,Location.36
+,,44,SNP_ID,SNP ID
+,,45,SNP_DISTANCE,SNP Distance
+,,46,SNP_MinorAlleleFrequency,SNP Minor Allele Frequency
+,20,47,Random_Loci,Random
+,17,15,Strand,Strand
 ,18,,Probe_SNPs,Probe SNPs
 ,19,,Probe_SNPs_10,Probe SNPs 10
 ,33,,DHS,DHS
