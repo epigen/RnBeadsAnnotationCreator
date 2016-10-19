@@ -119,7 +119,7 @@ rnb.update.probeEPIC.annotation <- function(table.columns) {
 #	saveRDS(probe.infos, file.path(.globals[['DIR.PACKAGE']], "temp", "probesEPIC-5.RDS"))
 
 	## Add data on cross-hybridization
-#	probe.infos[, "Cross-reactive"] <- rnb.update.probe.annotation.cr(probe.infos[, "ID"], "HumanMethylation450")
+	probe.infos[, "Cross-reactive"] <- rnb.update.probe.annotation.cr(probe.infos[, "ID"], "MethylationEPIC")
 
 	## Convert to GRangesList
 	probes.gr <- rnb.probe.infos.to.GRanges(probe.infos)

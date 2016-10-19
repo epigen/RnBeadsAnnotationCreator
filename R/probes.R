@@ -492,7 +492,13 @@ rnb.update.probe.annotation.snps.chrom <- function(probe.regs, snps) {
 #' @author Yassen Assenov
 #' @noRd
 rnb.update.probe.annotation.cr <- function(probe.ids, platform) {
-	fname <- ifelse(platform == "HumanMethylation27", "probes27", "probes450")
+	if (platform == "HumanMethylation27") {
+		fname <- "probes27"
+	} else if (platform == "HumanMethylation450") {
+		fname <- "probes450"
+	} else { # platform == "MethylationEPIC"
+		fname <- "probesEPIC"
+	}
 	fname <- paste0("extdata/", .globals[['assembly']], ".", fname, ".crossreactive.txt")
 	fname <- system.file(fname, package = "RnBeadsAnnotationCreator")
 	if (file.exists(fname)) {

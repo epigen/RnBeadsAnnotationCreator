@@ -29,7 +29,7 @@ createAnnotationPackage.hg38 <- function(){
 
 	## Download SNP annotation
 	logger.start("SNP Annotation")
-	vcf.files <- paste0(DBSNP.FTP.BASE, "human_9606_b142_GRCh38/VCF/All.vcf.gz")
+	vcf.files <- paste0(DBSNP.FTP.BASE, "human_9606_b147_GRCh38p2/VCF/All.vcf.gz")
 	update.annot("snps", "polymorphism information", rnb.update.dbsnp, ftp.files = vcf.files)
 	logger.completed()
 
