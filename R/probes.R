@@ -12,7 +12,7 @@
 #'
 #' Gets the expected column names from an Illumina's probe annotation table.
 #'
-#' @param assay The methylation assay: one of \code{"27k"}, \code{"450k"} or \code{"EPIC"}.
+#' @param assay The methylation assay: one of \code{"27k"}, \code{"450k"}, \code{"EPIC"} or \code{"MOUSE"}.
 #' @return Columns to expect in the probe annotation table in the form of a \code{character} \code{vector}.
 #' @author Yassen Assenov
 #' @noRd

@@ -140,7 +140,6 @@ rnb.update.probeMOUSE.annotation <- function(table.columns) {
 	fl <- sort(flagged.ranges)
 	names(fl) <- fl$ID
 	probes.fl <- GenomicRanges::split(fl, seqnames(fl))
-	#probes.fl <- probes.fl[names(.globals[['CHROMOSOMES']])]
 	
 	
 	
@@ -149,7 +148,7 @@ rnb.update.probeMOUSE.annotation <- function(table.columns) {
 	
 	return(list(probes = probes.gr, controls = control.probe.infos,flagged=probes.fl))
 }
-#load("/Library/Frameworks/R.framework/Versions/3.5/Resources/library/RnBeads.hg19/data/probesEPIC.RData")
+
 ########################################################################################################################
 
 #' rnb.update.controlsMOUSE.enrich
