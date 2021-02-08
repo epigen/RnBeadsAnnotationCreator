@@ -50,7 +50,6 @@ rnb.update.probeMOUSE.annotation <- function(table.columns) {
 
 	## Assign destfile to result
 	result <- destfile
-	#result <- man.file
 
 	## Identify methylation and control probe annotation tables
 	txt <- scan(result, what = character(), sep = "\n", quiet = TRUE)
@@ -280,48 +279,5 @@ rnb.update.controlsMOUSE.enrich <- function(control.probe.infos) {
 		))
 
 	return(control.probe.infos)
-}
-
-########################################################################################################################
-
-#' rnb.update.probe.annotation.guess.strand
-#' 
-#' Updates the MethylationMOUSE probe annotation table by adding a column named \code{Guessed Strand} and setting it to
-#' the best guess based on the probe sequence and design type.
-#' 
-#' @param probe.infos Probe annotation table for MethylationMOUSE in the form of a \code{data.frame}.
-#' @return The updated probe annotation table.
-#' @author Yassen Assenov
-#' @noRd
-rnb.update.probe.annotation.guess.strand <- function(probe.infos) {
-	genome.data <- rnb.genome.data()
-	guessed <- data.frame(
-		"Guessed Strand" = factor(rep("*", nrow(probe.infos)), levels = c("+", "-", "*")),
-		"Mismatches A" = 0L, "Mismatches B" = 0L, check.names = FALSE)
-
-	for (chromosome in names(.globals[['CHROMOSOMES']])) {
-		chrom.sequence <- genome.data[[chromosome]]
-		for (pr.design in c("I", "II")) {
-			i <- which(probe.infos[["Chromosome"]] == chromosome & probe.infos[["Design"]] == pr.design)
-			if (length(i) != 0) {
-				alleles.A <- as.character(probe.infos[i, "AlleleA Probe Sequence"])
-				if (pr.design == "I") {
-					alleles.B <- as.character(probe.infos[i, "AlleleB Probe Sequence"])
-				} else {
-					alleles.B <- NULL
-				}
-				loci <- probe.infos[i, "Location"]
-				guessed[i, ] <- rnb.seq.guess.strands(chrom.sequence, loci, pr.design, alleles.A, alleles.B)
-				rm(alleles.A, alleles.B, loci)
-			}
-		}
-	}
-	rm(chromosome, chrom.sequence, pr.design, i)
-
-	i <- which(probe.infos$Context == "Other")
-	guessed[i, "Guessed Strand"] <- "*"
-	guessed[i, "Mismatches A"] <- NA
-	guessed[i, "Mismatches B"] <- NA
-	cbind(probe.infos, guessed)
 }
 

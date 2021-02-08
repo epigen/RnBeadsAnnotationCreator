@@ -23,7 +23,6 @@ createAnnotationPackage.mm10 <- function() {
 	GENOME <- "BSgenome.Mmusculus.UCSC.mm10"
 	assign('GENOME', GENOME, .globals)
 	CHROMOSOMES <- c(1:19, "X", "Y")
-	#CHROMOSOMES <- c(1:2) #test 2 chroms
 	names(CHROMOSOMES) <- paste0("chr", CHROMOSOMES)
 	assign('CHROMOSOMES', CHROMOSOMES, .globals)
 	rm(GENOME)
