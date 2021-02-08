@@ -70,13 +70,16 @@ rnb.export.annotations.to.data.files <- function() {
 		"regions" = list(),
 		"sites" = lapply(sites.full, function(x) { NULL }),
 		"controls" = list(),
-		"mappings" = list())
+		"mappings" = list(),
+		"flagged"=list())
 	for (sname in names(sites.full)) {
 		sites <- list("sites" = sites.full[[sname]], "mappings" = lapply(.globals[['mappings']], "[[", sname))
 		if (grepl("^probes", sname)) {
 			platform.id <- gsub("^probes", "", sname)
 			sites[[paste0("controls", platform.id)]] <- get(sname, .globals)[["controls"]]
+			sites[[paste0("flagged", platform.id)]] <- get(sname, .globals)[["flagged"]]
 			framework[["controls"]][paste0("controls", platform.id)] <- list(NULL)
+			framework[["flagged"]][paste0("flagged", platform.id)] <- list(NULL)
 		}
 		save(sites, file = rnb.get.package.data.file(sname), compression_level = 9L)
 		logger.status(c("Saved", sname, "annotation table and mappings to the package data"))
@@ -88,6 +91,14 @@ rnb.export.annotations.to.data.files <- function() {
 		names(cinfo) <- names(framework[["controls"]])
 		attr(framework[["controls"]], "sites") <- cinfo
 		rm(cinfo)
+	}
+	if (length(framework[["flagged"]]) == 0) {
+	  framework[["flagged"]] <- NULL
+	} else {
+	  cinfo <- sub("^flagged", "probes", names(framework[["flagged"]]))
+	  names(cinfo) <- names(framework[["flagged"]])
+	  attr(framework[["flagged"]], "sites") <- cinfo
+	  rm(cinfo)
 	}
 	assembly <- .globals[['assembly']]
 	.globals[[assembly]] <- framework

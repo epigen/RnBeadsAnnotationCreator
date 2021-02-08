@@ -17,7 +17,7 @@
 #' @author Yassen Assenov
 #' @noRd
 rnb.get.illumina.annotation.columns <- function(assay) {
-	tbl <- read.csv(system.file("extdata/probeAnnotationColumns.csv", package = "RnBeadsAnnotationCreator"),
+	tbl <- read.csv2(system.file("extdata/probeAnnotationColumns_2020.csv", package = "RnBeadsAnnotationCreator"),
 		check.names = FALSE, stringsAsFactors = FALSE)
 	tbl <- tbl[!is.na(tbl[, assay]), c(assay, "Name", "RnBeads")]
 	tbl <- tbl[order(tbl[, 1]), ]

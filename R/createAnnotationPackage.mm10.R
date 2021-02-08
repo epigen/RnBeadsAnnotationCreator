@@ -23,18 +23,19 @@ createAnnotationPackage.mm10 <- function() {
 	GENOME <- "BSgenome.Mmusculus.UCSC.mm10"
 	assign('GENOME', GENOME, .globals)
 	CHROMOSOMES <- c(1:19, "X", "Y")
+	#CHROMOSOMES <- c(1:2) #test 2 chroms
 	names(CHROMOSOMES) <- paste0("chr", CHROMOSOMES)
 	assign('CHROMOSOMES', CHROMOSOMES, .globals)
 	rm(GENOME)
 
-	## Download SNP annotation
-	logger.start("SNP Annotation")
-	vcf.files <- gsub("^chr(.+)$", "vcf_chr_\\1.vcf.gz", names(CHROMOSOMES))
-	vcf.files <- paste0(DBSNP.FTP.BASE, "mouse_10090/VCF/", vcf.files)
-	update.annot("snps", "polymorphism information", rnb.update.dbsnp, ftp.files = vcf.files)
-	logger.info(paste("Using:", attr(.globals[['snps']], "version")))
-	rm(vcf.files)
-	logger.completed()
+	# ## Download SNP annotation
+	# logger.start("SNP Annotation")
+	# vcf.files <- gsub("^chr(.+)$", "vcf_chr_\\1.vcf.gz", names(CHROMOSOMES))
+	# vcf.files <- paste0(DBSNP.FTP.BASE, "mouse_10090/VCF/", vcf.files)
+	# update.annot("snps", "polymorphism information", rnb.update.dbsnp, ftp.files = vcf.files)
+	# logger.info(paste("Using:", attr(.globals[['snps']], "version")))
+	# rm(vcf.files)
+	# logger.completed()
 
 	## Define genomic regions
 	biomart.parameters <- list(
@@ -47,7 +48,7 @@ createAnnotationPackage.mm10 <- function() {
 			"end" = "end_position",
 			"strand" = "strand",
 			"symbol" = "mgi_symbol",
-			"entrezID" = "entrezgene"))
+			"entrezID" = "entrezgene_id"))
 	logger.start("Region Annotation")
 	update.annot("regions", "region annotation", rnb.update.region.annotation,
 		biomart.parameters = biomart.parameters)
@@ -57,6 +58,22 @@ createAnnotationPackage.mm10 <- function() {
 	## Define genomic sites
 	logger.start("Genomic Sites")
 	update.annot("sites", "CpG annotation", rnb.update.sites)
+	logger.completed()
+	
+	
+	## Define MethylationEPIC probe annotations
+	logger.start("MethylationMOUSE")
+	table.columns <- rnb.get.illumina.annotation.columns("MOUSE")
+	update.annot("probesMMBC", "MethylationMOUSE annotation", rnb.update.probeMOUSE.annotation,
+	             table.columns = table.columns)
+	.globals[['sites']][["probesMMBC"]] <- .globals[['probesMMBC']][["probes"]]
+	logger.completed()
+	
+	## Add annotation columns to the context probes, showing if they are covered by an assay
+	logger.start("Updating Site Annotation with Probes")
+	.globals[['sites']] <- rnb.update.site.annotation.with.probes(sites = .globals[['sites']],
+                            query.probes = c("probesMMBC"),
+                            platform.names = c("InfiniumMouseMBC"))
 	logger.completed()
 
 	## Create all possible mappings from regions to sites
