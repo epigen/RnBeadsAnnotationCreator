@@ -466,9 +466,8 @@ rnb.split.snps <- function(snps.file, temp.directory, R.executable = paste0(Sys.
     }
     
     ## Generate an R script for processing a single file
-    txt <- capture.output(show(RnBeadsAnnotationCreator:::rnb.construct.snp.types))
+    txt <- deparse(RnBeadsAnnotationCreator:::rnb.construct.snp.types)
     txt[1] <- paste("rnb.construct.snp.types <-", txt[1])
-    txt[length(txt)] <- ''
     txt <- c(txt, 'i <- commandArgs()[length(commandArgs())]',
         'fnames <- paste0(c("db.", "tp."), i, ".RDS")',
         'tbl <- rnb.construct.snp.types(readRDS(fnames[1]))',
