@@ -12,12 +12,12 @@
 #'
 #' Gets the expected column names from an Illumina's probe annotation table.
 #'
-#' @param assay The methylation assay: one of \code{"27k"}, \code{"450k"} or \code{"EPIC"}.
+#' @param assay The methylation assay: one of \code{"27k"}, \code{"450k"}, \code{"EPIC"} or \code{"MOUSE"}.
 #' @return Columns to expect in the probe annotation table in the form of a \code{character} \code{vector}.
 #' @author Yassen Assenov
 #' @noRd
 rnb.get.illumina.annotation.columns <- function(assay) {
-	tbl <- read.csv(system.file("extdata/probeAnnotationColumns.csv", package = "RnBeadsAnnotationCreator"),
+	tbl <- read.csv2(system.file("extdata/probeAnnotationColumns_2020.csv", package = "RnBeadsAnnotationCreator"),
 		check.names = FALSE, stringsAsFactors = FALSE)
 	tbl <- tbl[!is.na(tbl[, assay]), c(assay, "Name", "RnBeads")]
 	tbl <- tbl[order(tbl[, 1]), ]

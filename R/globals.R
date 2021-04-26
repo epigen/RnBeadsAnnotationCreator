@@ -51,13 +51,14 @@ ANNOT.DESCRIPTIONS <- c(
 ## dbSNP
 
 ## Base FTP location of dbSNP
-DBSNP.FTP.BASE <- "ftp://ftp.ncbi.nih.gov/snp/organisms/"
+DBSNP.FTP.BASE <- "ftp://ftp.ncbi.nih.gov/snp/organisms/archive/" ##added archive
 
 REFERENCE2ASSEMBLY <- c(
 	"GRCh38" = "hg38",
 	"GRCh37.p13" = "hg19",
 	"GCF_000001635.21" = "mm10", # GRCm38.p1
 	"GCF_000001635.22" = "mm10", # GRCm38.p2
+	"GCF_000001635.24" = "mm10", 
 	"GCF_000001895.4" = "rn5",
 	"GCF_000001895.5" = "rn6",
 	"GCF_000002035.4" = "zv9")
@@ -82,6 +83,7 @@ GEO.FTP.BASE <- "ftp://ftp.ncbi.nlm.nih.gov/pub/geo/DATA/supplementary/platforms
 
 ## Column names (assigned by this script) of the table on control probes downloaded from GEO and Illumina's site
 INF.CONTROL.PROBE.TABLE.COLUMNS <- c("ID", "Target", "Color", "Description", "AVG")
+Mouse.CONTROL.PROBE.TABLE.COLUMNS <- c("ID", "Target", "Color", "Description")
 
 ## Control probe colors associated with the evaluation of the Red channel
 CONTROL.COLORS.GREEN <- c("Black", "Blue", "Cyan", "Green", "Lime", "LimeGreen", "SkyBlue")
