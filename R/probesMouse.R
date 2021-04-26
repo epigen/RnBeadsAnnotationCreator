@@ -123,7 +123,7 @@ rnb.update.probeMOUSE.annotation <- function(table.columns) {
 	                                                         strand.field = "Strand"
 	                                                          )
 	probes.ranges <- IRanges::resize(probes.ranges,2)
-	gr <- sort(probes.ranges)
+	gr <- sort(probes.ranges, ignore.strand=TRUE)
 	names(gr) <- gr$ID
 	probes.gr <- GenomicRanges::split(gr, seqnames(gr))
 	probes.gr <- probes.gr[names(.globals[['CHROMOSOMES']])]
