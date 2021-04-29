@@ -61,9 +61,9 @@ createAnnotationPackage.mm10 <- function() {
 	
 	
 	## Define MethylationEPIC probe annotations
-	logger.start("MethylationMOUSE")
+	logger.start("MouseMethylationBeadChip")
 	table.columns <- rnb.get.illumina.annotation.columns("MOUSE")
-	update.annot("probesMMBC", "MethylationMOUSE annotation", rnb.update.probeMOUSE.annotation,
+	update.annot("probesMMBC", "MouseMethylationBeadChip annotation", rnb.update.probeMOUSE.annotation,
 	             table.columns = table.columns)
 	.globals[['sites']][["probesMMBC"]] <- .globals[['probesMMBC']][["probes"]]
 	logger.completed()
