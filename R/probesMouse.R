@@ -130,7 +130,8 @@ rnb.update.probeMOUSE.annotation <- function(table.columns) {
 	names(gr) <- gr$ID
 	probes.gr <- GenomicRanges::split(gr, seqnames(gr))
 	probes.gr <- probes.gr[names(.globals[['CHROMOSOMES']])]
-	
+    probes.gr$Chromosome<-factor(as.character(probes.gr$Chromosome), levels=setdiff(levels(probes.gr$Chromosome), "chr0"))
+    
 	# sort and GRanges List for flagged
 	flagged.ranges <- GenomicRanges::makeGRangesFromDataFrame(df = probes.flagged,
 	                                                         keep.extra.columns = T,
@@ -144,7 +145,7 @@ rnb.update.probeMOUSE.annotation <- function(table.columns) {
 	names(fl) <- fl$ID
 	probes.fl <- GenomicRanges::split(fl, seqnames(fl))
 	
-	return(list(probes = probes.gr, controls = control.probe.infos,flagged=probes.fl))
+	return(list(probes = probes.gr, controls = control.probe.infos, flagged=probes.fl))
 }
 
 ########################################################################################################################
