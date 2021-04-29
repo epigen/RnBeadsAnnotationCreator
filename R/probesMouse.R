@@ -113,7 +113,10 @@ rnb.update.probeMOUSE.annotation <- function(table.columns) {
 	                                "AddressA","AddressB","Color","MFG Change Flagged","ID","Context")]
 	probes.flagged <- probes.shaped[probes.shaped[,"MFG Change Flagged"]==TRUE,]
 	probes.shaped <- probes.shaped[probes.shaped[,"MFG Change Flagged"]==FALSE,]
-	
+    probes.shaped$Chromosome<-factor(as.character(probes.shaped$Chromosome), levels=setdiff(levels(probes.shaped$Chromosome), "chr0"))
+    
+    probes.shaped <- rnb.update.probe.annotation.snps(probes.shaped)
+    
 	# sort and GRanges List
 	probes.ranges <- GenomicRanges::makeGRangesFromDataFrame(df = probes.shaped,
 	                                                         keep.extra.columns = T,
@@ -140,11 +143,6 @@ rnb.update.probeMOUSE.annotation <- function(table.columns) {
 	fl <- sort(flagged.ranges)
 	names(fl) <- fl$ID
 	probes.fl <- GenomicRanges::split(fl, seqnames(fl))
-	
-	
-	
-	
-	
 	
 	return(list(probes = probes.gr, controls = control.probe.infos,flagged=probes.fl))
 }
