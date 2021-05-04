@@ -125,7 +125,8 @@ rnb.update.probeMOUSE.annotation <- function(table.columns) {
 	                                                         end.field = "Location",
 	                                                         strand.field = "Strand"
 	                                                          )
-	probes.ranges <- IRanges::resize(probes.ranges,2)
+	#probes.ranges <- IRanges::resize(probes.ranges,2)
+	width(probes.ranges) <- width(probes.ranges)+1
 	gr <- sort(probes.ranges, ignore.strand=TRUE)
 	names(gr) <- gr$ID
 	probes.gr <- GenomicRanges::split(gr, seqnames(gr))
@@ -140,7 +141,7 @@ rnb.update.probeMOUSE.annotation <- function(table.columns) {
 	                                                         end.field = "Location",
 	                                                         strand.field = "Strand"
 	)
-	flagged.ranges <- IRanges::resize(flagged.ranges,2)
+	width(flagged.ranges) <- width(flagged.ranges)+1
 	fl <- sort(flagged.ranges)
 	names(fl) <- fl$ID
 	probes.fl <- GenomicRanges::split(fl, seqnames(fl))
