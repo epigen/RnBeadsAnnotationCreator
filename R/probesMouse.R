@@ -20,7 +20,7 @@
 #'           \item{\code{"controls"}}{\code{data.frame} with control probe annotation.}
 #'           \item{\code{"flagged"}}{\code{GRangesList} with MFG change flagged probes.}
 #'         }
-#' @author Maximilian Schönung
+#' @author Maximilian Schoenung
 #' @noRd
 rnb.update.probeMOUSE.annotation <- function(table.columns) {
 
