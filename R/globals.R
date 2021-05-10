@@ -51,14 +51,16 @@ ANNOT.DESCRIPTIONS <- c(
 ## dbSNP
 
 ## Base FTP location of dbSNP
-DBSNP.FTP.BASE <- "ftp://ftp.ncbi.nih.gov/snp/organisms/archive/" ##added archive
+DBSNP.FTP.BASE <- "ftp://ftp.ncbi.nih.gov/snp/organisms/"
+
+DBSNP.FTP.BASE.MM<-"ftp://ftp.ncbi.nih.gov/snp/organisms/archive/" ##added archive
 
 REFERENCE2ASSEMBLY <- c(
 	"GRCh38" = "hg38",
 	"GRCh37.p13" = "hg19",
 	"GCF_000001635.21" = "mm10", # GRCm38.p1
 	"GCF_000001635.22" = "mm10", # GRCm38.p2
-	"GCF_000001635.24" = "mm10", 
+	"GCF_000001635.24" = "mm10", # GRCm38.p4
 	"GCF_000001895.4" = "rn5",
 	"GCF_000001895.5" = "rn6",
 	"GCF_000002035.4" = "zv9")

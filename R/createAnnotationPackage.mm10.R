@@ -30,7 +30,7 @@ createAnnotationPackage.mm10 <- function() {
 	## Download SNP annotation
 	logger.start("SNP Annotation")
 	vcf.files <- gsub("^chr(.+)$", "vcf_chr_\\1.vcf.gz", names(CHROMOSOMES))
-	vcf.files <- paste0(DBSNP.FTP.BASE, "mouse_10090/VCF/", vcf.files)
+	vcf.files <- paste0(DBSNP.FTP.BASE.MM, "mouse_10090/VCF/", vcf.files)
 	update.annot("snps", "polymorphism information", rnb.update.dbsnp, ftp.files = vcf.files)
 	logger.info(paste("Using:", attr(.globals[['snps']], "version")))
 	rm(vcf.files)
