@@ -112,7 +112,7 @@ rnb.update.probeMOUSE.annotation <- function(table.columns) {
 	probes.shaped <- probe.infos[,c("Name","Chromosome","Location","Strand","Design","CpG Island","N Shelf","N Shore","S Shelf","S Shore",
 	                                "AddressA","AddressB","Color","MFG Change Flagged","ID","Context")]
 	probes.flagged <- probes.shaped[probes.shaped[,"MFG Change Flagged"]==TRUE,]
-    probes.flagged$Chromosome<-factor(as.character(probes.flagged$Chromosome), levels=setdiff(levels(probes.flagged$Chromosome), "chr0"))
+    #probes.flagged$Chromosome<-factor(as.character(probes.flagged$Chromosome), levels=setdiff(levels(probes.flagged$Chromosome), "chr0"))
 	probes.shaped <- probes.shaped[probes.shaped[,"MFG Change Flagged"]==FALSE,]
     probes.shaped$Chromosome<-factor(as.character(probes.shaped$Chromosome), levels=setdiff(levels(probes.shaped$Chromosome), "chr0"))
     
