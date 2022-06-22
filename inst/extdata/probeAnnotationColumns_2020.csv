@@ -6,22 +6,22 @@
 5;4;4;4;AlleleA_ProbeSeq;AlleleA Probe Sequence
 6;5;5;5;AddressB_ID;AddressB
 7;6;6;6;AlleleB_ProbeSeq;AlleleB Probe Sequence
-;7;7;7;Infinium_Design_Type;Design
-18;8;8;8;Next_Base;Next Base
-19;9;9;9;Color_Channel;Color
-;10;10;10;Forward_Sequence;Forward Sequence
+;7;7;14;Infinium_Design_Type;Design
+18;8;8;7;Next_Base;Next Base
+19;9;9;8;Color_Channel;Color
+;10;10;21;Forward_Sequence;Forward Sequence
 8;;;;GenomeBuild;Genome Build
-;11;11;12;Genome_Build;Genome Build
+;11;11;19;Genome_Build;Genome Build
 9;;;;Chr;Chromosome
-;12;12;14;CHR;Chromosome
+;12;12;16;CHR;Chromosome
 10;;;;MapInfo;Location
-;13;13;15;MAPINFO;Location
+;13;13;17;MAPINFO;Location
 11;;;;Ploidy;Ploidy
 12;;;;Species;Species
 13;;;;Source;Source
 14;;;;SourceVersion;Source Version
 15;;;;SourceStrand;Strand
-16;14;14;16;SourceSeq;Source Sequence
+16;14;14;20;SourceSeq;Source Sequence
 17;;;;TopGenomicSeq;Top Genomic Sequence
 20;;;;TSS_Coordinate;TSS Coordinate
 21;;;;Gene_Strand;Gene Strand
@@ -71,26 +71,26 @@
 ;;45;;SNP_DISTANCE;SNP Distance
 ;;46;;SNP_MinorAlleleFrequency;SNP Minor Allele Frequency
 ;20;47;;Random_Loci;Random
-;17;15;17;Strand;Strand
+;17;15;11;Strand;Strand
 ;18;;;Probe_SNPs;Probe SNPs
 ;19;;;Probe_SNPs_10;Probe SNPs 10
 ;33;;;DHS;DHS
-;;;11;Top_Sequence;Top Sequence
-;;;13;Genome_Build_NCBI;
-;;;18;Strand_TB;Strand TB
-;;;19;Strand_CO;Strand CO
-;;;20;N_Shelf;N Shelf
-;;;21;N_Shore;N Shore
-;;;22;CpG_Island;CpG Island
-;;;23;CpG_Island_chrom;CpG Island chrom
-;;;24;CpG_Island_chromStart;CpG Island chromStart
-;;;25;CpG_Island_chromEnd;CpG Island chromEnd
-;;;26;CpG_Island_length;CpG Island length
-;;;27;CpG_Island_cpgNum;CpG Island cpgNum
-;;;28;CpG_Island_gcNum;CpG Island gcNum
-;;;29;CpG_Island_perCpg;CpG Island perCpg
-;;;30;CpG_Island_perGc;CpG Island perGc
-;;;31;CpG_Island_obsExp;CpG Island obsExp
-;;;32;S_Shore;S Shore
-;;;33;S_Shelf;S Shelf
-;;;34;MFG_Change_Flagged;MFG Change Flagged
+;;;22;Top_Sequence;Top Sequence
+;;;23;Genome_Build_NCBI;
+;;;12;Strand_TB;Strand TB
+;;;13;Strand_CO;Strand CO
+;;;24;N_Shelf;N Shelf
+;;;25;N_Shore;N Shore
+;;;26;CpG_Island;CpG Island
+;;;27;CpG_Island_chrom;CpG Island chrom
+;;;28;CpG_Island_chromStart;CpG Island chromStart
+;;;29;CpG_Island_chromEnd;CpG Island chromEnd
+;;;30;CpG_Island_length;CpG Island length
+;;;31;CpG_Island_cpgNum;CpG Island cpgNum
+;;;32;CpG_Island_gcNum;CpG Island gcNum
+;;;33;CpG_Island_perCpg;CpG Island perCpg
+;;;34;CpG_Island_perGc;CpG Island perGc
+;;;35;CpG_Island_obsExp;CpG Island obsExp
+;;;36;S_Shore;S Shore
+;;;37;S_Shelf;S Shelf
+;;;38;MFG_Change_Flagged;MFG Change Flagged

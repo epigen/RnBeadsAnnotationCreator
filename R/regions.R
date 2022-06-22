@@ -23,10 +23,10 @@
 #'
 #' @author Yassen Assenov
 #' @noRd
-download.ensembl.table <- function(database.name, dataset.name, required.columns, ...) {
-	db.version <- listMarts(...)
-	db.version <- as.character(db.version[db.version[, "biomart"] == database.name, "version"])
-	mart <- useMart(database.name, dataset = dataset.name, ...)
+download.ensembl.table <- function(database.name, dataset.name, required.columns, db.version, ...) {
+	#db.version <- listMarts(...)
+	#db.version <- as.character(db.version[db.version[, "biomart"] == database.name, "version"])
+	mart <- useEnsembl(database.name, dataset = dataset.name, version = db.version, ...)
 	if (!all(required.columns %in% c(listAttributes(mart)[, "name"]))) {
 		stop("Not all required attributes found in Ensembl")
 	}
@@ -225,7 +225,7 @@ rnb.update.download.cgis <- function(download.url) {
 #' @author Fabian Mueller
 #' @noRd
 rnb.update.region.annotation <- function(biomart.parameters, cgi.download.url =
-		paste0(UCSC.FTP.BASE, .globals[['assembly']], "/database/cpgIslandExt.txt.gz")) {
+		paste0(UCSC.HTTP.BASE, .globals[['assembly']], "/database/cpgIslandExt.txt.gz")) {
 
 	logger.start("Tiling Region Annotation")
 	result <- list("tiling" = rnb.update.region.annotation.tiling())

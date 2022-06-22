@@ -39,7 +39,7 @@ createAnnotationPackage.mm10 <- function() {
 	## Define genomic regions
 	biomart.parameters <- list(
 		database.name = "ensembl",
-		dataset.name = "mmusculus_gene_ensembl",
+		dataset.name = "mmusculus_gene_ensembl", db.version = 75,
 		required.columns = c(
 			"id" = "ensembl_gene_id",
 			"chromosome" = "chromosome_name",
@@ -47,7 +47,7 @@ createAnnotationPackage.mm10 <- function() {
 			"end" = "end_position",
 			"strand" = "strand",
 			"symbol" = "mgi_symbol",
-			"entrezID" = "entrezgene_id"))
+			"entrezID" = "entrezgene")) #"entrezgene_id" )) # for db.version=104
 	logger.start("Region Annotation")
 	update.annot("regions", "region annotation", rnb.update.region.annotation,
 		biomart.parameters = biomart.parameters)
@@ -58,7 +58,6 @@ createAnnotationPackage.mm10 <- function() {
 	logger.start("Genomic Sites")
 	update.annot("sites", "CpG annotation", rnb.update.sites)
 	logger.completed()
-	
 	
 	## Define MethylationEPIC probe annotations
 	logger.start("MouseMethylationBeadChip")

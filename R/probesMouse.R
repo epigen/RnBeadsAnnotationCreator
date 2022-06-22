@@ -24,8 +24,9 @@
 #' @noRd
 rnb.update.probeMOUSE.annotation <- function(table.columns) {
 
-  man.file <- "https://support.illumina.com/content/dam/illumina-support/documents/downloads/productfiles/mouse-methylation/Infinium%20Mouse%20Methylation%20v1.0%20A1%20GS%20Manifest%20File.csv"
-
+  #man.file <- "https://support.illumina.com/content/dam/illumina-support/documents/downloads/productfiles/mouse-methylation/Infinium%20Mouse%20Methylation%20v1.0%20A1%20GS%20Manifest%20File.csv"
+  man.file<-"https://support.illumina.com/content/dam/illumina-support/documents/downloads/productfiles/mouse-methylation/infinium-mouse-methylation-manifest-file-csv.zip"
+  
   ## create temporary directory
   dir.mouse <- file.path(.globals[['DIR.PACKAGE']], "temp", "MOUSE")
   if (file.exists(dir.mouse)) {
@@ -38,18 +39,18 @@ rnb.update.probeMOUSE.annotation <- function(table.columns) {
   }
   
 	## Download probe definition table from Illumina's web site
-	destfile <- file.path(dir.mouse, "probeMOUSE.csv")
-	if (file.exists(destfile)) {
-		logger.status(c("File", destfile, "already downloaded"))
+	destfile.zip <- file.path(dir.mouse, "probeMOUSE.csv.zip")
+	if (file.exists(destfile.zip)) {
+		logger.status(c("File", destfile.zip, "already downloaded"))
 	} else {
-		if (download.file(man.file, destfile, quiet = TRUE, mode = "wb") != 0) {
+		if (download.file(man.file, destfile.zip, quiet = TRUE, mode = "wb") != 0) {
 			logger.error(c("Could not download", man.file))
 		}
 		logger.status(c("Downloaded", man.file))
 	}
 
 	## Assign destfile to result
-	result <- destfile
+	result <- unzip(zipfile=destfile.zip, exdir=dir.mouse)[1]
 
 	## Identify methylation and control probe annotation tables
 	txt <- scan(result, what = character(), sep = "\n", quiet = TRUE)
@@ -66,6 +67,8 @@ rnb.update.probeMOUSE.annotation <- function(table.columns) {
 		stringsAsFactors = FALSE)
 	#probe.infos2=probe.infos
 	probe.infos <- probe.infos[, sapply(probe.infos, function(x) { !all(is.na(x)) })]
+    #remove currently unused columns
+    probe.infos$Col<-probe.infos$Probe_Type<-probe.infos$Rep_Num<-probe.infos$Species<-NULL
 	if (!identical(colnames(probe.infos), names(table.columns))) {
 		logger.error("Unexpected columns in the probe definition table")
 	}
@@ -86,7 +89,7 @@ rnb.update.probeMOUSE.annotation <- function(table.columns) {
 	                                      labels=c("*","+","-"))
 	probe.infos[,"Context"] <- factor(toupper(substr(probe.infos[,"Name"], start = 1, stop = 2)))
   
-	
+	control.probe.infos$V5<-NULL ### TODO: understand the meaning of the fifth column
 	## Validate the control probes
 	if (ncol(control.probe.infos) != 4) {
 		logger.error("Unexpected number of columns in the control probe definition table")

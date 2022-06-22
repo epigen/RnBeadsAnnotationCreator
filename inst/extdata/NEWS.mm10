@@ -1,9 +1,9 @@
-RnBeads.mm10 1.1
+RnBeads.mm10 2.0
 ==================
 
 * Release May 2021
-* Added annotation for the Mouse Methylation Bead Chip.
-* Updated SNP information to GRCm38.p4 (the last version available through NCBI)
+* Added annotation for the Mouse Methylation Bead Chip (thanks to Maxi Schoenung for his great contribution!).
+* Updated SNP information to GRCm38.p4, the last version available through NCBI.
 
 RnBeads.mm10 1.0.1
 ==================

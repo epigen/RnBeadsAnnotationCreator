@@ -73,6 +73,8 @@ MAJOR.ALLELE.FREQUENCY <- 0.95
 
 ## Base FTP location of files from the UCSC Genome Browser
 UCSC.FTP.BASE <- "ftp://hgdownload.cse.ucsc.edu/goldenPath/"
+## Base HTTP location of files from the UCSC Genome Browser
+UCSC.HTTP.BASE <- "http://hgdownload.cse.ucsc.edu/goldenPath/"
 
 ########################################################################################################################
 ## Gene Expression Omnibus

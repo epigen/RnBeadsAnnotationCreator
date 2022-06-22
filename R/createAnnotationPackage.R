@@ -116,6 +116,7 @@ rnb.export.annotations.to.data.files <- function() {
 #'
 #' @param assembly Targeted genome assembly. Must be one of \code{"hg38"}, \code{"hg19"}, \code{"mm10"}, \code{"mm9"},
 #'                 \code{"rn5"}.
+#' @param version  Package version as a character singleton
 #' @param dest     Destination directory where the package should be generated.
 #' @param maxSNPs  Maximum number of dbSNP records in preprocessed table for a single chromosome, given as a single
 #'                 non-negative \code{integer} value. If a larger table (than this threshold) is found, the annotation
@@ -131,7 +132,7 @@ rnb.export.annotations.to.data.files <- function() {
 #' createAnnotationPackage("hg38")
 #' }
 #' @export
-createAnnotationPackage <- function(assembly,dest=getwd(),maxSNPs=500000L,cleanUp=TRUE){
+createAnnotationPackage <- function(assembly, version, dest=getwd(), maxSNPs=500000L, cleanUp=TRUE){
 	## Validate parameters
 	if (!(is.character(assembly) && length(assembly) == 1 && (isTRUE(assembly != "")))) {
 		stop("invalid value for assembly")
@@ -174,12 +175,12 @@ createAnnotationPackage <- function(assembly,dest=getwd(),maxSNPs=500000L,cleanU
 				Package=pkgName,
 				Title=pkgName,
 				Description=txt,
-				Author="RnBeadsAnnotationCreator",
-				Maintainer="RnBeadsAnnotationCreator <rnbeads@mpi-inf.mpg.de>",
+				Author="RnBeads Team",
+				Maintainer="RnBeads Team <team@rnbeads.org>",
 				Date=format(Sys.Date(), format="%Y-%m-%d"),
 				License="GPL-3",
-				Version="0.1",
-				Depends="\n\tR (>= 3.0.0),\tGenomicRanges",
+				Version=version,
+				Depends="\n\tR (>= 3.5.0),\tGenomicRanges",
 				Suggests="\n\tRnBeads"
 			),
 			dest = dest
